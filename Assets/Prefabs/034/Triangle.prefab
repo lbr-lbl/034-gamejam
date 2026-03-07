@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4962441931886855588}
   - component: {fileID: 4730850803801671048}
   - component: {fileID: 6043667744234848372}
+  - component: {fileID: 1800481082646806319}
   m_Layer: 0
   m_Name: Triangle
   m_TagString: Untagged
@@ -78,9 +79,9 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.000034570694, y: -0.47737724}
-      - {x: -0.5, y: 0.38778296}
-      - {x: 0.49828413, y: 0.38585868}
+    - - {x: 0.000034589786, y: -0.44257823}
+      - {x: -0.49961704, y: 0.4303151}
+      - {x: 0.5069858, y: 0.42792833}
   m_UseDelaunayMesh: 0
 --- !u!50 &6043667744234848372
 Rigidbody2D:
@@ -109,6 +110,27 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!114 &1800481082646806319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2328867941291942477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ea77539073d25a4f8116bced9f16f26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteCount: 0
+  isDead: 0
+  walkSpeed: 0
+  jumpForce: 0
+  groundCheckDistance: 0
+  rb: {fileID: 0}
+  anim: {fileID: 0}
+  sr: {fileID: 0}
+  ps: {fileID: 0}
 --- !u!1 &4091222973113083489
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,7 +157,7 @@ Transform:
   m_GameObject: {fileID: 4091222973113083489}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.14, z: 0}
   m_LocalScale: {x: 1, y: -1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

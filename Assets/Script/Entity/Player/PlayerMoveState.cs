@@ -32,6 +32,7 @@ public class PlayerMoveState : PlayerState
 
         if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundDetected()) 
         {
+            Debug.Log("Jump");
             SetVelocity(xInput * player.walkSpeed, player.jumpForce);
         }
         else

@@ -11,9 +11,6 @@ public class PlayerController2D : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private BoxCollider2D playerCollider;
 
-    [Header("建造模式")]
-    [SerializeField] private BuildModeController buildModeController; // 注意是2D版本的建造控制器
-
     private bool isGrounded;
 
     // 暴露只读属性

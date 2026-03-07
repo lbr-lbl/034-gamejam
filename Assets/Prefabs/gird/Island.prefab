@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4672196334754672721
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7911394580928418203}
+  - component: {fileID: 963708281898800081}
+  m_Layer: 0
+  m_Name: Island
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7911394580928418203
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4672196334754672721}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &963708281898800081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4672196334754672721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b40048e10b722fb44ab114008d2e586a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cellSize: 0.25
+  widthInCells: 8
+  heightInCells: 3
+  prefabs:
+  - {fileID: 7537652862361982669, guid: 674db57cc0e64d941a9fb7ce2b04f8b2, type: 3}
+  - {fileID: 6271669860551197047, guid: f49389fe70ec3e346a9bb7a17fe6d846, type: 3}
+  - {fileID: 2328867941291942477, guid: f20e06c8375667f4ab7aacfe568c1cea, type: 3}
+  probabilities:
+  - 1
+  - 1
+  - 1
+  emptyProbabilityByLayer:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0068675317
+      value: 0.49617466
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1.0003605
+      value: 0.0001287749
+      inSlope: -0.10112516
+      outSlope: -0.10112516
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.4169704
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  generateOnStart: 1
+  generatedParent: {fileID: 7911394580928418203}

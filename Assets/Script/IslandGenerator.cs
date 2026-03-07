@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class IslandGenerator : MonoBehaviour
 {
@@ -9,9 +8,13 @@ public class IslandGenerator : MonoBehaviour
     [SerializeField] private int heightInCells = 10;            // 生成区域的高度（格子数）
 
     [Header("预制体")]
-    [SerializeField] private GameObject[] prefabs;              // 三种预制体（可拖入多个）
+    [SerializeField] private GameObject[] prefabs;              // 多种预制体（可拖入多个）
     [SerializeField][Range(0, 1)] private float[] probabilities; // 每种预制体的生成概率（长度与prefabs一致）
-    [SerializeField][Range(0, 1)] private float emptyProbability = 0.2f; // 空（不生成物体）的概率
+
+    [Header("空洞概率（按层）")]
+    [SerializeField]
+    private AnimationCurve emptyProbabilityByLayer =
+        AnimationCurve.Linear(0, 0.1f, 1, 0.5f); // 横坐标0=最底层，1=最顶层
 
     [Header("运行时生成")]
     [SerializeField] private bool generateOnStart = true;       // 是否在Start时自动生成
@@ -38,17 +41,6 @@ public class IslandGenerator : MonoBehaviour
         if (probabilities == null || probabilities.Length != prefabs.Length)
         {
             Debug.LogError("概率数组长度必须与预制体数组长度一致");
-            return;
-        }
-
-        // 计算总概率（预制体概率之和 + 空概率）
-        float total = emptyProbability;
-        foreach (float p in probabilities)
-            total += p;
-
-        if (total <= 0)
-        {
-            Debug.LogWarning("总概率 <= 0，不会生成任何物体");
             return;
         }
 
@@ -79,8 +71,12 @@ public class IslandGenerator : MonoBehaviour
                 float posY = startY + y * cellSize + cellSize * 0.5f;
                 Vector3 worldPos = new Vector3(posX, posY, center.z);
 
-                // 随机决定生成哪个物体
-                GameObject prefabToSpawn = GetRandomPrefab();
+                // 计算当前层的归一化高度（0~1，0=最底层，1=最顶层）
+                float layerFactor = heightInCells > 1 ? (float)y / (heightInCells - 1) : 0.5f;
+                float emptyProb = emptyProbabilityByLayer.Evaluate(layerFactor);
+
+                // 根据空洞概率和预制体概率随机生成物体
+                GameObject prefabToSpawn = GetRandomPrefab(emptyProb);
                 if (prefabToSpawn != null)
                 {
                     Instantiate(prefabToSpawn, worldPos, Quaternion.identity, generatedParent);
@@ -93,27 +89,38 @@ public class IslandGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// 根据概率返回一个预制体，若返回 null 则表示空
+    /// 根据当前层的空洞概率和预制体概率返回一个预制体，若返回 null 则表示空
     /// </summary>
-    private GameObject GetRandomPrefab()
+    private GameObject GetRandomPrefab(float emptyProb)
     {
         float rand = Random.Range(0f, 1f);
-        float cumulative = 0f;
 
-        // 先检查是否落在空概率区间
-        if (rand < emptyProbability)
+        // 先判断是否空洞
+        if (rand < emptyProb)
             return null;
 
-        // 否则在预制体概率中查找
-        cumulative = emptyProbability;
+        // 计算预制体概率总和（用于归一化）
+        float totalPrefabProb = 0f;
+        foreach (float p in probabilities)
+            totalPrefabProb += p;
+
+        if (totalPrefabProb <= 0)
+        {
+            Debug.LogWarning("预制体概率总和为0，无法生成物体");
+            return null;
+        }
+
+        // 在预制体概率范围内随机选择
+        float rand2 = Random.Range(0f, totalPrefabProb);
+        float cumulative = 0f;
         for (int i = 0; i < prefabs.Length; i++)
         {
             cumulative += probabilities[i];
-            if (rand < cumulative)
+            if (rand2 < cumulative)
                 return prefabs[i];
         }
 
-        // 如果因浮点误差导致未命中，默认返回第一个预制体
+        // 防御性代码：返回第一个预制体
         return prefabs.Length > 0 ? prefabs[0] : null;
     }
 

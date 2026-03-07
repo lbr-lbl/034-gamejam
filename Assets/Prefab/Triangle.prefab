@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 251202147319222825}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.14, z: 0}
   m_LocalScale: {x: 1, y: -1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -52,7 +52,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5079,9 +5079,9 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0, y: -0.48962864}
-      - {x: -0.49015605, y: 0.384264}
-      - {x: 0.49105567, y: 0.3842639}
+    - - {x: 0, y: -0.43830696}
+      - {x: -0.499236, y: 0.42769006}
+      - {x: 0.49994227, y: 0.42752165}
   m_UseDelaunayMesh: 0
 --- !u!114 &158143706910344454
 MonoBehaviour:

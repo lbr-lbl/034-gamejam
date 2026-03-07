@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,329 +10,118 @@ public class GameManager : MonoBehaviour
     public Camera fullCam;
 
     [Header("UI")]
-    public GameObject divider;          // 分界线UI
-    public Image fadeImage;             // 全屏黑色遮罩（用于过渡）
-    public GameObject mainMenuPanel;    // 主菜单面板
-    public GameObject pauseMenuPanel;   // 暂停菜单面板
-    public Button startGameButton;      // 开始游戏按钮
-    public Button quitGameButton;       // 退出游戏按钮（主菜单）
-    public Button continueButton;       // 继续游戏按钮（暂停菜单）
-    public Button backToMainMenuButton; // 回到主菜单按钮（暂停菜单）
-    public RectTransform preparationTimer; // 布置阶段倒计时条（新增）
+    public GameObject divider;   // 分界线UI
 
     [Header("玩家")]
     public Transform player1;
     public Transform player2;
-    public MonoBehaviour player1Controller; // 玩家1的控制脚本
-    public MonoBehaviour player2Controller; // 玩家2的控制脚本
 
-    [Header("阶段时长")]
-    public float preparationTime = 10f; // 布置阶段时长
-    public float fullScreenTime = 2f;   // 全屏阶段时长
-    public float pvpControlDelay = 2f;  // PvP阶段开始后延迟多久才可操作
-
-    [Header("过渡时间设置")]
-    public float fadeDuration_PreToFull = 0.5f;   // 布置→全屏的淡入淡出时长
-    public float blackHoldTime_PreToFull = 1f;    // 布置→全屏的全黑停留时间
-    public float fadeDuration_FullToPvP = 0.5f;   // 全屏→PvP的淡入淡出时长
-    public float blackHoldTime_FullToPvP = 1f;    // 全屏→PvP的全黑停留时间
-    public float mainMenuFadeOutDuration = 0.5f;  // 主菜单→游戏 淡出时长
-    public float mainMenuFadeInDuration = 0.5f;   // 主菜单→游戏 淡入时长（进入布置阶段时）
+    [Header("时间设置")]
+    public float preparationTime = 10f;   // 布置阶段时长
+    public float fullScreenTime = 2f;     // 全屏阶段时长
 
     [Header("布置阶段固定点")]
     public Transform leftFixPoint;
     public Transform rightFixPoint;
 
-    [Header("摄像机视野大小")]
-    public float preparationCamSize = 5f; // 布置阶段左右摄像机的 Size
-    public float pvpCamSize = 6f;         // PvP阶段左右摄像机的 Size
-
-    [Header("地图边界（世界坐标）")]
-    public float mapLeft = -20f;
-    public float mapRight = 20f;
-    public float mapBottom = -10f;
-    public float mapTop = 10f;
+    [Header("相机边界（世界坐标）")]
+    public float leftCamMinX;   // 左摄像机允许的最小X（地图最左边缘）
+    public float leftCamMaxX;   // 左摄像机允许的最大X（中线）
+    public float rightCamMinX;  // 右摄像机允许的最小X（中线）
+    public float rightCamMaxX;  // 右摄像机允许的最大X（地图最右边缘）
 
     private CameraFollower leftFollower;
     private CameraFollower rightFollower;
-    private Coroutine gameCoroutine;
-    private bool isPaused = false;
-    private bool isGameActive = false;
-    private bool isTransitioning = false;
 
     void Start()
     {
-        ShowMainMenu(true);
-        ShowPauseMenu(false);
-        if (fadeImage != null)
-        {
-            Color c = fadeImage.color;
-            c.a = 0f;
-            fadeImage.color = c;
-        }
-
-        // 初始化倒计时条为隐藏
-        if (preparationTimer != null)
-            preparationTimer.gameObject.SetActive(false);
-
+        // 获取或添加跟随脚本
         leftFollower = leftCam.GetComponent<CameraFollower>();
         rightFollower = rightCam.GetComponent<CameraFollower>();
         if (leftFollower == null) leftFollower = leftCam.gameObject.AddComponent<CameraFollower>();
         if (rightFollower == null) rightFollower = rightCam.gameObject.AddComponent<CameraFollower>();
 
-        leftFollower.SetMapBounds(mapLeft, mapRight, mapBottom, mapTop);
-        rightFollower.SetMapBounds(mapLeft, mapRight, mapBottom, mapTop);
+        // 设置边界
+        leftFollower.minX = leftCamMinX;
+        leftFollower.maxX = leftCamMaxX;
+        rightFollower.minX = rightCamMinX;
+        rightFollower.maxX = rightCamMaxX;
 
-        leftFollower.enabled = false;
-        rightFollower.enabled = false;
+        // 初始禁用跟随（布置阶段不需要）
+        //leftFollower.enabled = false;
+        //rightFollower.enabled = false;
 
-        SetPlayerControl(false);
-        HideGameContent();
-
-        if (startGameButton != null)
-            startGameButton.onClick.AddListener(StartGameWithTransition);
-        if (quitGameButton != null)
-            quitGameButton.onClick.AddListener(QuitGame);
-        if (continueButton != null)
-            continueButton.onClick.AddListener(ContinueGame);
-        if (backToMainMenuButton != null)
-            backToMainMenuButton.onClick.AddListener(BackToMainMenu);
+        // 开始流程
+        StartCoroutine(StateMachine());
     }
 
-    void Update()
+    IEnumerator StateMachine()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (isGameActive)
-            {
-                if (isPaused)
-                    ContinueGame();
-                else
-                    PauseGame();
-            }
-        }
-    }
-
-    void HideGameContent()
-    {
-        if (leftCam != null) leftCam.gameObject.SetActive(false);
-        if (rightCam != null) rightCam.gameObject.SetActive(false);
-        if (fullCam != null) fullCam.gameObject.SetActive(false);
-        if (divider != null) divider.SetActive(false);
-        if (preparationTimer != null) preparationTimer.gameObject.SetActive(false);
-    }
-
-    public void StartGameWithTransition()
-    {
-        if (isTransitioning || isGameActive) return;
-        StartCoroutine(TransitionToGame());
-    }
-
-    IEnumerator TransitionToGame()
-    {
-        isTransitioning = true;
-
-        yield return StartCoroutine(FadeOut(mainMenuFadeOutDuration));
-
-        ShowMainMenu(false);
-
-        gameCoroutine = StartCoroutine(StateMachine(true));
-
-        isTransitioning = false;
-    }
-
-    IEnumerator StateMachine(bool startWithFadeIn = false)
-    {
-        isGameActive = true;
-        isPaused = false;
-        Time.timeScale = 1f;
-
-        if (startWithFadeIn)
-        {
-            yield return StartCoroutine(FadeIn(mainMenuFadeInDuration));
-        }
-
         // ---------- 布置阶段 ----------
         Debug.Log("进入布置阶段");
-        SetPlayerControl(false);
-        divider.SetActive(true);
+        // 启用左右摄像机，禁用全屏摄像机
         leftCam.gameObject.SetActive(true);
         rightCam.gameObject.SetActive(true);
         fullCam.gameObject.SetActive(false);
+
+        // 显示分界线
+        divider.SetActive(true);
+
+        // 设置左右摄像机位置为固定点
         leftCam.transform.position = leftFixPoint.position;
         rightCam.transform.position = rightFixPoint.position;
-        leftCam.orthographicSize = preparationCamSize;
-        rightCam.orthographicSize = preparationCamSize;
+
+        // 设置Culling Mask：渲染所有层（玩家可见）
         leftCam.cullingMask = LayerMask.GetMask("Default", "Player1", "Player2");
         rightCam.cullingMask = LayerMask.GetMask("Default", "Player1", "Player2");
 
-        // 布置阶段倒计时条
-        if (preparationTimer != null)
-        {
-            preparationTimer.gameObject.SetActive(true);
-            float maxWidth = preparationTimer.sizeDelta.x; // 初始宽度
-            float elapsed = 0f;
-            while (elapsed < preparationTime)
-            {
-                elapsed += Time.deltaTime;
-                float remaining = preparationTime - elapsed;
-                float width = maxWidth * (remaining / preparationTime);
-                Vector2 size = preparationTimer.sizeDelta;
-                size.x = Mathf.Max(0, width);
-                preparationTimer.sizeDelta = size;
-                yield return null;
-            }
-            // 时间到，宽度归零并隐藏
-            Vector2 finalSize = preparationTimer.sizeDelta;
-            finalSize.x = 0;
-            preparationTimer.sizeDelta = finalSize;
-            preparationTimer.gameObject.SetActive(false);
-        }
-        else
-        {
-            yield return new WaitForSeconds(preparationTime);
-        }
+        // 可选：禁用玩家移动脚本（如果有）
+        // player1.GetComponent<PlayerMovement>().enabled = false;
+        // player2.GetComponent<PlayerMovement>().enabled = false;
 
-        // ---------- 过渡到全屏阶段 ----------
-        yield return StartCoroutine(FadeOut(fadeDuration_PreToFull));
-
-        divider.SetActive(false);
-        leftCam.gameObject.SetActive(false);
-        rightCam.gameObject.SetActive(false);
-        fullCam.gameObject.SetActive(true);
-        fullCam.transform.position = new Vector3((mapLeft + mapRight) / 2, (mapBottom + mapTop) / 2, -10);
-        fullCam.cullingMask = LayerMask.GetMask("Default", "Player1", "Player2");
-
-        yield return new WaitForSeconds(blackHoldTime_PreToFull);
-        yield return StartCoroutine(FadeIn(fadeDuration_PreToFull));
+        yield return new WaitForSeconds(preparationTime);
 
         // ---------- 全屏阶段 ----------
         Debug.Log("进入全屏阶段");
-        SetPlayerControl(false);
+        // 隐藏分界线
+        divider.SetActive(false);
+
+        // 禁用左右摄像机，启用全屏摄像机
+        leftCam.gameObject.SetActive(false);
+        rightCam.gameObject.SetActive(false);
+        fullCam.gameObject.SetActive(true);
+
+        // 全屏摄像机渲染所有层（显示玩家）
+        fullCam.cullingMask = LayerMask.GetMask("Default", "Player1", "Player2");
+
+        // 调整全屏摄像机位置和大小（根据地图手动设置）
+        fullCam.transform.position = new Vector3(0, 0, -10);
+        // fullCam.orthographicSize = ? 请根据地图宽度手动设置
+
         yield return new WaitForSeconds(fullScreenTime);
 
-        // ---------- 过渡到PvP阶段 ----------
-        yield return StartCoroutine(FadeOut(fadeDuration_FullToPvP));
-
+        // ---------- PvP阶段 ----------
+        Debug.Log("进入PvP阶段");
+        // 显示分界线
         divider.SetActive(true);
+
+        // 启用左右摄像机，禁用全屏摄像机
         leftCam.gameObject.SetActive(true);
         rightCam.gameObject.SetActive(true);
         fullCam.gameObject.SetActive(false);
-        leftCam.orthographicSize = pvpCamSize;
-        rightCam.orthographicSize = pvpCamSize;
-        leftCam.cullingMask = LayerMask.GetMask("Default", "Player1");
-        rightCam.cullingMask = LayerMask.GetMask("Default", "Player2");
 
+        // 设置左右相机的Culling Mask：左看到Player1+Default，右看到Player2+Default
+        leftCam.cullingMask = LayerMask.GetMask("Default", "Player1", "Player2");
+        rightCam.cullingMask = LayerMask.GetMask("Default", "Player1", "Player2");
+
+        // 启用相机跟随脚本，设置目标
         leftFollower.enabled = true;
         rightFollower.enabled = true;
         leftFollower.target = player1;
         rightFollower.target = player2;
 
-        yield return new WaitForSeconds(blackHoldTime_FullToPvP);
-        yield return StartCoroutine(FadeIn(fadeDuration_FullToPvP));
-
-        // ---------- PvP阶段（延迟启用控制）----------
-        Debug.Log("进入PvP阶段，等待 " + pvpControlDelay + " 秒后启用控制");
-        yield return new WaitForSeconds(pvpControlDelay);
-        SetPlayerControl(true);
-        Debug.Log("玩家控制已启用");
-    }
-
-    public void QuitGame()
-    {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
-    }
-
-    public void PauseGame()
-    {
-        if (!isGameActive || isPaused) return;
-        isPaused = true;
-        Time.timeScale = 0f;
-        ShowPauseMenu(true);
-    }
-
-    public void ContinueGame()
-    {
-        if (!isGameActive || !isPaused) return;
-        isPaused = false;
-        Time.timeScale = 1f;
-        ShowPauseMenu(false);
-    }
-
-    public void BackToMainMenu()
-    {
-        if (gameCoroutine != null)
-            StopCoroutine(gameCoroutine);
-        gameCoroutine = null;
-
-        isGameActive = false;
-        isPaused = false;
-        Time.timeScale = 1f;
-
-        ShowPauseMenu(false);
-        HideGameContent();
-        ShowMainMenu(true);
-        SetPlayerControl(false);
-
-        if (fadeImage != null)
-        {
-            Color c = fadeImage.color;
-            c.a = 0f;
-            fadeImage.color = c;
-        }
-    }
-
-    void ShowMainMenu(bool show)
-    {
-        if (mainMenuPanel != null)
-            mainMenuPanel.SetActive(show);
-    }
-
-    void ShowPauseMenu(bool show)
-    {
-        if (pauseMenuPanel != null)
-            pauseMenuPanel.SetActive(show);
-    }
-
-    IEnumerator FadeOut(float duration)
-    {
-        if (fadeImage == null) yield break;
-        float elapsed = 0f;
-        Color c = fadeImage.color;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            c.a = Mathf.Clamp01(elapsed / duration);
-            fadeImage.color = c;
-            yield return null;
-        }
-        c.a = 1f;
-        fadeImage.color = c;
-    }
-
-    IEnumerator FadeIn(float duration)
-    {
-        if (fadeImage == null) yield break;
-        float elapsed = 0f;
-        Color c = fadeImage.color;
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            c.a = Mathf.Clamp01(1f - elapsed / duration);
-            fadeImage.color = c;
-            yield return null;
-        }
-        c.a = 0f;
-        fadeImage.color = c;
-    }
-
-    void SetPlayerControl(bool enabled)
-    {
-        if (player1Controller != null) player1Controller.enabled = enabled;
-        if (player2Controller != null) player2Controller.enabled = enabled;
+        // 可选：启用玩家移动脚本
+        // player1.GetComponent<PlayerMovement>().enabled = true;
+        // player2.GetComponent<PlayerMovement>().enabled = true;
     }
 }

@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 206284560}
   - component: {fileID: 206284559}
   - component: {fileID: 206284558}
+  - component: {fileID: 206284562}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -249,6 +250,25 @@ Transform:
   - {fileID: 1303872909}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &206284562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 206284557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64958eef012ebe84d8c1630d3d8b1092, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialItems:
+  - itemName: Square
+    count: 3
+  - itemName: Triangle
+    count: 3
+  - itemName: Circle
+    count: 3
 --- !u!1 &509962240
 GameObject:
   m_ObjectHideFlags: 0
@@ -703,6 +723,34 @@ PrefabInstance:
       propertyPath: playerTransform
       value: 
       objectReference: {fileID: 206284561}
+    - target: {fileID: 941374217544031362, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
+      propertyPath: availableItems.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 941374217544031362, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
+      propertyPath: availableItems.Array.data[0].prefab
+      value: 
+      objectReference: {fileID: 7573733000364155352, guid: 648c1163d3ca13e48b6bf07799373b9c, type: 3}
+    - target: {fileID: 941374217544031362, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
+      propertyPath: availableItems.Array.data[1].prefab
+      value: 
+      objectReference: {fileID: 7735128690401401360, guid: 1772c2e6a228fb54aba74bb46c703130, type: 3}
+    - target: {fileID: 941374217544031362, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
+      propertyPath: availableItems.Array.data[2].prefab
+      value: 
+      objectReference: {fileID: 5991237196128738922, guid: fb9cd078ae36a0849b4b889c594e0f86, type: 3}
+    - target: {fileID: 941374217544031362, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
+      propertyPath: availableItems.Array.data[0].itemName
+      value: Square
+      objectReference: {fileID: 0}
+    - target: {fileID: 941374217544031362, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
+      propertyPath: availableItems.Array.data[1].itemName
+      value: Triangle
+      objectReference: {fileID: 0}
+    - target: {fileID: 941374217544031362, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
+      propertyPath: availableItems.Array.data[2].itemName
+      value: Circle
+      objectReference: {fileID: 0}
     - target: {fileID: 3831477750941792211, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
       propertyPath: m_Name
       value: BuildController

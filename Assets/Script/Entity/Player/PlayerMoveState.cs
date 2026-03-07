@@ -32,6 +32,7 @@ public class PlayerMoveState : PlayerState
 
         if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundDetected()) 
         {
+            Debug.Log("Jump");
             SetVelocity(xInput * player.walkSpeed, player.jumpForce);
         }
         else
@@ -41,8 +42,10 @@ public class PlayerMoveState : PlayerState
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-        player.spriteCount++;
-        if (player.spriteCount > 2) player.spriteCount = 0;
+            player.spriteCount++;
+
+            if (player.spriteCount > 2) player.spriteCount = 0;
+
             if (player.spriteCount == 0)
             {
                 ShapeChange("Traingle", player.traingleCd, true);

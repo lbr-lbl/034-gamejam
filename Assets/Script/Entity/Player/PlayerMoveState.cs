@@ -41,8 +41,10 @@ public class PlayerMoveState : PlayerState
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-        player.spriteCount++;
-        if (player.spriteCount > 2) player.spriteCount = 0;
+            player.spriteCount++;
+
+            if (player.spriteCount > 2) player.spriteCount = 0;
+
             if (player.spriteCount == 0)
             {
                 ShapeChange("Traingle", player.traingleCd, true);

@@ -10,7 +10,6 @@ public class Player : Entity
 
     public bool isGrounded;
     public float resetCd;
-    public Vector2 resetPosition;
 
     public int traingleCount;
     public int squareCount; 
@@ -23,6 +22,7 @@ public class Player : Entity
     #endregion
 
     [Header("Collision Info")]
+    public Transform resetPosition;
     public Transform groundCheckL;
     public Transform groundCheckR;
     //public Transform wallCheck;
@@ -73,17 +73,27 @@ public class Player : Entity
     {
         Entity entity = collision.gameObject.GetComponent<Entity>();
 
-        if (entity.tag != this.tag)
+        if (entity.tag != this.tag && entity != null) 
         {
             bool shouldEliminateOther = (this.spriteCount == 0 && entity.spriteCount == 2) || (this.spriteCount == 2 && entity.spriteCount == 1) || (this.spriteCount == 1 && entity.spriteCount == 0);
 
             if (shouldEliminateOther)
             {
-                entity.gameObject.layer = LayerMask.NameToLayer("Background");
+                Player player = entity as Player;
+                if (player != null)
+                {
+                    player.stateMachine.ChangeState(player.deadState);  
+                }
+                else
+                {   
+                    entity.gameObject.layer = LayerMask.NameToLayer("Background");
 
-                entity.sr.enabled = false;
+                    entity.sr.enabled = false;
 
-                entity.ps.gameObject.SetActive(true);
+                    entity.ps.gameObject.SetActive(true);
+
+                    Destroy(entity.gameObject, 5f);
+                }
 
             }
         }

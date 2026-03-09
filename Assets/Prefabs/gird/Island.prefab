@@ -48,9 +48,9 @@ MonoBehaviour:
   widthInCells: 8
   heightInCells: 3
   prefabs:
-  - {fileID: 7537652862361982669, guid: 674db57cc0e64d941a9fb7ce2b04f8b2, type: 3}
-  - {fileID: 6271669860551197047, guid: f49389fe70ec3e346a9bb7a17fe6d846, type: 3}
-  - {fileID: 2328867941291942477, guid: f20e06c8375667f4ab7aacfe568c1cea, type: 3}
+  - {fileID: 7573733000364155352, guid: 648c1163d3ca13e48b6bf07799373b9c, type: 3}
+  - {fileID: 5991237196128738922, guid: fb9cd078ae36a0849b4b889c594e0f86, type: 3}
+  - {fileID: 7735128690401401360, guid: 1772c2e6a228fb54aba74bb46c703130, type: 3}
   probabilities:
   - 1
   - 1

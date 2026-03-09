@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class CameraFollower : MonoBehaviour
 {
-    public Transform target;           // 要跟随的玩家
-    public float smoothTime = 0.3f;    // 平滑移动时间（值越小跟随越快）
+    [Header("跟随目标")]
+    public Transform target;                // 玩家对象
 
-    private float mapLeft, mapRight, mapBottom, mapTop; // 地图边界
+    [Header("摄像机参数")]
+    public float smoothSpeed = 5f;           // 跟随平滑度（数值越大越硬）
+    public Vector3 offset = new Vector3(0, 0, -10); // 通常2D摄像机在Z轴-10
+
+    [Header("地图边界（世界坐标）")]
+    public float minX;   // 地图左边界
+    public float maxX;   // 地图右边界
+    public float minY;   // 地图下边界
+    public float maxY;   // 地图上边界
+
     private Camera cam;
-    private Vector3 velocity = Vector3.zero;            // SmoothDamp 所需的速度引用
 
     void Start()
     {
@@ -29,21 +37,44 @@ public class CameraFollower : MonoBehaviour
     {
         if (target == null || cam == null) return;
 
-        // 期望的摄像机位置（跟随玩家，Z固定为-10），不限制边界（先平滑再限制）
-        Vector3 desiredPos = new Vector3(target.position.x, target.position.y, -10f);
+        // 目标位置 = 玩家位置 + 偏移
+        Vector3 desiredPosition = target.position + offset;
 
-        // 平滑地从当前位置移动到期望位置
-        Vector3 smoothedPos = Vector3.SmoothDamp(transform.position, desiredPos, ref velocity, smoothTime);
+        // 应用边界限制
+        desiredPosition = ClampPosition(desiredPosition);
 
-        // 计算摄像机视野的半宽和半高（基于当前实际的 orthographicSize 和屏幕比例）
-        float halfWidth = cam.orthographicSize * cam.aspect;
-        float halfHeight = cam.orthographicSize;
+        // 平滑移动到目标位置（直接赋值则瞬间跟随）
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+    }
 
-        // 根据地图边界限制平滑后的位置
-        float clampedX = Mathf.Clamp(smoothedPos.x, mapLeft + halfWidth, mapRight - halfWidth);
-        float clampedY = Mathf.Clamp(smoothedPos.y, mapBottom + halfHeight, mapTop - halfHeight);
+    Vector3 ClampPosition(Vector3 position)
+    {
+        // 计算摄像机半宽高
+        float camHalfHeight = cam.orthographicSize;
+        float camHalfWidth = cam.aspect * camHalfHeight;
 
-        // 应用最终位置
-        transform.position = new Vector3(clampedX, clampedY, smoothedPos.z);
+        // 计算摄像机中心允许的移动范围
+        float minCamX = minX + camHalfWidth;
+        float maxCamX = maxX - camHalfWidth;
+        float minCamY = minY + camHalfHeight;
+        float maxCamY = maxY - camHalfHeight;
+
+        // 处理地图比摄像机小的情况（防止min > max）
+        if (minCamX > maxCamX)
+        {
+            float midX = (minX + maxX) / 2f;
+            minCamX = maxCamX = midX;
+        }
+        if (minCamY > maxCamY)
+        {
+            float midY = (minY + maxY) / 2f;
+            minCamY = maxCamY = midY;
+        }
+
+        // 限制坐标
+        float clampedX = Mathf.Clamp(position.x, minCamX, maxCamX);
+        float clampedY = Mathf.Clamp(position.y, minCamY, maxCamY);
+
+        return new Vector3(clampedX, clampedY, position.z);
     }
 }

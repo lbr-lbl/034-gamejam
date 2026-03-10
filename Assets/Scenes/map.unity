@@ -1510,6 +1510,18 @@ PrefabInstance:
       propertyPath: availableItems.Array.data[2].itemName
       value: Circle
       objectReference: {fileID: 0}
+    - target: {fileID: 941374217544031362, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
+      propertyPath: availableItems.Array.data[0].projectilePrefab
+      value: 
+      objectReference: {fileID: 7573733000364155352, guid: 60c09dda9c185674fb22f26bdca2c280, type: 3}
+    - target: {fileID: 941374217544031362, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
+      propertyPath: availableItems.Array.data[1].projectilePrefab
+      value: 
+      objectReference: {fileID: 7735128690401401360, guid: ef09c5d6215a0ca4e81bcd214e12f427, type: 3}
+    - target: {fileID: 941374217544031362, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
+      propertyPath: availableItems.Array.data[2].projectilePrefab
+      value: 
+      objectReference: {fileID: 5991237196128738922, guid: ba23a8d710b5bae47b0561bf2e9a56cc, type: 3}
     - target: {fileID: 3831477750941792211, guid: 66c0c1b3b94115a43acb9be72f217be2, type: 3}
       propertyPath: m_Name
       value: BuildController

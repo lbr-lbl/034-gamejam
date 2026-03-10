@@ -472,14 +472,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildMode: {fileID: 2106186443}
-  firePoint: {fileID: 0}
+  firePoint: {fileID: 206284561}
   attackKey: 106
-  angleStep: 5
-  minAngle: -60
-  maxAngle: 60
+  upKey: 119
+  downKey: 115
+  leftKey: 97
+  rightKey: 100
   projectileSpeed: 10
-  aimLine: {fileID: 0}
-  previewLength: 5
 --- !u!4 &814958382 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7911394580928418203, guid: d2732a3834ff6ad4688b06c96993df95, type: 3}

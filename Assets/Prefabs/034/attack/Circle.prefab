@@ -4984,6 +4984,7 @@ GameObject:
   - component: {fileID: 4139869337321628528}
   - component: {fileID: 2810865070593655781}
   - component: {fileID: 4302238658384754342}
+  - component: {fileID: 1477465057472872705}
   m_Layer: 6
   m_Name: Circle
   m_TagString: Player2
@@ -5017,7 +5018,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 5991237196128738922}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: b694deb64e2063241bdbb6d853d5239f, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5069,7 +5070,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 0
 --- !u!114 &4302238658384754342
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5091,3 +5092,22 @@ MonoBehaviour:
   anim: {fileID: 0}
   sr: {fileID: 0}
   ps: {fileID: 6917554630046766146}
+--- !u!114 &1477465057472872705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5991237196128738922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9828d785feaaac04caf7f2fcb64d338b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteCount: 2
+  maxDurability: 6
+  coreCost: 6
+  islandCost: 3
+  buildingCost: 1
+  playerCost: 2
+  bulletCost: 1

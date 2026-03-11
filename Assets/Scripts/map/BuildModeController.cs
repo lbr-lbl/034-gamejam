@@ -7,6 +7,7 @@ public class PlaceableItem
 {
     public string itemName;             // 物品名称（需与PlayerInventory中的名称一致）
     public GameObject prefab;            // 放置时的预制体
+    public GameObject projectilePrefab;      // 用于攻击的投射物预制体
     public Sprite icon;                  // 可选：UI图标
 }
 
@@ -48,7 +49,7 @@ public class BuildModeController : MonoBehaviour
     // 对外暴露只读属性
     public bool IsBuildingMode => isBuildingMode;
     public PlaceableItem CurrentItem => availableItems.Count > 0 ? availableItems[currentItemIndex] : null;
-
+    public int CurrentItemIndex => currentItemIndex;
     private void Start()
     {
         // 确保玩家对象上有 PlayerInventory 组件

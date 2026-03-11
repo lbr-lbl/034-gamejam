@@ -4984,6 +4984,7 @@ GameObject:
   - component: {fileID: 6619391814728200778}
   - component: {fileID: 5374980236237648412}
   - component: {fileID: 4233257959355509328}
+  - component: {fileID: -7888286947135940371}
   m_Layer: 6
   m_Name: Square
   m_TagString: Player2
@@ -5034,7 +5035,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 0
 --- !u!61 &5374980236237648412
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5044,7 +5045,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 7573733000364155352}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: b694deb64e2063241bdbb6d853d5239f, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -5101,3 +5102,22 @@ MonoBehaviour:
   anim: {fileID: 0}
   sr: {fileID: 0}
   ps: {fileID: 8256664375946507321}
+--- !u!114 &-7888286947135940371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7573733000364155352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9828d785feaaac04caf7f2fcb64d338b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteCount: 1
+  maxDurability: 6
+  coreCost: 6
+  islandCost: 3
+  buildingCost: 1
+  playerCost: 2
+  bulletCost: 1

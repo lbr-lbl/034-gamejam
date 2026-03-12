@@ -66,6 +66,8 @@ public class PlayerMoveState : PlayerState
     {
         base.Update();
 
+
+
         if (Input.GetKeyDown(KeyCode.O))
         {
             player.spriteCount++;

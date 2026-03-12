@@ -1,5 +1,5 @@
+// InputManager.cs
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Users;
@@ -8,9 +8,6 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager instance;
 
-    public GameObject playerPrefab;
-
-    // ¼ÇÂ¼ÒÑ°ó¶¨Íæ¼ÒµÄÉè±¸
     private Dictionary<InputDevice, GameObject> deviceToPlayerMap = new Dictionary<InputDevice, GameObject>();
 
     private void Awake()
@@ -21,11 +18,9 @@ public class InputManager : MonoBehaviour
             return;
         }
         instance = this;
-
-        DontDestroyOnLoad(gameObject.transform.root.gameObject);
+        DontDestroyOnLoad(gameObject);
     }
 
-    #region 111
     private void OnEnable()
     {
         InputSystem.onDeviceChange += OnDeviceChange;
@@ -36,132 +31,26 @@ public class InputManager : MonoBehaviour
         InputSystem.onDeviceChange -= OnDeviceChange;
     }
 
-    private void Update()
-    {
-        // ¼ì²â¼üÅÌ Y ¼ü
-        if (Keyboard.current != null && Keyboard.current.yKey.wasPressedThisFrame)
-        {
-            TryCreatePlayerForDevice(Keyboard.current);
-        }
-
-        // ¼ì²âËùÓĞÊÖ±úµÄ Y °´Å¥£¨buttonNorth£©
-        foreach (var gamepad in Gamepad.all)
-        {
-            if (gamepad.buttonNorth.wasPressedThisFrame)
-            {
-                TryCreatePlayerForDevice(gamepad);
-            }
-        }
-
-        if (Keyboard.current != null && Keyboard.current.f12Key.wasPressedThisFrame)
-        {
-            Debug.Log("=== µ±Ç°Íæ¼Ò°ó¶¨ĞÅÏ¢ ===");
-            foreach (var pi in PlayerInput.all)
-            {
-                if (pi == null) continue;
-                var devices = string.Join(", ", pi.devices.Select(d => d.displayName));
-                Debug.Log($"{pi.gameObject.name} ¿ØÖÆ·½°¸: {pi.currentControlScheme}, Éè±¸: {devices}");
-            }
-        }
-    }
-
-    private void TryCreatePlayerForDevice(InputDevice device)
-    {
-        if (!deviceToPlayerMap.ContainsKey(device))
-        {
-            CreatePlayerForDevice(device);
-        }
-    }
-
-    private void CreatePlayerForDevice(InputDevice device)
-    {
-        if (deviceToPlayerMap.ContainsKey(device)) return;
-        if (playerPrefab == null)
-        {
-            Debug.LogError("playerPrefab Î´¸³Öµ£¡");
-            return;
-        }
-
-        // 1. ÏÈ½â³ıÆäËûÍæ¼Ò¶Ô¸ÃÉè±¸µÄ°ó¶¨£¨±ÜÃâÊäÈë±»¶à¸öÍæ¼Ò¹²Ïí£©
-        foreach (var pi in PlayerInput.all.Where(p => p != null))
-        {
-            if (pi.user.valid)
-            {
-                pi.user.UnpairDevice(device);
-            }
-        }
-
-        // 2. ¸ù¾İÉè±¸ÀàĞÍ¾ö¶¨¿ØÖÆ·½°¸£¨Èç¹ûÔ¤ÖÆÌåÀïµÄ Input Action Asset ÖĞ°üº¬¸Ã·½°¸£©
-        string controlScheme = GetControlSchemeForDevice(device);
-        var prefabPlayerInput = playerPrefab.GetComponent<PlayerInput>();
-        var asset = prefabPlayerInput?.actions;
-
-        bool hasScheme = !string.IsNullOrEmpty(controlScheme) &&
-                         asset != null &&
-                         asset.controlSchemes.Any(s => s.name == controlScheme);
-
-        // 3. ÊµÀı»¯Íæ¼Ò£¬Èç¹û¿ØÖÆ·½°¸´æÔÚÔò´«Èë£¬·ñÔòÈÃÏµÍ³×Ô¶¯Æ¥Åä
-        PlayerInput newPlayerInput;
-        if (hasScheme)
-        {
-            newPlayerInput = PlayerInput.Instantiate(playerPrefab,
-                                                      controlScheme: controlScheme,
-                                                      pairWithDevice: device);
-        }
-        else
-        {
-            if (!string.IsNullOrEmpty(controlScheme))
-            {
-                Debug.LogWarning($"¿ØÖÆ·½°¸ '{controlScheme}' ÔÚ Action Asset ÖĞ²»´æÔÚ£¬½«Ê¹ÓÃ×Ô¶¯Æ¥Åä¡£");
-            }
-            newPlayerInput = PlayerInput.Instantiate(playerPrefab, pairWithDevice: device);
-        }
-
-        if (newPlayerInput == null)
-        {
-            Debug.LogError("PlayerInput.Instantiate Ê§°Ü£¡");
-            return;
-        }
-
-        // 4. ¼ÇÂ¼Ó³Éä¹ØÏµ
-        GameObject newPlayer = newPlayerInput.gameObject;
-        newPlayer.name = $"Player_{device.displayName}";
-        deviceToPlayerMap[device] = newPlayer;
-
-        Debug.Log($"ÒÑÎªÉè±¸ {device.displayName} ´´½¨Íæ¼Ò£¬°ó¶¨µÄÉè±¸£º{string.Join(",", newPlayerInput.devices.Select(d => d.displayName))}");
-    }
-
-    // µ÷ÊÔ£º´òÓ¡µ±Ç°ËùÓĞ PlayerInput µÄ°ó¶¨Éè±¸ĞÅÏ¢
-    private void LogAllPlayerInputBindings(string tag = null)
-    {
-        try
-        {
-            Debug.Log($"[InputManager] PlayerInput binding dump {tag ?? ""} -- count: {PlayerInput.all.Count}");
-            foreach (var pi in PlayerInput.all)
-            {
-                if (pi == null) continue;
-                var names = "";
-                try { names = string.Join(",", pi.devices.Select(d => d.displayName)); } catch { names = "(error)"; }
-                var userInfo = "";
-                try { userInfo = pi.user.valid ? string.Join(",", pi.user.pairedDevices.Select(d => d.displayName)) : "user.invalid"; } catch { userInfo = "(user error)"; }
-                Debug.Log($"[InputManager] PlayerInput: {pi.gameObject.name} | devices: {names} | user.paired: {userInfo}");
-            }
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogWarning($"LogAllPlayerInputBindings failed: {ex.Message}");
-        }
-    }
-
     /// <summary>
-    /// ¸ù¾İÉè±¸ÀàĞÍ·µ»Ø¶ÔÓ¦µÄ¿ØÖÆ·½°¸Ãû³Æ
+    /// ä¸ºæŒ‡å®šç©å®¶åˆ†é…è®¾å¤‡å’Œæ§åˆ¶æ–¹æ¡ˆ
     /// </summary>
-    private string GetControlSchemeForDevice(InputDevice device)
+    public void AssignDeviceToPlayer(Player player, InputDevice device, string controlScheme)
     {
-        if (device is Gamepad) return "Gamepad";
-        if (device is Keyboard) return "Keyboard";
-        // ¿É¸ù¾İĞèÒªÌí¼ÓÊó±ê¡¢Ò¡¸ËµÈ
-        return null;
+        PlayerInput pi = player.GetComponent<PlayerInput>();
+        if (pi == null) return;
+
+        // å…ˆè§£é™¤å…¶ä»–ç©å®¶å¯¹è¯¥è®¾å¤‡çš„ç»‘å®š
+        foreach (var kv in deviceToPlayerMap)
+        {
+            if (kv.Key == device) continue;
+            PlayerInput otherPi = kv.Value.GetComponent<PlayerInput>();
+            if (otherPi != null && otherPi.user.valid)
+                otherPi.user.UnpairDevice(device);
+        }
+
+        pi.SwitchCurrentControlScheme(controlScheme, device);
+        deviceToPlayerMap[device] = player.gameObject;
+        Debug.Log($"ä¸ºç©å®¶ {player.name} åˆ†é…è®¾å¤‡ {device.displayName} æ–¹æ¡ˆ {controlScheme}");
     }
 
     private void OnDeviceChange(InputDevice device, InputDeviceChange change)
@@ -170,18 +59,14 @@ public class InputManager : MonoBehaviour
         {
             if (deviceToPlayerMap.TryGetValue(device, out GameObject player))
             {
-                Destroy(player);
+                // è®¾å¤‡ç§»é™¤ï¼Œå¯ä»¥å¤„ç†ç©å®¶å¤±å»æ§åˆ¶ç­‰
                 deviceToPlayerMap.Remove(device);
             }
         }
-
-        if (change == InputDeviceChange.Added)
-        {
-            Debug.Log($"ĞÂÉè±¸¼ÓÈë: {device.displayName}");
-            // Ö±½Ó³¢ÊÔÎª¸ÃÉè±¸´´½¨Íæ¼Ò
-            TryCreatePlayerForDevice(device);
-        }
     }
-
-    #endregion
+    public void AssignDeviceToController(PlayerInput controllerInput, InputDevice device, string controlScheme)
+    {
+        if (controllerInput == null) return;
+        controllerInput.SwitchCurrentControlScheme(controlScheme, device);
+    }
 }

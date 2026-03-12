@@ -20,7 +20,7 @@ public class PlayerDeadState : PlayerState
 
         player.ps.gameObject.SetActive(true);
 
-        player.DropBlock();
+        player.DropAllItemsOnDeath();
     }
 
     public override void Exit()

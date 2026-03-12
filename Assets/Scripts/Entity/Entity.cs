@@ -52,6 +52,11 @@ public class Entity : MonoBehaviour
         stateMachine.currentState.Update();
     }
 
+    protected virtual void FixedUpdate()
+    {
+        stateMachine.currentState.FixedUpdate();
+    }
+
     public void UsingEnumerator(IEnumerator enumerator)
     {
         StartCoroutine(enumerator);

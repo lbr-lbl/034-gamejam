@@ -14,6 +14,6 @@ public class Square : Block
 
     protected override void Update()
     {
-        if (isDead) stateMachine.ChangeState(deadState);
+        //if (isDead) stateMachine.ChangeState(deadState);
     }
 }

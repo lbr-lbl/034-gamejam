@@ -6,6 +6,8 @@ public class Block : Entity
 {
     public BlockDeadState  deadState;
 
+    public int blockHP;
+
     protected override void Awake()
     {
         base.Awake();
@@ -28,47 +30,23 @@ public class Block : Entity
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Entity entity = collision.gameObject.GetComponent<Entity>();
-        Player player = collision.gameObject.GetComponent<Player>();
 
-        if (entity.tag != this.tag && entity != null)  
+        if (entity.gameObject.layer == LayerMask.NameToLayer("Ground") && entity != null)
         {
-            Collider2D collider = collision.collider;
-            bool shouldEliminateOther = (this.spriteCount == 0 && entity.spriteCount == 2) || (this.spriteCount == 2 && entity.spriteCount == 1) || (this.spriteCount == 1 && entity.spriteCount == 0);
+
+            bool shouldEliminateOther = (this.spriteCount == 2 && entity.spriteCount == 0) || (this.spriteCount == 1 && entity.spriteCount == 2) || (this.spriteCount == 0 && entity.spriteCount == 1);
 
             if (shouldEliminateOther)
             {
-                player = entity as Player;
-                if (player != null)
-                {
-                    player.stateMachine.ChangeState(player.deadState);
-                }
-                else
-                {
-                    entity.gameObject.layer = LayerMask.NameToLayer("Background");
 
-                    entity.sr.enabled = false;
+                gameObject.layer = LayerMask.NameToLayer("Background");
 
-                    entity.ps.gameObject.SetActive(true);
+                sr.enabled = false;
 
-                    Destroy(entity.gameObject, 5f);
-                }
+                ps.gameObject.SetActive(true);
+
+                BlockManager.instance.blockPool.Release(this.gameObject);
             }
-        }
-
-        if (this.gameObject.layer == LayerMask.NameToLayer("Item") && player != null)
-        {
-            if (this.tag == "Traingle")
-            {
-                player.traingleCount++;
-            }else if (this.tag == "Square")
-            {
-                player.squareCount++;
-            }
-            else if (this.tag == "Circle")
-            {
-                player.circleCount++;
-            }
-            Destroy(this.gameObject);
         }
     }
 }

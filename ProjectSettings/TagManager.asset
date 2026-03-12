@@ -6,13 +6,19 @@ TagManager:
   tags:
   - Player1
   - Player2
+  - Traingle
+  - Square
+  - Circle
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Background
   - Water
   - UI
+  - Ground
+  - Player
+  - Item
   - 
   - 
   - 
@@ -22,12 +28,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - testPlayer
   - 
   - 
   - 

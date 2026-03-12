@@ -20,21 +20,21 @@ public class PlayerMoveState : PlayerState
     {
         base.Enter();
 
-        // ´Ó PlayerInput »ñÈ¡¶¯×÷£¨¶¯×÷Ãû³ÆÐèÓë .inputactions ×Ê²úÖÐ¶¨ÒåµÄÒ»ÖÂ£©
+        // ï¿½ï¿½ PlayerInput ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ .inputactions ï¿½Ê²ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Â£ï¿½
         moveAction = player.playerInput.actions["Move"];
         jumpAction = player.playerInput.actions["Jump"];
 
-        // ¶©ÔÄÊÂ¼þ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
         moveAction.performed += OnMove;
-        moveAction.canceled += OnMove; // ËÉ¿ªÊ±ÇåÁã
+        moveAction.canceled += OnMove; // ï¿½É¿ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
         jumpAction.performed += OnJump;
 
-        // ÆôÓÃ¶¯×÷£¨PlayerInput »á×Ô¶¯¹ÜÀí£¬µ«ÏÔÊ½ÆôÓÃ¿ÉÒÔÈ·±£ÉúÐ§£©
+        // ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½PlayerInput ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½
         moveAction.Enable();
         jumpAction.Enable();
 
-        // Ô­ÓÐ player.control µÄ´úÂëÈ«²¿ÒÆ³ý
-        // player.control.PlayerController.Enable();  // É¾³ý
+        // Ô­ï¿½ï¿½ player.control ï¿½Ä´ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Æ³ï¿½
+        // player.control.PlayerController.Enable();  // É¾ï¿½ï¿½
 
         player.spriteCount = 1;
         player.anim.SetBool("Traingle", false);
@@ -54,11 +54,11 @@ public class PlayerMoveState : PlayerState
         moveAction.canceled -= OnMove;
         jumpAction.performed -= OnJump;
 
-        // ¿ÉÒÔ½ûÓÃ¶¯×÷£¬µ«Í¨³£ÓÉ PlayerInput ×Ô¶¯´¦Àí
+        // ï¿½ï¿½ï¿½Ô½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ PlayerInput ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½
         moveAction.Disable();
         jumpAction.Disable();
 
-        // É¾³ý player.control Ïà¹Ø´úÂë
+        // É¾ï¿½ï¿½ player.control ï¿½ï¿½Ø´ï¿½ï¿½ï¿½
         // player.control.PlayerController.Disable();
     }
 
@@ -114,7 +114,7 @@ public class PlayerMoveState : PlayerState
 
     #region InputSystem
 
-    // ÊäÈë»Øµ÷
+    // ï¿½ï¿½ï¿½ï¿½Øµï¿½
     private void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
@@ -124,8 +124,8 @@ public class PlayerMoveState : PlayerState
     {
         if (player.IsGroundDetected())
         {
-            // ×¢Òâ£ºÕâÀïÖ±½ÓÉèÖÃ velocity£¬µ«¿ÉÄÜÐèÒªÔÚ FixedUpdate ÖÐ´¦Àí¸üºÏÊÊ
-            // ¼òµ¥Æð¼û¿ÉÒÔµ÷ÓÃ SetVelocity
+            // ×¢ï¿½â£ºï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ velocityï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ FixedUpdate ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôµï¿½ï¿½ï¿½ SetVelocity
             SetVelocity(player.rb.velocity.x, player.jumpForce);
         }
     }

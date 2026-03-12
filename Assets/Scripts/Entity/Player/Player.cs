@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class Player : Entity
 {
@@ -8,8 +11,13 @@ public class Player : Entity
     [HideInInspector] public CircleCollider2D circleCd;
     [HideInInspector] public PolygonCollider2D traingleCd;
 
+    public PlayerControl control;
+    public PlayerInput playerInput;
+    public Stack<Block> blockStack = new Stack<Block>();
+
     public bool isGrounded;
     public float resetCd;
+    public Vector2 dropVelocity;
 
     public int traingleCount;
     public int squareCount; 
@@ -22,7 +30,6 @@ public class Player : Entity
     #endregion
 
     [Header("Collision Info")]
-    public Transform resetPosition;
     public Transform groundCheckL;
     public Transform groundCheckR;
     //public Transform wallCheck;
@@ -33,6 +40,8 @@ public class Player : Entity
     {
         base.Awake();
 
+        control = new PlayerControl();
+
         moveState = new PlayerMoveState(this, stateMachine, "Move");    
         deadState = new PlayerDeadState(this, stateMachine, "Dead");
         pauseState = new PlayerPauseState(this, stateMachine, "Pause");
@@ -41,6 +50,8 @@ public class Player : Entity
     protected override void Start()
     {
         base.Start();
+
+        playerInput = GetComponent<PlayerInput>();
 
         traingleCount = 0;
         squareCount = 0;
@@ -69,31 +80,81 @@ public class Player : Entity
         stateMachine.ChangeState(moveState);
     }
 
+    public void CollectBlock(Block block)
+    {
+        blockStack.Push(block);
+
+        if (block.CompareTag("Traingle"))
+        {
+            traingleCount++;
+        }
+        else if (block.CompareTag("Square"))
+        {
+            squareCount++;
+        }
+        else if (block.CompareTag("Circle"))
+        {
+            circleCount++;
+        }
+
+        block.gameObject.SetActive(false);
+    }
+
+    public Block DropBlock()
+    {
+
+        if (blockStack.Count > 0)
+        {
+            Block block = blockStack.Pop();
+
+            block.gameObject.layer = LayerMask.NameToLayer("Item");
+
+            if (block.CompareTag("Traingle"))
+            {
+                traingleCount--;
+                block.tag = "Traingle";
+            }
+            else if (block.CompareTag("Square"))
+            {
+                squareCount--;
+                block.tag = "Square";
+            }
+            else if (block.CompareTag("Circle"))
+            {
+                circleCount--;
+                block.tag = "Circle";
+            }
+
+            block.gameObject.SetActive(true);
+
+            block.transform.position = transform.position;
+
+            block.rb.velocity = rb.velocity;
+
+            return block;
+        }
+        return null;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Entity entity = collision.gameObject.GetComponent<Entity>();
 
-        if (entity.tag != this.tag && entity != null) 
+        if (entity.gameObject.layer == LayerMask.NameToLayer("Item") && entity != null)
         {
-            bool shouldEliminateOther = (this.spriteCount == 0 && entity.spriteCount == 2) || (this.spriteCount == 2 && entity.spriteCount == 1) || (this.spriteCount == 1 && entity.spriteCount == 0);
+            Block block = entity as Block;
+
+            CollectBlock(block);
+        }
+
+        if (entity.gameObject.layer == LayerMask.NameToLayer("Player") && entity != null)
+        {
+            bool shouldEliminateOther = (this.spriteCount == 2 && entity.spriteCount == 0) || (this.spriteCount == 1 && entity.spriteCount == 2) || (this.spriteCount == 0 && entity.spriteCount == 1);
 
             if (shouldEliminateOther)
             {
-                Player player = entity as Player;
-                if (player != null)
-                {
-                    player.stateMachine.ChangeState(player.deadState);  
-                }
-                else
-                {   
-                    entity.gameObject.layer = LayerMask.NameToLayer("Background");
-
-                    entity.sr.enabled = false;
-
-                    entity.ps.gameObject.SetActive(true);
-
-                    Destroy(entity.gameObject, 5f);
-                }
+                
+                stateMachine.ChangeState(deadState);
 
             }
         }

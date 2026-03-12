@@ -98,9 +98,9 @@ public class Bullet : MonoBehaviour
         string layerName = LayerMask.LayerToName(layer);
         switch (layerName)
         {
-            case "Core": return coreCost;
-            case "Island": return islandCost;
-            case "Building": return buildingCost;
+            //case "Ground": return coreCost;
+            case "Ground": return islandCost;
+            //case "Building": return buildingCost;
             case "Player": return playerCost;
             case "Bullet": return bulletCost;
             default: return 1;

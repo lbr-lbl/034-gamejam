@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
 public class BaseBuildController : MonoBehaviour
@@ -8,7 +9,7 @@ public class BaseBuildController : MonoBehaviour
     [SerializeField] private GameObject highlightPrefab;
     [SerializeField] private Material validMaterial;
     [SerializeField] private Material selectedMaterial;
-    [SerializeField] private Material occupiedMaterial;      // 已占用格子的材质
+    [SerializeField] private Material occupiedMaterial;
     [SerializeField] private Material coreCandidateMaterial;
     [SerializeField] private Material coreSelectedMaterial;
 
@@ -16,23 +17,31 @@ public class BaseBuildController : MonoBehaviour
     [SerializeField] private int startXOffset = -2;
     [SerializeField] private int startYOffset = 0;
 
+    [Header("默认核心形状（当玩家未搭建时使用）")]
+    [SerializeField] private ShapeType defaultCoreShape = ShapeType.Triangle;
+
     private int width;
     private int topLayerY;
     private Dictionary<Vector2Int, GameObject> highlightMap;
-    private Dictionary<Vector2Int, GameObject> placedObjects; // 记录放置的物体
-    private HashSet<Vector2Int> occupied;                     // 已占用的格子（与placedObjects的键一致）
-    private HashSet<Vector2Int> availableSet;                  // 当前可放置的格子
+    private Dictionary<Vector2Int, GameObject> placedObjects;
+    private HashSet<Vector2Int> occupied;
+    private HashSet<Vector2Int> availableSet;
     private Vector2Int currentGrid;
     private bool isSelectingCore = false;
 
-    private Transform highlightParent; // 仅用于高亮格子
-
-    private bool _canInput;
+    private Transform highlightParent;
+    private PlayerInput playerInput;
+    private ShapeType selectedShape = ShapeType.Triangle; // 当前建造的形状
 
     public bool IsActive { get; private set; }
     public Vector3 CorePosition { get; private set; }
     public int CoreShape { get; private set; }
     public bool CoreSelected { get; private set; }
+
+    private void Awake()
+    {
+        playerInput = GetComponent<PlayerInput>();
+    }
 
     public void Initialize()
     {
@@ -53,7 +62,6 @@ public class BaseBuildController : MonoBehaviour
             availableSet.Add(new Vector2Int(x, topLayerY));
         }
 
-        // 设置初始光标
         int centerX = width / 2;
         int startX = Mathf.Clamp(centerX + startXOffset, 0, width - 1);
         currentGrid = new Vector2Int(startX, topLayerY);
@@ -61,18 +69,58 @@ public class BaseBuildController : MonoBehaviour
         IsActive = true;
         CoreSelected = false;
         isSelectingCore = false;
-        _canInput = true;
     }
 
-    public void EndBaseBuilding()
+    private void Update()
     {
-        _canInput = false;
+        if (!IsActive) return;
+
+        if (!isSelectingCore)
+        {
+            // 建造阶段：读取输入
+            Vector2 move = playerInput.actions["Move"].ReadValue<Vector2>();
+            if (move.x > 0.5f) HandleInput(1, 0);
+            else if (move.x < -0.5f) HandleInput(-1, 0);
+            if (move.y > 0.5f) HandleInput(0, 1);
+            else if (move.y < -0.5f) HandleInput(0, -1);
+
+            // 放置
+            if (playerInput.actions["Place"].WasPressedThisFrame())
+            {
+                TryPlaceItem(selectedShape);
+            }
+
+            // 切换形状（可选，用于建造不同形状）
+            if (playerInput.actions["NextItem"].WasPressedThisFrame())
+            {
+                selectedShape = (ShapeType)(((int)selectedShape + 1) % 3);
+            }
+            if (playerInput.actions["PrevItem"].WasPressedThisFrame())
+            {
+                selectedShape = (ShapeType)(((int)selectedShape - 1 + 3) % 3);
+            }
+        }
+        else
+        {
+            // 核心选择阶段：光标移动
+            Vector2 move = playerInput.actions["Move"].ReadValue<Vector2>();
+            if (move.x > 0.5f) HandleInput(1, 0);
+            else if (move.x < -0.5f) HandleInput(-1, 0);
+            if (move.y > 0.5f) HandleInput(0, 1);
+            else if (move.y < -0.5f) HandleInput(0, -1);
+
+            // 确认核心
+            if (playerInput.actions["Place"].WasPressedThisFrame())
+            {
+                TryConfirmCore();
+            }
+        }
+
+        UpdateHighlights();
     }
 
     public void HandleInput(int dx, int dy)
     {
-        if (!IsActive || !_canInput) return;
-
         Vector2Int next = currentGrid + new Vector2Int(dx, dy);
 
         if (isSelectingCore)
@@ -89,8 +137,6 @@ public class BaseBuildController : MonoBehaviour
 
     public void UpdateHighlights()
     {
-        if (!IsActive) return;
-
         EnsureHighlightObjects();
 
         foreach (var kv in highlightMap)
@@ -153,22 +199,21 @@ public class BaseBuildController : MonoBehaviour
         }
     }
 
-    public bool TryPlaceItem(GameObject prefab)
+    public bool TryPlaceItem(ShapeType shape)
     {
         if (!IsActive || isSelectingCore) return false;
         if (!availableSet.Contains(currentGrid)) return false;
-        if (prefab == null) return false;
 
         Vector3 worldPos = islandGenerator.GridToWorld(currentGrid);
-        // 实例化到场景根，不设为高亮父物体
-        GameObject placed = Instantiate(prefab, worldPos, Quaternion.identity);
+        GameObject blockObj = BlockManager.instance.GetBlock(shape);
+        blockObj.transform.position = worldPos;
+        blockObj.layer = LayerMask.NameToLayer("Ground");
+        blockObj.SetActive(true);
 
-        // 记录
-        placedObjects[currentGrid] = placed;
+        placedObjects[currentGrid] = blockObj;
         occupied.Add(currentGrid);
         availableSet.Remove(currentGrid);
 
-        // 添加相邻可放置格子（左、右、上）
         Vector2Int[] neighbors = new Vector2Int[]
         {
             new Vector2Int(currentGrid.x - 1, currentGrid.y),
@@ -178,9 +223,7 @@ public class BaseBuildController : MonoBehaviour
         foreach (var n in neighbors)
         {
             if (n.x >= 0 && n.x < width && !occupied.Contains(n))
-            {
                 availableSet.Add(n);
-            }
         }
 
         return true;
@@ -190,7 +233,6 @@ public class BaseBuildController : MonoBehaviour
     {
         if (!IsActive) return;
         isSelectingCore = true;
-        _canInput = true; // 核心选择阶段需要输入
 
         if (occupied.Count > 0)
         {
@@ -202,7 +244,8 @@ public class BaseBuildController : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("没有放置任何图块，无法选择核心！");
+            // 无搭建，光标停留在当前可放置格子上（表面层）
+            // 保持 currentGrid 不变（已经是表面层某格）
         }
     }
 
@@ -221,26 +264,68 @@ public class BaseBuildController : MonoBehaviour
         return true;
     }
 
-    public void ForceSelectFirstCore()
+    public void ForceSelectCore()
     {
+        if (!IsActive || !isSelectingCore) return;
+
+        if (occupied.Contains(currentGrid))
+        {
+            TryConfirmCore();
+            return;
+        }
+
         if (occupied.Count > 0)
         {
             foreach (var grid in occupied)
             {
                 currentGrid = grid;
                 TryConfirmCore();
-                break;
+                return;
             }
         }
+
+        // 完全无搭建：在当前光标位置生成默认方块并设为核心
+        if (availableSet.Contains(currentGrid))
+        {
+            Vector3 worldPos = islandGenerator.GridToWorld(currentGrid);
+            GameObject blockObj = BlockManager.instance.GetBlock(defaultCoreShape);
+            blockObj.transform.position = worldPos;
+            blockObj.layer = LayerMask.NameToLayer("Ground");
+            blockObj.SetActive(true);
+
+            placedObjects[currentGrid] = blockObj;
+            occupied.Add(currentGrid);
+
+            CorePosition = worldPos;
+            CoreShape = (int)defaultCoreShape;
+            CoreSelected = true;
+            Debug.Log($"未搭建基地，自动在 {currentGrid} 生成默认核心");
+            return;
+        }
+
+        // 当前光标不可用，使用空岛中心
+        int centerX = width / 2;
+        Vector2Int centerGrid = new Vector2Int(centerX, topLayerY);
+        Vector3 centerPos = islandGenerator.GridToWorld(centerGrid);
+        GameObject centerBlock = BlockManager.instance.GetBlock(defaultCoreShape);
+        centerBlock.transform.position = centerPos;
+        centerBlock.layer = LayerMask.NameToLayer("Ground");
+        centerBlock.SetActive(true);
+
+        placedObjects[centerGrid] = centerBlock;
+        occupied.Add(centerGrid);
+
+        CorePosition = centerPos;
+        CoreShape = (int)defaultCoreShape;
+        CoreSelected = true;
+        Debug.Log($"未搭建基地，自动在空岛中心 {centerGrid} 生成默认核心");
     }
 
     public void Cleanup()
     {
-        // 只销毁高亮物体，不销毁放置的基地物体
         if (highlightParent != null)
             Destroy(highlightParent.gameObject);
         highlightMap = null;
-        // 保留 placedObjects 和 occupied 的引用（但不再需要）
         IsActive = false;
     }
 }

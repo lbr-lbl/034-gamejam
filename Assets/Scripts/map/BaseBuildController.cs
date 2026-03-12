@@ -13,18 +13,21 @@ public class BaseBuildController : MonoBehaviour
     [SerializeField] private Material coreSelectedMaterial;
 
     [Header("初始位置偏移")]
-    [SerializeField] private int startXOffset = -2; // 向左偏移两格
-    [SerializeField] private int startYOffset = 0;   // 表面层，无需偏移
+    [SerializeField] private int startXOffset = -2;
+    [SerializeField] private int startYOffset = 0;
 
-    private int width;                          // 空岛宽度（固定）
-    private int topLayerY;                       // 表面层Y索引
-    private Dictionary<Vector2Int, GameObject> highlightMap; // 动态高亮格子
-    private HashSet<Vector2Int> occupied;        // 已占用的格子
-    private HashSet<Vector2Int> availableSet;     // 当前可放置的格子
-    private Vector2Int currentGrid;                // 当前选中的格子
+    private int width;
+    private int topLayerY;
+    private Dictionary<Vector2Int, GameObject> highlightMap;
+    private Dictionary<Vector2Int, GameObject> placedObjects; // 记录放置的物体
+    private HashSet<Vector2Int> occupied;                     // 已占用的格子（与placedObjects的键一致）
+    private HashSet<Vector2Int> availableSet;                  // 当前可放置的格子
+    private Vector2Int currentGrid;
     private bool isSelectingCore = false;
 
-    private Transform gridParent;
+    private Transform highlightParent; // 仅用于高亮格子
+
+    private bool _canInput;
 
     public bool IsActive { get; private set; }
     public Vector3 CorePosition { get; private set; }
@@ -33,13 +36,14 @@ public class BaseBuildController : MonoBehaviour
 
     public void Initialize()
     {
-        if (gridParent != null) Destroy(gridParent.gameObject);
-        gridParent = new GameObject("BaseBuildGrid").transform;
+        if (highlightParent != null) Destroy(highlightParent.gameObject);
+        highlightParent = new GameObject("BaseBuildHighlights").transform;
 
         width = islandGenerator.GetWidth();
         topLayerY = islandGenerator.GetTopLayerYIndex();
 
         highlightMap = new Dictionary<Vector2Int, GameObject>();
+        placedObjects = new Dictionary<Vector2Int, GameObject>();
         occupied = new HashSet<Vector2Int>();
         availableSet = new HashSet<Vector2Int>();
 
@@ -49,7 +53,7 @@ public class BaseBuildController : MonoBehaviour
             availableSet.Add(new Vector2Int(x, topLayerY));
         }
 
-        // 设置初始光标：空岛中心向左偏移两格
+        // 设置初始光标
         int centerX = width / 2;
         int startX = Mathf.Clamp(centerX + startXOffset, 0, width - 1);
         currentGrid = new Vector2Int(startX, topLayerY);
@@ -57,23 +61,27 @@ public class BaseBuildController : MonoBehaviour
         IsActive = true;
         CoreSelected = false;
         isSelectingCore = false;
+        _canInput = true;
+    }
+
+    public void EndBaseBuilding()
+    {
+        _canInput = false;
     }
 
     public void HandleInput(int dx, int dy)
     {
-        if (!IsActive) return;
+        if (!IsActive || !_canInput) return;
 
         Vector2Int next = currentGrid + new Vector2Int(dx, dy);
 
         if (isSelectingCore)
         {
-            // 核心选择阶段：只能在已占用的格子间移动
             if (occupied.Contains(next))
                 currentGrid = next;
         }
         else
         {
-            // 建造阶段：光标只能在可放置的格子中移动
             if (availableSet.Contains(next))
                 currentGrid = next;
         }
@@ -83,7 +91,6 @@ public class BaseBuildController : MonoBehaviour
     {
         if (!IsActive) return;
 
-        // 确保所有需要显示的格子都有对应的 GameObject
         EnsureHighlightObjects();
 
         foreach (var kv in highlightMap)
@@ -94,16 +101,13 @@ public class BaseBuildController : MonoBehaviour
 
             if (!isSelectingCore)
             {
-                // 建造阶段
                 if (occupied.Contains(grid))
                 {
-                    // 已占用格子显示灰色
                     hl.SetActive(true);
                     sr.material = occupiedMaterial ?? sr.material;
                 }
                 else if (availableSet.Contains(grid))
                 {
-                    // 可放置格子显示绿色
                     hl.SetActive(true);
                     if (grid == currentGrid)
                         sr.material = selectedMaterial ?? sr.material;
@@ -112,13 +116,11 @@ public class BaseBuildController : MonoBehaviour
                 }
                 else
                 {
-                    // 其他格子隐藏
                     hl.SetActive(false);
                 }
             }
             else
             {
-                // 核心选择阶段：只显示已占用的格子
                 if (occupied.Contains(grid))
                 {
                     hl.SetActive(true);
@@ -135,40 +137,22 @@ public class BaseBuildController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 确保所有需要显示的格子（已占用 + 可放置 + 当前选中）都有高亮物体
-    /// </summary>
     private void EnsureHighlightObjects()
     {
-        // 收集所有需要显示的格子
         HashSet<Vector2Int> needed = new HashSet<Vector2Int>(occupied);
         needed.UnionWith(availableSet);
-        if (isSelectingCore)
-        {
-            // 核心选择阶段可能还需要显示未占用的核心候选？但只显示已占用的，所以 occupied 已包含
-        }
-        else
-        {
-            // 建造阶段，当前选中格子可能不在 occupied 或 availableSet 中？但光标只会在 availableSet 内移动，所以 currentGrid 必然在 availableSet 中，已经包含
-        }
 
-        // 为每个需要的格子创建高亮物体（如果尚未创建）
         foreach (Vector2Int grid in needed)
         {
             if (!highlightMap.ContainsKey(grid))
             {
                 Vector3 worldPos = islandGenerator.GridToWorld(grid);
-                GameObject hl = Instantiate(highlightPrefab, worldPos, Quaternion.identity, gridParent);
+                GameObject hl = Instantiate(highlightPrefab, worldPos, Quaternion.identity, highlightParent);
                 highlightMap[grid] = hl;
             }
         }
-
-        // 可选：清理不再需要的格子（长时间不用的格子可以销毁，但这里为了简单，保留所有创建的）
     }
 
-    /// <summary>
-    /// 放置物品（无限数量）
-    /// </summary>
     public bool TryPlaceItem(GameObject prefab)
     {
         if (!IsActive || isSelectingCore) return false;
@@ -176,11 +160,12 @@ public class BaseBuildController : MonoBehaviour
         if (prefab == null) return false;
 
         Vector3 worldPos = islandGenerator.GridToWorld(currentGrid);
-        GameObject placed = Instantiate(prefab, worldPos, Quaternion.identity, gridParent);
+        // 实例化到场景根，不设为高亮父物体
+        GameObject placed = Instantiate(prefab, worldPos, Quaternion.identity);
 
-        // 标记占用
+        // 记录
+        placedObjects[currentGrid] = placed;
         occupied.Add(currentGrid);
-        // 从可用集中移除当前格子
         availableSet.Remove(currentGrid);
 
         // 添加相邻可放置格子（左、右、上）
@@ -192,7 +177,6 @@ public class BaseBuildController : MonoBehaviour
         };
         foreach (var n in neighbors)
         {
-            // 水平方向不能超出空岛宽度，垂直方向可以无限高
             if (n.x >= 0 && n.x < width && !occupied.Contains(n))
             {
                 availableSet.Add(n);
@@ -206,8 +190,8 @@ public class BaseBuildController : MonoBehaviour
     {
         if (!IsActive) return;
         isSelectingCore = true;
+        _canInput = true; // 核心选择阶段需要输入
 
-        // 将光标移动到第一个有物体的格子
         if (occupied.Count > 0)
         {
             foreach (var grid in occupied)
@@ -228,12 +212,11 @@ public class BaseBuildController : MonoBehaviour
         if (!occupied.Contains(currentGrid)) return false;
 
         CorePosition = islandGenerator.GridToWorld(currentGrid);
-        // 注意：我们需要通过 placedObjects 获取已放置的物体实例，但这里我们并未存储
-        // 为了获取形状，我们需要在放置时存储 GameObject 引用
-        // 简化处理：假设每个格子只能放一个物体，我们可以通过碰撞检测或直接查找
-        // 临时使用射线检测或通过子物体查找，但为了简单，我们暂时不实现核心形状读取
-        // 可以暂存形状信息
-        CoreShape = 0; // 默认
+        if (placedObjects.TryGetValue(currentGrid, out GameObject obj))
+        {
+            Block block = obj.GetComponent<Block>();
+            if (block != null) CoreShape = block.spriteCount;
+        }
         CoreSelected = true;
         return true;
     }
@@ -253,11 +236,11 @@ public class BaseBuildController : MonoBehaviour
 
     public void Cleanup()
     {
-        if (gridParent != null)
-            Destroy(gridParent.gameObject);
+        // 只销毁高亮物体，不销毁放置的基地物体
+        if (highlightParent != null)
+            Destroy(highlightParent.gameObject);
         highlightMap = null;
-        occupied = null;
-        availableSet = null;
+        // 保留 placedObjects 和 occupied 的引用（但不再需要）
         IsActive = false;
     }
 }

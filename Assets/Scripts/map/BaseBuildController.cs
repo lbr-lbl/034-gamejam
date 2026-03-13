@@ -85,19 +85,15 @@ public class BaseBuildController : MonoBehaviour
             else if (move.y < -0.5f) HandleInput(0, -1);
 
             // 放置
-            if (playerInput.actions["Place"].WasPressedThisFrame())
+            if (playerInput.actions["Set"].WasPressedThisFrame())
             {
                 TryPlaceItem(selectedShape);
             }
 
             // 切换形状（可选，用于建造不同形状）
-            if (playerInput.actions["NextItem"].WasPressedThisFrame())
+            if (playerInput.actions["ChangeShape"].WasPressedThisFrame())
             {
                 selectedShape = (ShapeType)(((int)selectedShape + 1) % 3);
-            }
-            if (playerInput.actions["PrevItem"].WasPressedThisFrame())
-            {
-                selectedShape = (ShapeType)(((int)selectedShape - 1 + 3) % 3);
             }
         }
         else
@@ -110,7 +106,7 @@ public class BaseBuildController : MonoBehaviour
             else if (move.y < -0.5f) HandleInput(0, -1);
 
             // 确认核心
-            if (playerInput.actions["Place"].WasPressedThisFrame())
+            if (playerInput.actions["Set"].WasPressedThisFrame())
             {
                 TryConfirmCore();
             }
@@ -205,9 +201,11 @@ public class BaseBuildController : MonoBehaviour
         if (!availableSet.Contains(currentGrid)) return false;
 
         Vector3 worldPos = islandGenerator.GridToWorld(currentGrid);
-        GameObject blockObj = BlockManager.instance.GetBlock(shape);
+        GameObject blockObj = BlockManager.instance.GetBlock(shape, BlockType.Building);
         blockObj.transform.position = worldPos;
         blockObj.layer = LayerMask.NameToLayer("Ground");
+        Block block = blockObj.GetComponent<Block>();
+        if (block != null) block.blockType = BlockType.Building; // 设置类型
         blockObj.SetActive(true);
 
         placedObjects[currentGrid] = blockObj;
@@ -288,7 +286,7 @@ public class BaseBuildController : MonoBehaviour
         if (availableSet.Contains(currentGrid))
         {
             Vector3 worldPos = islandGenerator.GridToWorld(currentGrid);
-            GameObject blockObj = BlockManager.instance.GetBlock(defaultCoreShape);
+            GameObject blockObj = BlockManager.instance.GetBlock(defaultCoreShape, BlockType.Building);
             blockObj.transform.position = worldPos;
             blockObj.layer = LayerMask.NameToLayer("Ground");
             blockObj.SetActive(true);
@@ -307,7 +305,7 @@ public class BaseBuildController : MonoBehaviour
         int centerX = width / 2;
         Vector2Int centerGrid = new Vector2Int(centerX, topLayerY);
         Vector3 centerPos = islandGenerator.GridToWorld(centerGrid);
-        GameObject centerBlock = BlockManager.instance.GetBlock(defaultCoreShape);
+        GameObject centerBlock = BlockManager.instance.GetBlock(defaultCoreShape, BlockType.Building);
         centerBlock.transform.position = centerPos;
         centerBlock.layer = LayerMask.NameToLayer("Ground");
         centerBlock.SetActive(true);

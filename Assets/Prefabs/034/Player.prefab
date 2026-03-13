@@ -5071,6 +5071,7 @@ GameObject:
   - component: {fileID: 1003370552853860214}
   - component: {fileID: 6373643125483652873}
   - component: {fileID: 4257318233703656139}
+  - component: {fileID: 4455566802274916255}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player1
@@ -5282,6 +5283,7 @@ MonoBehaviour:
   triangleCount: 0
   squareCount: 0
   circleCount: 0
+  playerType: 0
   groundCheckL: {fileID: 6952528912435412050}
   groundCheckR: {fileID: 7637418063669806274}
   groundLayer:
@@ -5338,3 +5340,22 @@ MonoBehaviour:
   m_DefaultActionMap: PlayerController
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &4455566802274916255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8141397855998304017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aee8bdc3a7aab54394e9947b5aa2427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 6373643125483652873}
+  firePoint: {fileID: 8004537648350687251}
+  projectileSpeed: 10
+  aimLine: {fileID: 0}
+  previewLength: 5
+  aimColor: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 0.54901963}
+  aimLineWidth: 0.1

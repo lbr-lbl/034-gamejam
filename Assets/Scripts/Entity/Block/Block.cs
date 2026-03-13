@@ -6,6 +6,7 @@ using UnityEngine;
 public class Block : Entity
 {
     public BlockDeadState  deadState;
+    public BlockType blockType; // 新增：由放置者设置
 
     public bool IsCore { get; set; }
     public PlayerType coreOwner;
@@ -48,7 +49,7 @@ public class Block : Entity
                 }
                 else
                 {
-                    BlockManager.instance.ReturnBlock(gameObject, Shape);
+                    BlockManager.instance.ReturnBlock(gameObject, Shape, blockType);
                 }
             }
         }

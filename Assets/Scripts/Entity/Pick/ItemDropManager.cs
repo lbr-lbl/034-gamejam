@@ -29,11 +29,12 @@ public class ItemDropManager : MonoBehaviour
     private float gameTime;          // 累计游戏时间（秒）
     private Coroutine dropCoroutine;
 
-    private void Start()
+    // 由 GameManager 调用，开始掉落
+    public void StartDropping()
     {
-        dropCoroutine = StartCoroutine(DropRoutine());
+        if (dropCoroutine == null)
+            dropCoroutine = StartCoroutine(DropRoutine());
     }
-
     private IEnumerator DropRoutine()
     {
         while (true)
@@ -76,7 +77,7 @@ public class ItemDropManager : MonoBehaviour
         if (selected == null) return;
 
         // 从对象池获取对应形状的物体
-        GameObject blockObj = BlockManager.instance.GetBlock(selected.shape);
+        GameObject blockObj = BlockManager.instance.GetBlock(selected.shape, BlockType.Pickup);
         if (blockObj == null) return;
 
         // 随机位置
@@ -93,6 +94,9 @@ public class ItemDropManager : MonoBehaviour
         {
             rb.velocity = new Vector2(Random.Range(-1f, 1f), 0);
         }
+
+        Block block = blockObj.GetComponent<Block>();
+        if (block != null) block.blockType = BlockType.Pickup;
 
         // 物体已在 GetBlock 时自动激活，无需额外操作
     }

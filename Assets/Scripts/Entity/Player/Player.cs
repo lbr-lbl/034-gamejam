@@ -25,8 +25,7 @@ public class Player : Entity
     public bool throwPressed { get; private set; }
     public bool buildModePressed { get; private set; }
     public bool placePressed { get; private set; }
-    public bool nextItemPressed { get; private set; }
-    public bool prevItemPressed { get; private set; }
+    public bool changeShapePressed { get; private set; }
     public bool suicidePressed { get; private set; }
 
     #region State
@@ -76,9 +75,8 @@ public class Player : Entity
         jumpPressed = actionMap["Jump"].WasPressedThisFrame();
         throwPressed = actionMap["Throw"].WasPressedThisFrame();
         buildModePressed = actionMap["BuildMode"].WasPressedThisFrame();
-        placePressed = actionMap["Place"].WasPressedThisFrame();
-        nextItemPressed = actionMap["NextItem"].WasPressedThisFrame();
-        prevItemPressed = actionMap["PrevItem"].WasPressedThisFrame();
+        placePressed = actionMap["Set"].WasPressedThisFrame();
+        changeShapePressed = actionMap["ChangeShape"].WasPressedThisFrame();
         suicidePressed = actionMap["Suicide"].WasPressedThisFrame();
     }
 
@@ -97,7 +95,7 @@ public class Player : Entity
             else if (shape == 2) circleCount++;
         }
         // 将物体放回池中
-        BlockManager.instance.ReturnBlock(pickup, (ShapeType)block.spriteCount);
+        BlockManager.instance.ReturnBlock(pickup, (ShapeType)block.spriteCount, BlockType.Pickup);
     }
 
     // 死亡时掉落所有物品
@@ -114,13 +112,15 @@ public class Player : Entity
 
     private void SpawnDropItem(ShapeType shape)
     {
-        GameObject blockObj = BlockManager.instance.GetBlock(shape);
+        GameObject blockObj = BlockManager.instance.GetBlock(shape, BlockType.Pickup);
         blockObj.transform.position = transform.position + (Vector3)Random.insideUnitCircle * 1f;
         blockObj.layer = LayerMask.NameToLayer("Pickable"); // 设置为可拾取层
         blockObj.SetActive(true);
         Rigidbody2D rb = blockObj.GetComponent<Rigidbody2D>();
         if (rb != null)
             rb.velocity = Random.insideUnitCircle * 2f;
+        Block block = blockObj.GetComponent<Block>();
+        if (block != null) block.blockType = BlockType.Pickup;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

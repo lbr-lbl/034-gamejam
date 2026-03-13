@@ -53,8 +53,7 @@ public class BuildModeController : MonoBehaviour
 
         // 放置/切换物品
         if (player.placePressed) TryPlaceCurrentItem();
-        if (player.nextItemPressed) SwitchItem(1);
-        if (player.prevItemPressed) SwitchItem(-1);
+        if (player.changeShapePressed) SwitchItem(1);
     }
 
     public void EnterBuildMode()
@@ -162,9 +161,11 @@ public class BuildModeController : MonoBehaviour
 
         DecreaseItemCount(item.shape);
 
-        GameObject blockObj = BlockManager.instance.GetBlock(item.shape);
+        GameObject blockObj = BlockManager.instance.GetBlock(item.shape, BlockType.Building);
         blockObj.transform.position = worldPos;
         blockObj.layer = LayerMask.NameToLayer("Ground");
+        Block block = blockObj.GetComponent<Block>();
+        if (block != null) block.blockType = BlockType.Building; // 设置类型
 
         // 设置子物体上的材质
         SpriteRenderer sr = blockObj.GetComponentInChildren<SpriteRenderer>();

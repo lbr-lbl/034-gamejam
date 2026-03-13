@@ -19,11 +19,15 @@ public class PlayerDeadState : PlayerState
         player.sr.enabled = false;
 
         player.ps.gameObject.SetActive(true);
+
+        player.DropAllItemsOnDeath();
     }
 
     public override void Exit()
     {
         base.Exit();
+
+        Debug.Log(111);
 
         player.gameObject.layer = LayerMask.NameToLayer("Player");
 
@@ -41,7 +45,10 @@ public class PlayerDeadState : PlayerState
     {
         yield return new WaitForSeconds(player.resetCd);
 
-        player.transform.position = player.resetPosition.position;
+        player.transform.position = PlayerManager.instance.resetPosition.position;
+
+        SetVelocity(0, 0);
+
         player.stateMachine.ChangeState(player.moveState);
     }   
 }

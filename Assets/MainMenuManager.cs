@@ -19,7 +19,7 @@ public class MainMenuManager : MonoBehaviour
 
     void StartGame()
     {
-        SceneManager.LoadScene("GameScene"); // 确保场景名与 Build Settings 中的一致
+        SceneManager.LoadScene("map"); // 确保场景名与 Build Settings 中的一致
     }
 
     void QuitGame()

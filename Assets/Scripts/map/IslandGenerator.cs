@@ -79,7 +79,8 @@ public class IslandGenerator : MonoBehaviour
                 GameObject prefabToSpawn = GetRandomPrefab(emptyProb);
                 if (prefabToSpawn != null)
                 {
-                    Instantiate(prefabToSpawn, worldPos, Quaternion.identity, generatedParent);
+                    GameObject obj = Instantiate(prefabToSpawn, worldPos, Quaternion.identity, generatedParent);
+                    obj.layer = LayerMask.NameToLayer("Ground");
                 }
                 // 否则（空）跳过
             }
@@ -122,6 +123,69 @@ public class IslandGenerator : MonoBehaviour
 
         // 防御性代码：返回第一个预制体
         return prefabs.Length > 0 ? prefabs[0] : null;
+    }
+
+
+    // 获取空岛左下角格子中心的世界坐标
+    public Vector3 GetBottomLeftCenter()
+    {
+        // 重新计算对齐中心（与Generate中一致）
+        Vector3 center = transform.position;
+        float gridX = Mathf.Round(center.x / cellSize) * cellSize;
+        float gridY = Mathf.Round(center.y / cellSize) * cellSize;
+        Vector3 alignedCenter = new Vector3(gridX, gridY, center.z);
+
+        float startX = alignedCenter.x - (widthInCells / 2f) * cellSize;
+        float startY = alignedCenter.y - (heightInCells / 2f) * cellSize;
+        return new Vector3(startX, startY, alignedCenter.z);
+    }
+
+    // 世界坐标 → 网格索引
+    public Vector2Int WorldToGrid(Vector3 worldPos)
+    {
+        Vector3 origin = GetBottomLeftCenter();
+        float dx = worldPos.x - origin.x - cellSize * 0.5f; // 减去半个格子得到相对于左下角的偏移
+        float dy = worldPos.y - origin.y - cellSize * 0.5f;
+        int x = Mathf.RoundToInt(dx / cellSize);
+        int y = Mathf.RoundToInt(dy / cellSize);
+        return new Vector2Int(x, y);
+    }
+
+    // 网格索引 → 世界坐标（格子中心）
+    public Vector3 GridToWorld(Vector2Int grid)
+    {
+        Vector3 origin = GetBottomLeftCenter(); // 左下角格子的左下角点
+                                                // 加上半个格子得到中心
+        return origin + new Vector3(grid.x * cellSize - cellSize * .5f,
+                                    grid.y * cellSize + cellSize * 1.5f,
+                                    0);
+    }
+
+    // 获取空岛宽度（格子数）
+    public int GetWidth() => widthInCells;
+
+    // 获取空岛高度（格子数）
+    public int GetHeight() => heightInCells;
+
+    // 获取表面层Y索引（最高层）
+    public int GetTopLayerYIndex() => heightInCells - 1;
+
+    // 检查世界坐标是否在空岛范围内（包含所有层）
+    public bool IsInIslandBounds(Vector3 worldPos)
+    {
+        Vector3 origin = GetBottomLeftCenter();
+        float minX = origin.x;
+        float maxX = origin.x + (widthInCells - 1) * cellSize;
+        float minY = origin.y;
+        float maxY = origin.y + (heightInCells - 1) * cellSize;
+        return worldPos.x >= minX - cellSize * 0.1f && worldPos.x <= maxX + cellSize * 0.1f &&
+               worldPos.y >= minY - cellSize * 0.1f && worldPos.y <= maxY + cellSize * 0.1f;
+    }
+
+    // 检查网格索引是否在空岛范围内
+    public bool IsValidGrid(Vector2Int grid)
+    {
+        return grid.x >= 0 && grid.x < widthInCells && grid.y >= 0 && grid.y < heightInCells;
     }
 
     // 在编辑器中绘制生成区域预览（可选）

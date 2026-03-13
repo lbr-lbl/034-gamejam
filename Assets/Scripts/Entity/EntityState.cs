@@ -37,6 +37,11 @@ public class EntityState
         xInput = Input.GetAxisRaw("Horizontal");
     }
 
+    public virtual void FixedUpdate()
+    {
+
+    }
+
     public virtual void Exit()
     {
         entity.anim.SetBool(animBoolName, false);

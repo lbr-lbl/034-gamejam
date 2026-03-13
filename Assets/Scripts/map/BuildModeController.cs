@@ -1,255 +1,108 @@
-using UnityEngine;
 using System.Collections.Generic;
-
-// 可放置物品的数据结构
-[System.Serializable]
-public class PlaceableItem
-{
-    public string itemName;             // 物品名称（需与PlayerInventory中的名称一致）
-    public GameObject prefab;            // 放置时的预制体
-    public GameObject projectilePrefab;      // 用于攻击的投射物预制体
-    public Sprite icon;                  // 可选：UI图标
-}
+using UnityEngine;
 
 public class BuildModeController : MonoBehaviour
 {
-    [Header("角色引用")]
-    [SerializeField] private Transform playerTransform;          // 角色的 Transform（必填）
+    [Header("可放置物品列表")]
+    [SerializeField] private List<PlaceableItem> availableItems;
 
     [Header("网格设置")]
-    [SerializeField] private int gridSize = 5;                   // 网格每边格子数（必须是奇数）
-    [SerializeField] private float cellSize = 1f;                // 每个格子的大小（应与角色大小匹配）
+    [SerializeField] private int gridSize = 5;
+    [SerializeField] private float cellSize = 1f;
+    [SerializeField] private GameObject highlightPrefab;
+    [SerializeField] private Material validMaterial;
+    [SerializeField] private Material invalidMaterial;
+    [SerializeField] private Material selectedMaterial;
+    [SerializeField] private LayerMask obstacleLayer;
 
-    [Header("可放置物品")]
-    [SerializeField] private List<PlaceableItem> availableItems; // 所有可建造的物品（建议配置3种）
+    private Player player; // 由外部设置
+    private GameObject[,] highlightGrid;
+    private bool[,] occupied;
+    private int currentX, currentY;
+    private int centerIndex;
+    private Vector3 gridCenter;
+    private Transform gridParent;
+    private int currentItemIndex = 0;
+    private bool isActive = false;
 
-    [Header("可视化")]
-    [SerializeField] private GameObject highlightPrefab;         // 高亮预览方块预制体（需带 SpriteRenderer）
-    [SerializeField] private Material validMaterial;             // 可放置材质（绿色）
-    [SerializeField] private Material invalidMaterial;           // 不可放置材质（红色）
-    [SerializeField] private Material selectedMaterial;          // 当前选中格子材质（蓝色）
-
-    [Header("操作")]
-    [SerializeField] private KeyCode confirmKey = KeyCode.Space; // 确认放置键
-    [SerializeField] private KeyCode nextItemKey = KeyCode.E;    // 切换到下一个物品
-    [SerializeField] private KeyCode prevItemKey = KeyCode.Q;    // 切换到上一个物品
-    [SerializeField] private LayerMask obstacleLayer;            // 障碍物层（如 Block）
-
-    // 内部状态
-    private bool isBuildingMode = false;
-    private GameObject[,] highlightGrid;                          // 二维网格引用
-    private int currentGridX, currentGridY;                       // 当前选中格子索引
-    private int currentItemIndex = 0;                             // 当前选中的物品索引
-    private Vector3 gridCenterWorld;                               // 网格中心的世界坐标（即角色所在格子的中心）
-    private int centerIndex;                                       // 中心格子的索引（gridSize/2）
-    private Quaternion buildModeEnterRotation;                    // 进入时角色旋转（用于计算朝向）
-    private Transform gridParent;                                  // 所有高亮方块的父物体
-    private PlayerInventory playerInventory;                       // 当前玩家的背包组件
-
-    // 对外暴露只读属性
-    public bool IsBuildingMode => isBuildingMode;
     public PlaceableItem CurrentItem => availableItems.Count > 0 ? availableItems[currentItemIndex] : null;
-    public int CurrentItemIndex => currentItemIndex;
-    private void Start()
+
+    public void SetPlayer(Player p)
     {
-        // 确保玩家对象上有 PlayerInventory 组件
-        if (playerTransform != null)
-            playerInventory = playerTransform.GetComponent<PlayerInventory>();
+        player = p;
     }
 
     private void Update()
     {
-        // 按 B 键切换建造模式
-        if (Input.GetKeyDown(KeyCode.B))
+        if (player == null) return;
+
+        // 按 L 进入/退出建造模式
+        if (player.buildModePressed)
         {
-            ToggleBuildMode();
+            if (!isActive)
+                EnterBuildMode();
+            else
+                ExitBuildMode();
         }
 
-        if (!isBuildingMode) return;
+        if (!isActive) return;
 
-        // 处理方向键选择
-        HandleSelectionInput();
-
-        // 处理物品切换
-        HandleItemSwitchInput();
-
-        // 更新所有格子的颜色（根据可放置性和是否选中）
+        // 方向输入
+        HandleInput();
         UpdateHighlights();
 
-        // 检测放置键
-        if (Input.GetKeyDown(confirmKey))
-        {
-            PlaceAtCurrentSelection();
-        }
+        // 放置/切换物品
+        if (player.placePressed) TryPlaceCurrentItem();
+        if (player.nextItemPressed) SwitchItem(1);
+        if (player.prevItemPressed) SwitchItem(-1);
     }
 
-    /// <summary>
-    /// 处理物品切换输入
-    /// </summary>
-    private void HandleItemSwitchInput()
+    public void EnterBuildMode()
     {
-        if (availableItems.Count == 0 || playerInventory == null) return;
+        if (isActive) return;
 
-        if (Input.GetKeyDown(nextItemKey))
-        {
-            int nextIndex = (currentItemIndex + 1) % availableItems.Count;
-            TrySetCurrentItem(nextIndex);
-        }
-        else if (Input.GetKeyDown(prevItemKey))
-        {
-            int prevIndex = (currentItemIndex - 1 + availableItems.Count) % availableItems.Count;
-            TrySetCurrentItem(prevIndex);
-        }
-    }
-
-    /// <summary>
-    /// 尝试切换到指定索引的物品，检查背包数量
-    /// </summary>
-    private void TrySetCurrentItem(int index)
-    {
-        if (index < 0 || index >= availableItems.Count || playerInventory == null) return;
-
-        // 检查背包中该物品的数量
-        int count = playerInventory.GetItemCount(availableItems[index].itemName);
-        if (count > 0)
-        {
-            currentItemIndex = index;
-            Debug.Log($"切换到 {availableItems[index].itemName}，数量 {count}");
-        }
-        else
-        {
-            Debug.Log($"物品 {availableItems[index].itemName} 数量为0，无法切换");
-        }
-    }
-
-    /// <summary>
-    /// 切换建造模式
-    /// </summary>
-    private void ToggleBuildMode()
-    {
-        isBuildingMode = !isBuildingMode;
-        if (isBuildingMode)
-            EnterBuildMode();
-        else
-            ExitBuildMode();
-    }
-
-    /// <summary>
-    /// 进入建造模式：生成网格、固定角色、禁用移动
-    /// </summary>
-    private void EnterBuildMode()
-    {
-        // 检查必要引用
-        if (playerTransform == null)
-        {
-            Debug.LogError("请在 Inspector 中为 BuildModeController 指定 playerTransform！");
-            isBuildingMode = false;
-            return;
-        }
-
-        // 获取玩家背包组件
-        if (playerTransform != null)
-            playerInventory = playerTransform.GetComponent<PlayerInventory>();
-
-        // 记录进入时的旋转
-        buildModeEnterRotation = playerTransform.rotation;
-
-        // 计算角色当前所在的格子中心（对齐到 cellSize 的整数倍）
-        float centerX = Mathf.Round(playerTransform.position.x / cellSize) * cellSize;
-        float centerY = Mathf.Round(playerTransform.position.y / cellSize) * cellSize;
-        gridCenterWorld = new Vector3(centerX, centerY, 0);
-
-        // 中心格子的索引（gridSize 为奇数，索引从 0 开始）
+        // 以玩家位置为中心对齐网格
+        Vector3 center = player.transform.position;
+        float centerX = Mathf.Round(center.x / cellSize) * cellSize;
+        float centerY = Mathf.Round(center.y / cellSize) * cellSize;
+        gridCenter = new Vector3(centerX, centerY, 0);
         centerIndex = gridSize / 2;
 
-        // 创建网格父物体
         gridParent = new GameObject("BuildGrid").transform;
-
-        // 生成高亮方块
         highlightGrid = new GameObject[gridSize, gridSize];
-        GenerateGridHighlights();
+        occupied = new bool[gridSize, gridSize];
+        GenerateGrid();
 
-        // 尝试选中第一个可用的物品（数量>0）
-        if (playerInventory != null)
-        {
-            for (int i = 0; i < availableItems.Count; i++)
-            {
-                int count = playerInventory.GetItemCount(availableItems[i].itemName);
-                if (count > 0)
-                {
-                    currentItemIndex = i;
-                    break;
-                }
-            }
-        }
+        // 初始光标在玩家面前（假设朝右）
+        currentX = centerIndex;
+        currentY = centerIndex + 1;
 
-        // 计算初始选中格子（面向方向的第一格）
-        CalculateInitialSelection();
-
-        // **禁用角色移动**
-        //playerController.DisableMovement();
+        isActive = true;
     }
 
-    /// <summary>
-    /// 退出建造模式：销毁网格、恢复角色移动
-    /// </summary>
-    private void ExitBuildMode()
+    public void ExitBuildMode()
     {
-        if (gridParent != null)
-            Destroy(gridParent.gameObject);
-
+        if (gridParent != null) Destroy(gridParent.gameObject);
         highlightGrid = null;
-
-        // **恢复角色移动**
-        //playerController.EnableMovement();
+        occupied = null;
+        isActive = false;
     }
 
-    /// <summary>
-    /// 生成所有高亮预览方块，坐标严格对齐世界网格
-    /// </summary>
-    private void GenerateGridHighlights()
+    private void GenerateGrid()
     {
         int half = gridSize / 2;
         for (int x = 0; x < gridSize; x++)
         {
             for (int y = 0; y < gridSize; y++)
             {
-                // 计算相对于中心格子的偏移
-                int offsetX = x - half;
-                int offsetY = y - half;
-                Vector3 pos = gridCenterWorld + new Vector3(offsetX * cellSize, offsetY * cellSize, 0);
-
-                GameObject highlight = Instantiate(highlightPrefab, pos, Quaternion.identity, gridParent);
-                highlightGrid[x, y] = highlight;
+                Vector3 pos = gridCenter + new Vector3((x - half) * cellSize, (y - half) * cellSize, 0);
+                GameObject hl = Instantiate(highlightPrefab, pos, Quaternion.identity, gridParent);
+                highlightGrid[x, y] = hl;
             }
         }
     }
 
-    /// <summary>
-    /// 根据进入时的角色朝向计算初始选中的格子（面向方向的第一格）
-    /// </summary>
-    private void CalculateInitialSelection()
-    {
-        // 获取角色朝向（假设角色默认朝右，使用 Vector2.right；如果默认朝上，改为 Vector2.up）
-        Vector2 forward = buildModeEnterRotation * Vector2.right;
-        forward.Normalize();
-
-        int dx = 0, dy = 0;
-        // 判断主要朝向：哪个轴绝对值大就沿哪个轴移动
-        if (Mathf.Abs(forward.x) > Mathf.Abs(forward.y))
-            dx = forward.x > 0 ? 1 : -1;
-        else
-            dy = forward.y > 0 ? 1 : -1;
-
-        // 从中心格子沿朝向移动一格
-        currentGridX = Mathf.Clamp(centerIndex + dx, 0, gridSize - 1);
-        currentGridY = Mathf.Clamp(centerIndex + dy, 0, gridSize - 1);
-    }
-
-    /// <summary>
-    /// 处理方向键/WASD 切换选中格子
-    /// </summary>
-    private void HandleSelectionInput()
+    private void HandleInput()
     {
         int dx = 0, dy = 0;
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) dy = 1;
@@ -259,19 +112,16 @@ public class BuildModeController : MonoBehaviour
 
         if (dx != 0 || dy != 0)
         {
-            int newX = currentGridX + dx;
-            int newY = currentGridY + dy;
+            int newX = currentX + dx;
+            int newY = currentY + dy;
             if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize)
             {
-                currentGridX = newX;
-                currentGridY = newY;
+                currentX = newX;
+                currentY = newY;
             }
         }
     }
 
-    /// <summary>
-    /// 更新所有格子的材质（根据可放置性和是否选中）
-    /// </summary>
     private void UpdateHighlights()
     {
         for (int x = 0; x < gridSize; x++)
@@ -283,96 +133,70 @@ public class BuildModeController : MonoBehaviour
 
                 bool canPlace = IsPositionValid(x, y, hl.transform.position);
                 SpriteRenderer sr = hl.GetComponent<SpriteRenderer>();
-                if (sr == null) continue;
-
-                if (x == currentGridX && y == currentGridY)
-                {
-                    // 当前选中格子使用选中材质（如果没有则直接改颜色）
-                    if (selectedMaterial != null)
-                        sr.material = selectedMaterial;
-                    else
-                        sr.color = Color.blue;
-                }
+                if (x == currentX && y == currentY)
+                    sr.material = selectedMaterial ?? sr.material;
                 else
-                {
-                    if (canPlace)
-                        sr.material = validMaterial ?? sr.material;
-                    else
-                        sr.material = invalidMaterial ?? sr.material;
-                }
+                    sr.material = canPlace ? (validMaterial ?? sr.material) : (invalidMaterial ?? sr.material);
             }
         }
     }
 
-    /// <summary>
-    /// 判断某个格子是否可放置
-    /// </summary>
-    /// <param name="x">格子 x 索引</param>
-    /// <param name="y">格子 y 索引</param>
-    /// <param name="worldPos">格子中心世界坐标</param>
     private bool IsPositionValid(int x, int y, Vector3 worldPos)
     {
-        // 排除角色自身所在的格子（中心格子）
-        if (x == centerIndex && y == centerIndex)
-            return false;
-
-        // 2D 物理检测：以格子中心为中心，检测指定层是否有碰撞体
+        if (x == centerIndex && y == centerIndex) return false;
+        if (occupied[x, y]) return false;
         Collider2D[] hits = Physics2D.OverlapBoxAll(worldPos, Vector2.one * cellSize * 0.8f, 0f, obstacleLayer);
         return hits.Length == 0;
     }
 
-    /// <summary>
-    /// 在当前选中的格子位置放置物体
-    /// </summary>
-    private void PlaceAtCurrentSelection()
+    private bool TryPlaceCurrentItem()
     {
-        if (availableItems.Count == 0 || currentItemIndex < 0 || currentItemIndex >= availableItems.Count)
-        {
-            Debug.Log("没有可放置的物品");
-            return;
-        }
-        if (playerInventory == null) return;
-
+        if (availableItems.Count == 0) return false;
         PlaceableItem item = availableItems[currentItemIndex];
-        // 再次检查背包数量（可能被其他系统改变）
-        int currentCount = playerInventory.GetItemCount(item.itemName);
-        if (currentCount <= 0)
+
+        int count = GetItemCount(item.shape);
+        if (count <= 0) return false;
+
+        Vector3 worldPos = highlightGrid[currentX, currentY].transform.position;
+        if (!IsPositionValid(currentX, currentY, worldPos)) return false;
+
+        DecreaseItemCount(item.shape);
+
+        GameObject blockObj = BlockManager.instance.GetBlock(item.shape);
+        blockObj.transform.position = worldPos;
+        blockObj.layer = LayerMask.NameToLayer("Ground");
+
+        // 设置子物体上的材质
+        SpriteRenderer sr = blockObj.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
         {
-            Debug.Log($"物品 {item.itemName} 数量不足");
-            return;
+            Material mat = (player.playerType == PlayerType.Player1) ? GameManager.instance.player1Material : GameManager.instance.player2Material;
+            if (mat != null) sr.material = mat;
         }
 
-        GameObject selected = highlightGrid[currentGridX, currentGridY];
-        if (selected == null) return;
+        blockObj.SetActive(true);
 
-        if (IsPositionValid(currentGridX, currentGridY, selected.transform.position))
-        {
-            GameObject placedObject = Instantiate(item.prefab, selected.transform.position, Quaternion.identity);
-            placedObject.Freeze(); // 使用扩展方法
-            // 扣减背包数量
-            playerInventory.RemoveItem(item.itemName, 1);
+        occupied[currentX, currentY] = true;
+        return true;
+    }
 
-            // 如果该物品数量变为0，自动切换到下一个可用物品
-            if (currentCount - 1 <= 0)
-            {
-                for (int i = 0; i < availableItems.Count; i++)
-                {
-                    int nextIndex = (currentItemIndex + 1 + i) % availableItems.Count;
-                    int cnt = playerInventory.GetItemCount(availableItems[nextIndex].itemName);
-                    if (cnt > 0)
-                    {
-                        currentItemIndex = nextIndex;
-                        break;
-                    }
-                }
-            }
+    private int GetItemCount(ShapeType shape)
+    {
+        if (shape == ShapeType.Triangle) return player.triangleCount;
+        if (shape == ShapeType.Square) return player.squareCount;
+        return player.circleCount;
+    }
 
-            // 放置后更新高亮状态
-            UpdateHighlights();
-        }
-        else
-        {
-            Debug.Log("Cannot place here");
-        }
+    private void DecreaseItemCount(ShapeType shape)
+    {
+        if (shape == ShapeType.Triangle) player.triangleCount--;
+        else if (shape == ShapeType.Square) player.squareCount--;
+        else player.circleCount--;
+    }
+
+    private void SwitchItem(int direction)
+    {
+        if (availableItems.Count == 0) return;
+        currentItemIndex = (currentItemIndex + direction + availableItems.Count) % availableItems.Count;
     }
 }

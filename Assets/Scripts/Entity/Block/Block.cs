@@ -1,15 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class Block : Entity
 {
     public BlockDeadState  deadState;
 
+    public bool IsCore { get; set; }
+    public PlayerType coreOwner;
+
+    public ShapeType Shape => (ShapeType)spriteCount;
+
     protected override void Awake()
     {
         base.Awake();
-
         deadState = new BlockDeadState(this, stateMachine, "Dead");
     }
 
@@ -22,53 +27,30 @@ public class Block : Entity
 
     protected override void Update()
     {
-
+        base.Update();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Entity entity = collision.gameObject.GetComponent<Entity>();
-        Player player = collision.gameObject.GetComponent<Player>();
 
-        if (entity.tag != this.tag && entity != null)  
+        if (entity.gameObject.layer == LayerMask.NameToLayer("Ground") && entity != null)
         {
-            Collider2D collider = collision.collider;
-            bool shouldEliminateOther = (this.spriteCount == 0 && entity.spriteCount == 2) || (this.spriteCount == 2 && entity.spriteCount == 1) || (this.spriteCount == 1 && entity.spriteCount == 0);
+
+            bool shouldEliminateOther = (this.spriteCount == 2 && entity.spriteCount == 0) || (this.spriteCount == 1 && entity.spriteCount == 2) || (this.spriteCount == 0 && entity.spriteCount == 1);
 
             if (shouldEliminateOther)
             {
-                player = entity as Player;
-                if (player != null)
+                if (IsCore)
                 {
-                    player.stateMachine.ChangeState(player.deadState);
+                    GameManager.instance?.OnCoreDestroyed(coreOwner);
+                    Destroy(gameObject); // 直接销毁，不回收
                 }
                 else
                 {
-                    entity.gameObject.layer = LayerMask.NameToLayer("Background");
-
-                    entity.sr.enabled = false;
-
-                    entity.ps.gameObject.SetActive(true);
-
-                    Destroy(entity.gameObject, 5f);
+                    BlockManager.instance.ReturnBlock(gameObject, Shape);
                 }
             }
-        }
-
-        if (this.gameObject.layer == LayerMask.NameToLayer("Item") && player != null)
-        {
-            if (this.tag == "Traingle")
-            {
-                player.traingleCount++;
-            }else if (this.tag == "Square")
-            {
-                player.squareCount++;
-            }
-            else if (this.tag == "Circle")
-            {
-                player.circleCount++;
-            }
-            Destroy(this.gameObject);
         }
     }
 }

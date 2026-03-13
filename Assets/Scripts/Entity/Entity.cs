@@ -34,7 +34,7 @@ public class Entity : MonoBehaviour
     protected virtual void Awake()
     {
 
-        stateMachine = new PlayerStateMachine();
+        stateMachine = new EntityStateMachine();
     }
 
     protected virtual void Start()
@@ -50,6 +50,12 @@ public class Entity : MonoBehaviour
     {
 
         stateMachine.currentState.Update();
+    }
+
+    protected virtual void FixedUpdate()
+    {
+        if (stateMachine != null && stateMachine.currentState != null)
+            stateMachine.currentState.FixedUpdate();
     }
 
     public void UsingEnumerator(IEnumerator enumerator)

@@ -1,9 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using static UnityEngine.InputSystem.InputAction;
 
 public class PlayerMoveState : PlayerState
 {
+    private InputAction moveAction;
+    private InputAction jumpAction;
+    public Vector2 moveInput;
+
     public PlayerMoveState(Entity entity, EntityStateMachine stateMachine, string animBoolName) : base(entity, stateMachine, animBoolName)
     {
     }
@@ -12,6 +20,22 @@ public class PlayerMoveState : PlayerState
     {
         base.Enter();
 
+        // �� PlayerInput ��ȡ������������������ .inputactions �ʲ��ж����һ�£�
+        moveAction = player.playerInput.actions["Move"];
+        jumpAction = player.playerInput.actions["Jump"];
+
+        // �����¼�
+        moveAction.performed += OnMove;
+        moveAction.canceled += OnMove; // �ɿ�ʱ����
+        jumpAction.performed += OnJump;
+
+        // ���ö�����PlayerInput ���Զ�����������ʽ���ÿ���ȷ����Ч��
+        moveAction.Enable();
+        jumpAction.Enable();
+
+        // ԭ�� player.control �Ĵ���ȫ���Ƴ�
+        // player.control.PlayerController.Enable();  // ɾ��
+
         player.spriteCount = 1;
         player.anim.SetBool("Traingle", false);
         player.anim.SetBool("Square", true);
@@ -19,26 +43,30 @@ public class PlayerMoveState : PlayerState
         player.boxCd.enabled = true;
         player.circleCd.enabled = false;
         player.traingleCd.enabled = false;
+
     }
 
     public override void Exit()
     {
         base.Exit();
+
+        moveAction.performed -= OnMove;
+        moveAction.canceled -= OnMove;
+        jumpAction.performed -= OnJump;
+
+        // ���Խ��ö�������ͨ���� PlayerInput �Զ�����
+        moveAction.Disable();
+        jumpAction.Disable();
+
+        // ɾ�� player.control ��ش���
+        // player.control.PlayerController.Disable();
     }
 
     public override void Update()
     {
         base.Update();
 
-        if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundDetected()) 
-        {
-            Debug.Log("Jump");
-            SetVelocity(xInput * player.walkSpeed, player.jumpForce);
-        }
-        else
-        {
-            SetVelocity(xInput * player.walkSpeed, player.rb.velocity.y);
-        }
+
 
         if (Input.GetKeyDown(KeyCode.O))
         {
@@ -60,12 +88,10 @@ public class PlayerMoveState : PlayerState
             }
         }
 
-        if (player.isDead)
+        if (player.gameObject.transform.position.y < PlayerManager.instance.playerDeadZoneY)
         {
-            Debug.Log("Player is Dead");
             stateMachine.ChangeState(player.deadState);
         }
-
     }
 
     private void ShapeChange(string shapeName, Collider2D cd, bool setTrue)
@@ -80,4 +106,30 @@ public class PlayerMoveState : PlayerState
         cd.enabled = true;
         player.anim.SetBool(shapeName, setTrue);
     }
+
+    public override void FixedUpdate()
+    {
+        SetVelocity(moveInput.x * player.walkSpeed, player.rb.velocity.y);
+    }
+
+    #region InputSystem
+
+    // ����ص�
+    private void OnMove(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
+    }
+
+    private void OnJump(InputAction.CallbackContext context)
+    {
+        if (player.IsGroundDetected())
+        {
+            // ע�⣺����ֱ������ velocity����������Ҫ�� FixedUpdate �д���������
+            // ��������Ե��� SetVelocity
+            SetVelocity(player.rb.velocity.x, player.jumpForce);
+        }
+    }
+
+
+    #endregion
 }

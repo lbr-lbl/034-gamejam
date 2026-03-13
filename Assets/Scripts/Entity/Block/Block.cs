@@ -35,7 +35,7 @@ public class Block : Entity
     {
         Entity entity = collision.gameObject.GetComponent<Entity>();
 
-        if (entity.gameObject.layer == LayerMask.NameToLayer("Ground") && entity != null)
+        if (entity != null && entity.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
 
             bool shouldEliminateOther = (this.spriteCount == 2 && entity.spriteCount == 0) || (this.spriteCount == 1 && entity.spriteCount == 2) || (this.spriteCount == 0 && entity.spriteCount == 1);

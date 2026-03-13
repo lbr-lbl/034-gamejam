@@ -45,7 +45,11 @@ public class PlayerDeadState : PlayerState
     {
         yield return new WaitForSeconds(player.resetCd);
 
-        player.transform.position = PlayerManager.instance.resetPosition.position;
+        // 使用玩家独立的复活点，而不是全局的 PlayerManager
+        if (player.respawnPoint != null)
+            player.transform.position = player.respawnPoint.position;
+        else
+            Debug.LogError($"玩家 {player.name} 的复活点未设置！");
 
         SetVelocity(0, 0);
 

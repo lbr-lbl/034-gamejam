@@ -4983,7 +4983,6 @@ GameObject:
   - component: {fileID: 6642002217342766261}
   - component: {fileID: 4931590790697933686}
   - component: {fileID: 4374613960922268735}
-  - component: {fileID: 158143706910344454}
   - component: {fileID: -6974952723775588359}
   m_Layer: 6
   m_Name: Triangle
@@ -5084,27 +5083,6 @@ PolygonCollider2D:
       - {x: -0.47727826, y: 0.47781098}
       - {x: 0.47523984, y: 0.4752558}
   m_UseDelaunayMesh: 0
---- !u!114 &158143706910344454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7735128690401401360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ea77539073d25a4f8116bced9f16f26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteCount: 0
-  isDead: 0
-  walkSpeed: 0
-  jumpForce: 0
-  groundCheckDistance: 0
-  rb: {fileID: 0}
-  anim: {fileID: 0}
-  sr: {fileID: 0}
-  ps: {fileID: 1019601848382201670}
 --- !u!114 &-6974952723775588359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5120,7 +5098,7 @@ MonoBehaviour:
   spriteCount: 0
   maxDurability: 6
   coreCost: 6
-  islandCost: 3
+  islandCost: 2
   buildingCost: 1
-  playerCost: 2
-  bulletCost: 1
+  playerCost: 6
+  bulletCost: 3

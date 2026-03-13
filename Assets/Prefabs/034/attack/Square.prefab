@@ -4983,7 +4983,6 @@ GameObject:
   - component: {fileID: 2220498804594228679}
   - component: {fileID: 6619391814728200778}
   - component: {fileID: 5374980236237648412}
-  - component: {fileID: 4233257959355509328}
   - component: {fileID: -7888286947135940371}
   m_Layer: 6
   m_Name: Square
@@ -5081,27 +5080,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.95, y: 0.95}
   m_EdgeRadius: 0
---- !u!114 &4233257959355509328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7573733000364155352}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f26f5655ed6161846896b833f2a37cba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteCount: 0
-  isDead: 0
-  walkSpeed: 0
-  jumpForce: 0
-  groundCheckDistance: 0
-  rb: {fileID: 0}
-  anim: {fileID: 0}
-  sr: {fileID: 0}
-  ps: {fileID: 8256664375946507321}
 --- !u!114 &-7888286947135940371
 MonoBehaviour:
   m_ObjectHideFlags: 0

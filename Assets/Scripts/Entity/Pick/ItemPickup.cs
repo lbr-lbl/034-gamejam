@@ -3,11 +3,11 @@ using UnityEngine;
 public class ItemPickup : MonoBehaviour
 {
     [Header("物品信息")]
-    [SerializeField] private string itemName;          // 与背包系统匹配的名称
-    [SerializeField] private int amount = 1;           // 拾取后增加的数量
+    [SerializeField] private ShapeType shape;          // 形状（在预制体上设置）
+    [SerializeField] private int amount = 1;           // 拾取后增加的数量（通常为1）
 
     [Header("拾取设置")]
-    [SerializeField] private float pickupDelay = 0.5f; // 生成后多久才能拾取（防止瞬间拾取）
+    [SerializeField] private float pickupDelay = 0.5f; // 生成后多久才能拾取
     [SerializeField] private LayerMask playerLayer;    // 玩家所在层
 
     [Header("边界销毁")]
@@ -15,12 +15,16 @@ public class ItemPickup : MonoBehaviour
 
     private float spawnTime;
     private bool canPickup = false;
+    private Rigidbody2D rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
 
     private void Start()
     {
         spawnTime = Time.time;
-        // 可选：添加一点随机下落速度
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {
             rb.velocity = new Vector2(Random.Range(-.3f, .3f), 0);
@@ -34,28 +38,33 @@ public class ItemPickup : MonoBehaviour
             canPickup = true;
         }
 
-        // 掉落地图外销毁
+        // 掉落地图外，放回对象池
         if (transform.position.y < destroyY)
-            Destroy(gameObject);
+        {
+            BlockManager.instance.ReturnBlock(gameObject, shape, BlockType.Pickup);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (!canPickup) return;
 
-        Collider2D other = collision.collider;
-
         // 检查是否是玩家
-        if ((playerLayer.value & (1 << other.gameObject.layer)) != 0)
+        if ((playerLayer.value & (1 << collision.gameObject.layer)) != 0)
         {
-            PlayerInventory inventory = other.GetComponent<PlayerInventory>();
-            if (inventory != null)
+            Player player = collision.gameObject.GetComponent<Player>();
+            if (player != null)
             {
-                inventory.AddItem(itemName, amount);
-                Debug.Log($"拾取了 {amount} 个 {itemName}");
-                Destroy(gameObject);
+                // 增加玩家对应计数
+                if (shape == ShapeType.Triangle) player.triangleCount += amount;
+                else if (shape == ShapeType.Square) player.squareCount += amount;
+                else if (shape == ShapeType.Circle) player.circleCount += amount;
+
+                Debug.Log($"玩家 {player.name} 拾取了 {amount} 个 {shape}");
+
+                // 将物体放回对象池
+                BlockManager.instance.ReturnBlock(gameObject, shape, BlockType.Pickup);
             }
         }
     }
-
 }

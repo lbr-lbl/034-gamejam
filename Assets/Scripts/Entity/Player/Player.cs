@@ -7,6 +7,8 @@ public class Player : Entity
     [HideInInspector] public BoxCollider2D boxCd;
     [HideInInspector] public CircleCollider2D circleCd;
     [HideInInspector] public PolygonCollider2D traingleCd;
+    [Header("死亡设置")]
+    public float deathZoneY = -5f;     // 低于此 Y 坐标触发死亡
 
     public PlayerInput playerInput;
     public float resetCd;
@@ -65,6 +67,15 @@ public class Player : Entity
     {
         base.Update();
         UpdateInput();
+        CheckFall();
+    }
+
+    private void CheckFall()
+    {
+        if (transform.position.y < deathZoneY && !(stateMachine.currentState is PlayerDeadState)) 
+        {
+            stateMachine.ChangeState(deadState);
+        }
     }
 
     private void UpdateInput()
@@ -126,11 +137,11 @@ public class Player : Entity
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // 拾取可拾取物
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Pickable"))
-        {
-            CollectPickup(collision.gameObject);
-            return;
-        }
+        //if (collision.gameObject.layer == LayerMask.NameToLayer("Pickable"))
+        //{
+        //    CollectPickup(collision.gameObject);
+        //    return;
+        //}
 
         // 玩家间克制
         Player otherPlayer = collision.gameObject.GetComponent<Player>();
@@ -144,6 +155,49 @@ public class Player : Entity
                 otherPlayer.stateMachine.ChangeState(deadState);
             }
             // 相同形状：弹开（由物理材质处理）
+        }
+    }
+
+    /// <summary>
+    /// 切换形状（由状态机调用）
+    /// </summary>
+    public void ChangeShape()
+    {
+        spriteCount = (spriteCount + 1) % 3; // 0->1->2->0
+        UpdateShapeVisual();
+    }
+
+    /// <summary>
+    /// 更新形状的动画和碰撞器
+    /// </summary>
+    public void UpdateShapeVisual()
+    {
+        // 禁用所有形状碰撞器
+        boxCd.enabled = false;
+        circleCd.enabled = false;
+        traingleCd.enabled = false;
+
+        // 根据 spriteCount 启用对应碰撞器和动画
+        switch (spriteCount)
+        {
+            case 0: // 三角形
+                traingleCd.enabled = true;
+                anim.SetBool("Triangle", true);
+                anim.SetBool("Square", false);
+                anim.SetBool("Circle", false);
+                break;
+            case 1: // 正方形
+                boxCd.enabled = true;
+                anim.SetBool("Triangle", false);
+                anim.SetBool("Square", true);
+                anim.SetBool("Circle", false);
+                break;
+            case 2: // 圆形
+                circleCd.enabled = true;
+                anim.SetBool("Triangle", false);
+                anim.SetBool("Square", false);
+                anim.SetBool("Circle", true);
+                break;
         }
     }
 

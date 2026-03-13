@@ -10,8 +10,7 @@ public class BaseBuildController : MonoBehaviour
     [SerializeField] private Material validMaterial;
     [SerializeField] private Material selectedMaterial;
     [SerializeField] private Material occupiedMaterial;
-    [SerializeField] private Material coreCandidateMaterial;
-    [SerializeField] private Material coreSelectedMaterial;
+    [SerializeField] private Material coreMaterial;
 
     [Header("初始位置偏移")]
     [SerializeField] private int startXOffset = -2;
@@ -106,10 +105,10 @@ public class BaseBuildController : MonoBehaviour
             else if (move.y < -0.5f) HandleInput(0, -1);
 
             // 确认核心
-            if (playerInput.actions["Set"].WasPressedThisFrame())
-            {
-                TryConfirmCore();
-            }
+            //if (playerInput.actions["Set"].WasPressedThisFrame())
+            //{
+            //    TryConfirmCore();
+            //}
         }
 
         UpdateHighlights();
@@ -167,9 +166,9 @@ public class BaseBuildController : MonoBehaviour
                 {
                     hl.SetActive(true);
                     if (grid == currentGrid)
-                        sr.material = coreSelectedMaterial ?? sr.material;
+                        sr.material = selectedMaterial ?? sr.material;
                     else
-                        sr.material = coreCandidateMaterial ?? sr.material;
+                        sr.material = validMaterial ?? sr.material;
                 }
                 else
                 {
@@ -220,7 +219,7 @@ public class BaseBuildController : MonoBehaviour
         };
         foreach (var n in neighbors)
         {
-            if (n.x >= 0 && n.x < width && !occupied.Contains(n))
+            if (n.x >= 0 && n.x < width && !occupied.Contains(n) && n.y < 15)
                 availableSet.Add(n);
         }
 
@@ -257,6 +256,7 @@ public class BaseBuildController : MonoBehaviour
         {
             Block block = obj.GetComponent<Block>();
             if (block != null) CoreShape = block.spriteCount;
+            obj.GetComponentInChildren<SpriteRenderer>().material = coreMaterial ?? obj.GetComponentInChildren<SpriteRenderer>().material;
         }
         CoreSelected = true;
         return true;
@@ -296,6 +296,7 @@ public class BaseBuildController : MonoBehaviour
 
             CorePosition = worldPos;
             CoreShape = (int)defaultCoreShape;
+            blockObj.GetComponentInChildren<SpriteRenderer>().material = coreMaterial ?? blockObj.GetComponentInChildren<SpriteRenderer>().material;
             CoreSelected = true;
             Debug.Log($"未搭建基地，自动在 {currentGrid} 生成默认核心");
             return;
@@ -315,6 +316,7 @@ public class BaseBuildController : MonoBehaviour
 
         CorePosition = centerPos;
         CoreShape = (int)defaultCoreShape;
+        centerBlock.GetComponentInChildren<SpriteRenderer>().material = coreMaterial ?? centerBlock.GetComponentInChildren<SpriteRenderer>().material;
         CoreSelected = true;
         Debug.Log($"未搭建基地，自动在空岛中心 {centerGrid} 生成默认核心");
     }

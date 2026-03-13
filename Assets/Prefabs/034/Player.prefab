@@ -5288,16 +5288,16 @@ MonoBehaviour:
   groundCheckR: {fileID: 7637418063669806274}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   itemLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   pickupLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
 --- !u!114 &4257318233703656139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5337,7 +5337,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: PlayerController
+  m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &4455566802274916255

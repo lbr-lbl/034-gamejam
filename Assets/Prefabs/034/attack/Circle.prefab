@@ -4983,7 +4983,6 @@ GameObject:
   - component: {fileID: 1133622319296486883}
   - component: {fileID: 4139869337321628528}
   - component: {fileID: 2810865070593655781}
-  - component: {fileID: 4302238658384754342}
   - component: {fileID: 1477465057472872705}
   m_Layer: 6
   m_Name: Circle
@@ -5071,27 +5070,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &4302238658384754342
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5991237196128738922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 475982e88a275f246902065b84aae25d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteCount: 0
-  isDead: 0
-  walkSpeed: 0
-  jumpForce: 0
-  groundCheckDistance: 0
-  rb: {fileID: 0}
-  anim: {fileID: 0}
-  sr: {fileID: 0}
-  ps: {fileID: 6917554630046766146}
 --- !u!114 &1477465057472872705
 MonoBehaviour:
   m_ObjectHideFlags: 0

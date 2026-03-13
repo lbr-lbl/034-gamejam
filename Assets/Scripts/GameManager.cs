@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -40,8 +41,8 @@ public class GameManager : MonoBehaviour
     public float phase2Duration = 5f;        // 第二阶段：从最大宽度缩短到0
     // 注意：实际总布置时间 = phase1Duration + bufferDuration + phase2Duration
 
-    [Header("核心选择阶段时长")]
-    public float coreSelectionTime = 5f;      // 核心选择阶段时长
+    [Header("核心选择阶段时长")] // 此变量不再使用，但保留以防万一
+    public float coreSelectionTime = 5f;      // 核心选择阶段时长（已合并到 phase2Duration 中）
 
     [Header("全屏阶段时长")]
     public float fullScreenTime = 2f;         // 全屏阶段时长
@@ -92,6 +93,12 @@ public class GameManager : MonoBehaviour
     [Header("基地建造控制器（布置阶段使用）")]
     public BaseBuildController baseBuildController1;   // 左侧玩家基地建造器
     public BaseBuildController baseBuildController2;   // 右侧玩家基地建造器
+
+    [Header("方块预制体（按形状索引）")]
+    public GameObject[] buildingPrefabs; // 0=三角,1=正方,2=圆
+
+    [Header("子弹预制体（按形状索引）")]
+    public GameObject[] projectilePrefabs;
 
     private CameraFollower leftFollower;
     private CameraFollower rightFollower;
@@ -196,11 +203,6 @@ public class GameManager : MonoBehaviour
     {
         // 等待一帧确保场景加载完成
         yield return null;
-        // 场景加载后此脚本会重新初始化，因此需要重新获取必要引用
-        // 简单起见，直接启动协程（新的实例会执行Start，再次调用StartGame时需要避免重复）
-        // 由于场景加载后 GameManager 会重新创建，此协程实际上可能无效。
-        // 更好的做法是在场景加载完成后由新实例的 Start 自动调用 StartGame。
-        // 这里保留以防万一。
         StartCoroutine(StateMachine());
     }
 
@@ -242,18 +244,13 @@ public class GameManager : MonoBehaviour
         {
             baseBuildController1.Initialize();
             var pi1 = baseBuildController1.GetComponent<PlayerInput>();
-            if (pi1 != null) InputManager.instance.AssignDeviceToController(pi1, Keyboard.current, "KeyboardP1");
+            if (pi1 != null) InputManager.instance.AssignActionMapToController(pi1, "Player1");
         }
         if (baseBuildController2 != null)
         {
             baseBuildController2.Initialize();
             var pi2 = baseBuildController2.GetComponent<PlayerInput>();
-            if (pi2 != null)
-            {
-                InputDevice device = Gamepad.all.Count > 0 ? (InputDevice)Gamepad.all[0] : Keyboard.current;
-                string scheme = Gamepad.all.Count > 0 ? "Gamepad" : "KeyboardP2";
-                InputManager.instance.AssignDeviceToController(pi2, device, scheme);
-            }
+            if (pi2 != null) InputManager.instance.AssignActionMapToController(pi2, "Player2");
         }
 
         // 布置阶段计时条（三段式）
@@ -292,9 +289,14 @@ public class GameManager : MonoBehaviour
             // 缓冲阶段：保持最大宽度
             yield return new WaitForSeconds(bufferDuration);
 
-            // 第二阶段：根据选择的方向缩短
+            // 第二阶段开始前，启动核心选择
+            if (baseBuildController1 != null) baseBuildController1.StartCoreSelection();
+            if (baseBuildController2 != null) baseBuildController2.StartCoreSelection();
+
+            // 第二阶段：根据选择的方向缩短，同时等待核心选择完成
             float elapsedPhase2 = 0f;
-            while (elapsedPhase2 < phase2Duration)
+            bool coresSelected = false;
+            while (elapsedPhase2 < phase2Duration && !coresSelected)
             {
                 elapsedPhase2 += Time.deltaTime;
                 float t = Mathf.Clamp01(elapsedPhase2 / phase2Duration);
@@ -313,8 +315,17 @@ public class GameManager : MonoBehaviour
                 rightSize.x = width;
                 leftTimerBar.sizeDelta = leftSize;
                 rightTimerBar.sizeDelta = rightSize;
+
+                // 检查双方是否都已选择核心
+                if (baseBuildController1 != null && baseBuildController2 != null &&
+                    baseBuildController1.CoreSelected && baseBuildController2.CoreSelected)
+                {
+                    coresSelected = true;
+                }
+
                 yield return null;
             }
+            // 确保计时条归零并隐藏
             leftSize.x = 0;
             rightSize.x = 0;
             leftTimerBar.sizeDelta = leftSize;
@@ -325,13 +336,47 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // 如果没有计时条，则直接等待总时间
+            // 如果没有计时条，则直接等待总时间（同时启动核心选择）
+            if (baseBuildController1 != null) baseBuildController1.StartCoreSelection();
+            if (baseBuildController2 != null) baseBuildController2.StartCoreSelection();
             float totalPreparationTime = phase1Duration + bufferDuration + phase2Duration;
             yield return new WaitForSeconds(totalPreparationTime);
         }
 
-        // ---------- 过渡到核心选择 ----------
-        yield return StartCoroutine(FadeOut(fadeDuration_PreToCore));
+        // 第二阶段结束，强制选择核心（如有未选）
+        if (baseBuildController1 != null && !baseBuildController1.CoreSelected) baseBuildController1.ForceSelectCore();
+        if (baseBuildController2 != null && !baseBuildController2.CoreSelected) baseBuildController2.ForceSelectCore();
+
+        // 获取核心
+        core1 = baseBuildController1.GetCoreObject();
+        if (core1 != null)
+        {
+            Block block = core1.GetComponent<Block>();
+            if (block != null)
+            {
+                block.IsCore = true;
+                block.coreOwner = PlayerType.Player1;
+            }
+        }
+        core2 = baseBuildController2.GetCoreObject();
+        if (core2 != null)
+        {
+            Block block = core2.GetComponent<Block>();
+            if (block != null)
+            {
+                block.IsCore = true;
+                block.coreOwner = PlayerType.Player2;
+            }
+        }
+
+        // 清理基地建造控制器（隐藏高亮网格）
+        if (baseBuildController1 != null) baseBuildController1.Cleanup();
+        if (baseBuildController2 != null) baseBuildController2.Cleanup();
+
+        // ---------- 过渡到全屏阶段（在此阶段生成玩家，避免出现在左右摄像机中） ----------
+        yield return StartCoroutine(FadeOut(fadeDuration_CoreToFull));
+
+        // 切换摄像机到全屏
         divider.SetActive(false);
         leftCam.gameObject.SetActive(false);
         rightCam.gameObject.SetActive(false);
@@ -344,50 +389,18 @@ public class GameManager : MonoBehaviour
         float sizeByWidth = (mapWidth / 2) / aspect;
         float sizeByHeight = mapHeight / 2;
         fullCam.orthographicSize = Mathf.Max(sizeByWidth, sizeByHeight);
-
         fullCam.transform.position = new Vector3((mapLeft + mapRight) / 2, (mapBottom + mapTop) / 2, -10);
-        fullCam.cullingMask = LayerMask.GetMask("Default", "Ground");
+        fullCam.cullingMask = LayerMask.GetMask("Default", "Player", "Ground", "Pickable", "Bullet");
 
-        // 启动核心选择
-        if (baseBuildController1 != null) baseBuildController1.StartCoreSelection();
-        if (baseBuildController2 != null) baseBuildController2.StartCoreSelection();
-
-        yield return new WaitForSeconds(blackHoldTime_PreToCore);
-        yield return StartCoroutine(FadeIn(fadeDuration_PreToCore));
-
-        // 核心选择阶段（等待玩家选择或超时）
-        float coreElapsed = 0f;
-        while (coreElapsed < coreSelectionTime && !(baseBuildController1.CoreSelected && baseBuildController2.CoreSelected))
-        {
-            coreElapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        // 强制选择核心
-        if (baseBuildController1 != null && !baseBuildController1.CoreSelected) baseBuildController1.ForceSelectCore();
-        if (baseBuildController2 != null && !baseBuildController2.CoreSelected) baseBuildController2.ForceSelectCore();
-
-        // 获取核心
-        core1 = baseBuildController1.GetCoreObject();
-        if (core1 != null)
-        {
-            core1.GetComponent<Block>().IsCore = true;
-            core1.GetComponent<Block>().coreOwner = PlayerType.Player1;
-        }
-        core2 = baseBuildController2.GetCoreObject();
-        if (core2 != null)
-        {
-            core2.GetComponent<Block>().IsCore = true;
-            core2.GetComponent<Block>().coreOwner = PlayerType.Player2;
-        }
-
-        // 清理基地建造控制器（隐藏高亮网格）
-        if (baseBuildController1 != null) baseBuildController1.Cleanup();
-        if (baseBuildController2 != null) baseBuildController2.Cleanup();
-
-        // 生成玩家
+        // 生成玩家（黑屏期间）
         player1Instance = Instantiate(playerPrefab, player1Spawner.position + spawnerOffset, Quaternion.identity).GetComponent<Player>();
         player2Instance = Instantiate(playerPrefab, player2Spawner.position + spawnerOffset, Quaternion.identity).GetComponent<Player>();
+
+        // 设置玩家初始形状为核心形状
+        player1Instance.spriteCount = baseBuildController1.CoreShape;
+        player2Instance.spriteCount = baseBuildController2.CoreShape;
+        player1Instance.UpdateShapeVisual();
+        player2Instance.UpdateShapeVisual();
 
         // 生成建造控制器并关联玩家
         player1BuildController = Instantiate(buildModeControllerPrefab).GetComponent<BuildModeController>();
@@ -397,11 +410,8 @@ public class GameManager : MonoBehaviour
         player2BuildController.SetPlayer(player2Instance);
 
         // 分配输入设备
-        InputManager.instance.AssignDeviceToPlayer(player1Instance, Keyboard.current, "KeyboardP1");
-        if (Gamepad.all.Count > 0)
-            InputManager.instance.AssignDeviceToPlayer(player2Instance, Gamepad.all[0], "Gamepad");
-        else
-            InputManager.instance.AssignDeviceToPlayer(player2Instance, Keyboard.current, "KeyboardP2");
+        InputManager.instance.AssignActionMapToPlayer(player1Instance, "Player1");
+        InputManager.instance.AssignActionMapToPlayer(player2Instance, "Player2");
 
         // 设置重生点
         GameObject respawn1 = new GameObject("Respawn1");
@@ -424,12 +434,13 @@ public class GameManager : MonoBehaviour
         if (p2Sprite != null && player2Material != null)
             p2Sprite.material = player2Material;
 
-        // ---------- 过渡到全屏阶段 ----------
-        yield return StartCoroutine(FadeOut(fadeDuration_CoreToFull));
-        fullCam.cullingMask = LayerMask.GetMask("Default", "Player", "Ground", "Pickable", "Bullet");
+        // 等待黑屏剩余时间
         yield return new WaitForSeconds(blackHoldTime_CoreToFull);
+
+        // 淡入
         yield return StartCoroutine(FadeIn(fadeDuration_CoreToFull));
 
+        // 全屏阶段等待
         yield return new WaitForSeconds(fullScreenTime);
 
         // ---------- 过渡到PvP阶段 ----------

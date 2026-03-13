@@ -1,4 +1,3 @@
-// AttackController.cs
 using UnityEngine;
 
 public class AttackController : MonoBehaviour
@@ -11,21 +10,14 @@ public class AttackController : MonoBehaviour
     [Header("瞄准线")]
     [SerializeField] private LineRenderer aimLine;
     [SerializeField] private float previewLength = 5f;
-    [SerializeField] private Color aimColor = Color.red;
-    [SerializeField] private float aimLineWidth = 0.1f;
 
     private bool isAiming = false;
     private Vector2 shootDirection;
-    private PlaceableItem currentItem;
 
     private void Start()
     {
         if (aimLine != null)
         {
-            aimLine.startColor = aimColor;
-            aimLine.endColor = aimColor;
-            aimLine.startWidth = aimLineWidth;
-            aimLine.endWidth = aimLineWidth;
             aimLine.positionCount = 2;
             aimLine.enabled = false;
         }
@@ -42,22 +34,18 @@ public class AttackController : MonoBehaviour
 
         if (isAiming)
         {
-            // 用移动键控制方向
             Vector2 input = player.moveInput;
             if (input != Vector2.zero)
-            {
                 shootDirection = input.normalized;
-            }
             else
             {
-                // 默认朝向角色面向方向
                 float facing = Mathf.Sign(transform.localScale.x);
                 shootDirection = Vector2.right * facing;
             }
 
             UpdateAimLine();
 
-            if (player.throwPressed == false) // 松开投掷键
+            if (!player.throwPressed) // 松开投掷键
             {
                 Fire();
                 isAiming = false;
@@ -68,52 +56,34 @@ public class AttackController : MonoBehaviour
 
     private void TryStartAim()
     {
-        // 检查当前物品是否有投射物
-        BuildModeController bmc = GetComponent<BuildModeController>();
-        if (bmc == null) return;
-        PlaceableItem item = bmc.CurrentItem;
-        if (item == null || item.projectilePrefab == null) return;
-
-        // 检查玩家是否有该物品
-        int count = GetItemCount(item.shape);
+        // 检查玩家是否有当前形状的方块
+        int count = GetItemCount((ShapeType)player.spriteCount);
         if (count <= 0) return;
 
-        currentItem = item;
         isAiming = true;
         if (aimLine != null) aimLine.enabled = true;
     }
 
-    private void UpdateAimLine()
-    {
-        if (aimLine == null) return;
-        Vector3 start = firePoint.position;
-        Vector3 end = start + (Vector3)shootDirection * previewLength;
-        aimLine.SetPosition(0, start);
-        aimLine.SetPosition(1, end);
-    }
-
     private void Fire()
     {
-        if (currentItem == null) return;
+        int count = GetItemCount((ShapeType)player.spriteCount);
+        if (count <= 0) return;
 
         // 扣除物品
-        DecreaseItemCount(currentItem.shape);
+        DecreaseItemCount((ShapeType)player.spriteCount);
 
-        // 生成投射物
-        GameObject proj = Instantiate(currentItem.projectilePrefab, firePoint.position, Quaternion.identity);
-        proj.layer = LayerMask.NameToLayer("Bullet");
+        // 获取对应形状的子弹预制体
+        GameObject projPrefab = GameManager.instance.projectilePrefabs[player.spriteCount];
+        GameObject proj = Instantiate(projPrefab, firePoint.position, Quaternion.identity);
         Rigidbody2D rb = proj.GetComponent<Rigidbody2D>();
-        if (rb != null)
-        {
-            rb.velocity = shootDirection * projectileSpeed;
-        }
+        if (rb != null) rb.velocity = shootDirection * projectileSpeed;
 
-        // 设置子弹材质（查找子物体）
-        SpriteRenderer projSr = proj.GetComponentInChildren<SpriteRenderer>();
-        if (projSr != null)
+        // 设置子弹材质
+        SpriteRenderer sr = proj.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
         {
             Material mat = (player.playerType == PlayerType.Player1) ? GameManager.instance.player1Material : GameManager.instance.player2Material;
-            if (mat != null) projSr.material = mat;
+            if (mat != null) sr.material = mat;
         }
 
         // 忽略与发射者的碰撞
@@ -122,8 +92,6 @@ public class AttackController : MonoBehaviour
         foreach (var pc in playerColliders)
             foreach (var projc in projColliders)
                 Physics2D.IgnoreCollision(projc, pc);
-
-        currentItem = null;
     }
 
     private int GetItemCount(ShapeType shape)
@@ -138,5 +106,14 @@ public class AttackController : MonoBehaviour
         if (shape == ShapeType.Triangle) player.triangleCount--;
         else if (shape == ShapeType.Square) player.squareCount--;
         else player.circleCount--;
+    }
+
+    private void UpdateAimLine()
+    {
+        if (aimLine == null) return;
+        Vector3 start = firePoint.position;
+        Vector3 end = start + (Vector3)shootDirection * previewLength;
+        aimLine.SetPosition(0, start);
+        aimLine.SetPosition(1, end);
     }
 }

@@ -1,18 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using static UnityEngine.InputSystem.InputAction;
 
 public class PlayerMoveState : PlayerState
 {
-    private InputAction moveAction;
-    private InputAction jumpAction;
-    public Vector2 moveInput;
-
-    public PlayerMoveState(Entity entity, EntityStateMachine stateMachine, string animBoolName) : base(entity, stateMachine, animBoolName)
+    public PlayerMoveState(Entity entity, EntityStateMachine stateMachine, string animBoolName)
+        : base(entity, stateMachine, animBoolName)
     {
     }
 
@@ -20,116 +11,41 @@ public class PlayerMoveState : PlayerState
     {
         base.Enter();
 
-        // �� PlayerInput ��ȡ������������������ .inputactions �ʲ��ж����һ�£�
-        moveAction = player.playerInput.actions["Move"];
-        jumpAction = player.playerInput.actions["Jump"];
-
-        // �����¼�
-        moveAction.performed += OnMove;
-        moveAction.canceled += OnMove; // �ɿ�ʱ����
-        jumpAction.performed += OnJump;
-
-        // ���ö�����PlayerInput ���Զ�����������ʽ���ÿ���ȷ����Ч��
-        moveAction.Enable();
-        jumpAction.Enable();
-
-        // ԭ�� player.control �Ĵ���ȫ���Ƴ�
-        // player.control.PlayerController.Enable();  // ɾ��
-
-        player.spriteCount = 1;
-        player.anim.SetBool("Traingle", false);
-        player.anim.SetBool("Square", true);
-        player.anim.SetBool("Circle", false);
-        player.boxCd.enabled = true;
-        player.circleCd.enabled = false;
-        player.traingleCd.enabled = false;
-
+        // 进入时确保形状正确（假设默认是正方形，但实际应由游戏逻辑决定）
+        // 如果 spriteCount 未设置，则初始化为 1（正方形）
+        if (player.spriteCount < 0 || player.spriteCount > 2)
+            player.spriteCount = 1;
+        player.UpdateShapeVisual(); // 更新动画和碰撞器
     }
 
     public override void Exit()
     {
         base.Exit();
-
-        moveAction.performed -= OnMove;
-        moveAction.canceled -= OnMove;
-        jumpAction.performed -= OnJump;
-
-        // ���Խ��ö�������ͨ���� PlayerInput �Զ�����
-        moveAction.Disable();
-        jumpAction.Disable();
-
-        // ɾ�� player.control ��ش���
-        // player.control.PlayerController.Disable();
+        // 清理工作，如果需要
     }
 
     public override void Update()
     {
         base.Update();
 
-
-
-        if (Input.GetKeyDown(KeyCode.O))
+        // 处理自杀
+        if (player.suicidePressed && !(player.stateMachine.currentState is PlayerDeadState))
         {
-            player.spriteCount++;
-
-            if (player.spriteCount > 2) player.spriteCount = 0;
-
-            if (player.spriteCount == 0)
-            {
-                ShapeChange("Traingle", player.traingleCd, true);
-            }
-            else if (player.spriteCount == 1)
-            {
-                ShapeChange("Square", player.boxCd, true);
-            }
-            else if (player.spriteCount == 2)
-            {
-                ShapeChange("Circle", player.circleCd, true);
-            }
+            player.stateMachine.ChangeState(player.deadState);
         }
 
-        if (player.gameObject.transform.position.y < PlayerManager.instance.playerDeadZoneY)
-        {
-            stateMachine.ChangeState(player.deadState);
-        }
-    }
-
-    private void ShapeChange(string shapeName, Collider2D cd, bool setTrue)
-    {
-        player.anim.SetBool("Traingle", false);
-        player.anim.SetBool("Square", false);
-        player.anim.SetBool("Circle", false);
-        player.boxCd.enabled = false;
-        player.circleCd.enabled = false;
-        player.traingleCd.enabled = false;
-
-        cd.enabled = true;
-        player.anim.SetBool(shapeName, setTrue);
+        // 注意：死亡检测已移至 Player.Update 中，此处不再重复
     }
 
     public override void FixedUpdate()
     {
-        SetVelocity(moveInput.x * player.walkSpeed, player.rb.velocity.y);
-    }
+        // 应用移动速度
+        SetVelocity(player.moveInput.x * player.walkSpeed, player.rb.velocity.y);
 
-    #region InputSystem
-
-    // ����ص�
-    private void OnMove(InputAction.CallbackContext context)
-    {
-        moveInput = context.ReadValue<Vector2>();
-    }
-
-    private void OnJump(InputAction.CallbackContext context)
-    {
-        if (player.IsGroundDetected())
+        // 处理跳跃（使用请求标志）
+        if (player.jumpPressed && player.IsGroundDetected())
         {
-            // ע�⣺����ֱ������ velocity����������Ҫ�� FixedUpdate �д���������
-            // ��������Ե��� SetVelocity
             SetVelocity(player.rb.velocity.x, player.jumpForce);
         }
     }
-
-
-    #endregion
 }

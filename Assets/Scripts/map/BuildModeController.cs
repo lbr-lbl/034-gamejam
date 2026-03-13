@@ -3,10 +3,7 @@ using UnityEngine;
 
 public class BuildModeController : MonoBehaviour
 {
-    [Header("可放置物品列表")]
-    [SerializeField] private List<PlaceableItem> availableItems;
-
-    [Header("网格设置")]
+    [Header("网格设置")] // 保留原有网格相关字段
     [SerializeField] private int gridSize = 5;
     [SerializeField] private float cellSize = 1f;
     [SerializeField] private GameObject highlightPrefab;
@@ -15,51 +12,40 @@ public class BuildModeController : MonoBehaviour
     [SerializeField] private Material selectedMaterial;
     [SerializeField] private LayerMask obstacleLayer;
 
-    private Player player; // 由外部设置
+    private Player player;
     private GameObject[,] highlightGrid;
     private bool[,] occupied;
     private int currentX, currentY;
     private int centerIndex;
     private Vector3 gridCenter;
     private Transform gridParent;
-    private int currentItemIndex = 0;
     private bool isActive = false;
 
-    public PlaceableItem CurrentItem => availableItems.Count > 0 ? availableItems[currentItemIndex] : null;
-
-    public void SetPlayer(Player p)
-    {
-        player = p;
-    }
+    public void SetPlayer(Player p) { player = p; }
 
     private void Update()
     {
         if (player == null) return;
 
-        // 按 L 进入/退出建造模式
         if (player.buildModePressed)
         {
-            if (!isActive)
-                EnterBuildMode();
-            else
-                ExitBuildMode();
+            if (!isActive) EnterBuildMode();
+            else ExitBuildMode();
         }
 
         if (!isActive) return;
 
-        // 方向输入
         HandleInput();
         UpdateHighlights();
 
-        // 放置/切换物品
         if (player.placePressed) TryPlaceCurrentItem();
-        if (player.changeShapePressed) SwitchItem(1);
     }
+
 
     public void EnterBuildMode()
     {
         if (isActive) return;
-
+        player.PausePlayer();
         // 以玩家位置为中心对齐网格
         Vector3 center = player.transform.position;
         float centerX = Mathf.Round(center.x / cellSize) * cellSize;
@@ -81,6 +67,7 @@ public class BuildModeController : MonoBehaviour
 
     public void ExitBuildMode()
     {
+        player.StartPlayer();
         if (gridParent != null) Destroy(gridParent.gameObject);
         highlightGrid = null;
         occupied = null;
@@ -103,11 +90,12 @@ public class BuildModeController : MonoBehaviour
 
     private void HandleInput()
     {
+        Vector2 currentMove = player.moveInput;
         int dx = 0, dy = 0;
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) dy = 1;
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) dy = -1;
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) dx = -1;
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) dx = 1;
+        if (currentMove.x > 0.5f) dx = 1;
+        else if (currentMove.x < -0.5f) dx = -1;
+        if (currentMove.y > 0.5f) dy = 1;
+        else if (currentMove.y < -0.5f) dy = -1;
 
         if (dx != 0 || dy != 0)
         {
@@ -150,24 +138,22 @@ public class BuildModeController : MonoBehaviour
 
     private bool TryPlaceCurrentItem()
     {
-        if (availableItems.Count == 0) return false;
-        PlaceableItem item = availableItems[currentItemIndex];
-
-        int count = GetItemCount(item.shape);
+        // 检查玩家是否有该形状的方块
+        int count = GetItemCount((ShapeType)player.spriteCount);
         if (count <= 0) return false;
 
         Vector3 worldPos = highlightGrid[currentX, currentY].transform.position;
         if (!IsPositionValid(currentX, currentY, worldPos)) return false;
 
-        DecreaseItemCount(item.shape);
+        // 扣除计数
+        DecreaseItemCount((ShapeType)player.spriteCount);
 
-        GameObject blockObj = BlockManager.instance.GetBlock(item.shape, BlockType.Building);
-        blockObj.transform.position = worldPos;
+        // 从 GameManager 获取对应形状的建筑预制体
+        GameObject prefab = GameManager.instance.buildingPrefabs[player.spriteCount];
+        GameObject blockObj = Instantiate(prefab, worldPos, Quaternion.identity);
         blockObj.layer = LayerMask.NameToLayer("Ground");
-        Block block = blockObj.GetComponent<Block>();
-        if (block != null) block.blockType = BlockType.Building; // 设置类型
 
-        // 设置子物体上的材质
+        // 设置玩家材质
         SpriteRenderer sr = blockObj.GetComponentInChildren<SpriteRenderer>();
         if (sr != null)
         {
@@ -175,11 +161,10 @@ public class BuildModeController : MonoBehaviour
             if (mat != null) sr.material = mat;
         }
 
-        blockObj.SetActive(true);
-
         occupied[currentX, currentY] = true;
         return true;
     }
+
 
     private int GetItemCount(ShapeType shape)
     {
@@ -195,9 +180,4 @@ public class BuildModeController : MonoBehaviour
         else player.circleCount--;
     }
 
-    private void SwitchItem(int direction)
-    {
-        if (availableItems.Count == 0) return;
-        currentItemIndex = (currentItemIndex + direction + availableItems.Count) % availableItems.Count;
-    }
 }

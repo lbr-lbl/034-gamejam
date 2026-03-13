@@ -108,6 +108,14 @@ public class AttackController : MonoBehaviour
             rb.velocity = shootDirection * projectileSpeed;
         }
 
+        // 设置子弹材质（查找子物体）
+        SpriteRenderer projSr = proj.GetComponentInChildren<SpriteRenderer>();
+        if (projSr != null)
+        {
+            Material mat = (player.playerType == PlayerType.Player1) ? GameManager.instance.player1Material : GameManager.instance.player2Material;
+            if (mat != null) projSr.material = mat;
+        }
+
         // 忽略与发射者的碰撞
         Collider2D[] playerColliders = player.GetComponents<Collider2D>();
         Collider2D[] projColliders = proj.GetComponents<Collider2D>();

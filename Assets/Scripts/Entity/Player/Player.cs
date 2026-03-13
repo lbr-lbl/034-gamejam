@@ -17,6 +17,8 @@ public class Player : Entity
     public int squareCount;
     public int circleCount;
 
+    public PlayerType playerType;
+
     // 输入值（由UpdateInput更新）
     public Vector2 moveInput { get; private set; }
     public bool jumpPressed { get; private set; }

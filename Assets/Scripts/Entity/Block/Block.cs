@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class Block : Entity
 {
     public BlockDeadState  deadState;
+
+    public bool IsCore { get; set; }
+    public PlayerType coreOwner;
 
     public ShapeType Shape => (ShapeType)spriteCount;
 
@@ -37,14 +41,15 @@ public class Block : Entity
 
             if (shouldEliminateOther)
             {
-
-                gameObject.layer = LayerMask.NameToLayer("Background");
-
-                sr.enabled = false;
-
-                ps.gameObject.SetActive(true);
-
-                BlockManager.instance.ReturnBlock(gameObject, Shape);
+                if (IsCore)
+                {
+                    GameManager.instance?.OnCoreDestroyed(coreOwner);
+                    Destroy(gameObject); // 直接销毁，不回收
+                }
+                else
+                {
+                    BlockManager.instance.ReturnBlock(gameObject, Shape);
+                }
             }
         }
     }

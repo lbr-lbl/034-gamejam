@@ -165,6 +165,15 @@ public class BuildModeController : MonoBehaviour
         GameObject blockObj = BlockManager.instance.GetBlock(item.shape);
         blockObj.transform.position = worldPos;
         blockObj.layer = LayerMask.NameToLayer("Ground");
+
+        // 设置子物体上的材质
+        SpriteRenderer sr = blockObj.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+        {
+            Material mat = (player.playerType == PlayerType.Player1) ? GameManager.instance.player1Material : GameManager.instance.player2Material;
+            if (mat != null) sr.material = mat;
+        }
+
         blockObj.SetActive(true);
 
         occupied[currentX, currentY] = true;

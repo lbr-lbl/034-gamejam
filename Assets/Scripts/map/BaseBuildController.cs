@@ -321,6 +321,13 @@ public class BaseBuildController : MonoBehaviour
         Debug.Log($"未搭建基地，自动在空岛中心 {centerGrid} 生成默认核心");
     }
 
+    public GameObject GetCoreObject()
+    {
+        if (placedObjects.TryGetValue(currentGrid, out GameObject obj))
+            return obj;
+        return null;
+    }
+
     public void Cleanup()
     {
         if (highlightParent != null)

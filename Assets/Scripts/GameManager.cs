@@ -73,9 +73,13 @@ public class GameManager : MonoBehaviour
     [Header("玩家")]
     public GameObject playerPrefab;                     // 玩家预制体（包含 Player, PlayerInput, 控制器等）
     public GameObject buildModeControllerPrefab;       // 包含 BuildModeController 组件
-    public Transform player1Spawner;                    // 玩家1出生点偏移（相对于核心）
-    public Transform player2Spawner;                    // 玩家2出生点偏移
+    public Transform player1Spawner;                    // 玩家1出生点
+    public Transform player2Spawner;                    // 玩家2出生点
     private Vector3 spawnerOffset = new Vector3(0, 0.2f, 0);
+
+    [Header("玩家材质")]
+    public Material player1Material;
+    public Material player2Material;
 
     [Header("基地建造控制器（布置阶段使用）")]
     public BaseBuildController baseBuildController1;   // 左侧玩家基地建造器
@@ -93,11 +97,13 @@ public class GameManager : MonoBehaviour
     private BuildModeController player1BuildController;
     private BuildModeController player2BuildController;
 
-    private void Awake()
-    {
-        // 确保 GameManager 不被销毁（如果需要在场景间保持）
-        // DontDestroyOnLoad(gameObject); // 可选，根据需求决定
-    }
+    public static GameManager instance;
+
+    private GameObject core1;
+    private GameObject core2;
+
+
+    private void Awake() => instance = this;
 
     private void Start()
     {
@@ -319,17 +325,27 @@ public class GameManager : MonoBehaviour
         if (baseBuildController1 != null && !baseBuildController1.CoreSelected) baseBuildController1.ForceSelectCore();
         if (baseBuildController2 != null && !baseBuildController2.CoreSelected) baseBuildController2.ForceSelectCore();
 
-        // 获取核心位置
-        Vector3 core1Pos = baseBuildController1.CorePosition;
-        Vector3 core2Pos = baseBuildController2.CorePosition;
+        // 获取核心
+        core1 = baseBuildController1.GetCoreObject();
+        if (core1 != null)
+        {
+            core1.GetComponent<Block>().IsCore = true;
+            core1.GetComponent<Block>().coreOwner = PlayerType.Player1;
+        }
+        core2 = baseBuildController2.GetCoreObject();
+        if (core2 != null)
+        {
+            core2.GetComponent<Block>().IsCore = true;
+            core2.GetComponent<Block>().coreOwner = PlayerType.Player2;
+        }
 
         // 清理基地建造控制器（隐藏高亮网格）
         if (baseBuildController1 != null) baseBuildController1.Cleanup();
         if (baseBuildController2 != null) baseBuildController2.Cleanup();
 
         // 生成玩家
-        player1Instance = Instantiate(playerPrefab, core1Pos + spawnerOffset, Quaternion.identity).GetComponent<Player>();
-        player2Instance = Instantiate(playerPrefab, core2Pos + spawnerOffset, Quaternion.identity).GetComponent<Player>();
+        player1Instance = Instantiate(playerPrefab, player1Spawner.position + spawnerOffset, Quaternion.identity).GetComponent<Player>();
+        player2Instance = Instantiate(playerPrefab, player2Spawner.position + spawnerOffset, Quaternion.identity).GetComponent<Player>();
 
         // 生成建造控制器并关联玩家
         player1BuildController = Instantiate(buildModeControllerPrefab).GetComponent<BuildModeController>();
@@ -347,12 +363,25 @@ public class GameManager : MonoBehaviour
 
         // 设置重生点
         GameObject respawn1 = new GameObject("Respawn1");
-        respawn1.transform.position = core1Pos;
+        respawn1.transform.position = player1Spawner.position + spawnerOffset;
         player1Instance.respawnPoint = respawn1.transform;
 
         GameObject respawn2 = new GameObject("Respawn2");
-        respawn2.transform.position = core2Pos;
+        respawn2.transform.position = player2Spawner.position + spawnerOffset;
         player2Instance.respawnPoint = respawn2.transform;
+
+
+        // 设置玩家类型
+        player1Instance.playerType = PlayerType.Player1;
+        player2Instance.playerType = PlayerType.Player2;
+
+        // 设置玩家角色sprite子物体材质
+        SpriteRenderer p1Sprite = player1Instance.GetComponentInChildren<SpriteRenderer>();
+        if (p1Sprite != null && player1Material != null)
+            p1Sprite.material = player1Material;
+        SpriteRenderer p2Sprite = player2Instance.GetComponentInChildren<SpriteRenderer>();
+        if (p2Sprite != null && player2Material != null)
+            p2Sprite.material = player2Material;
 
         // ---------- 过渡到全屏阶段 ----------
         yield return StartCoroutine(FadeOut(fadeDuration_CoreToFull));
@@ -386,6 +415,16 @@ public class GameManager : MonoBehaviour
         SetPlayerControl(true);
 
         isTransitioning = false;
+    }
+
+    public void OnCoreDestroyed(PlayerType owner)
+    {
+        if (owner == PlayerType.Player1)
+            Debug.Log("Player2 胜利！");
+        else
+            Debug.Log("Player1 胜利！");
+
+        SetPlayerControl(false);
     }
 
     public void PauseGame()
@@ -473,4 +512,10 @@ public class GameManager : MonoBehaviour
         if (player1Instance != null) player1Instance.enabled = enabled;
         if (player2Instance != null) player2Instance.enabled = enabled;
     }
+}
+
+public enum PlayerType
+{
+    Player1,
+    Player2
 }

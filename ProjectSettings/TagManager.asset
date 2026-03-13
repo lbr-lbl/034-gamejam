@@ -19,6 +19,8 @@ TagManager:
   - Ground
   - Player
   - Item
+  - Pickable
+  - Bullet
   - 
   - 
   - 
@@ -28,7 +30,7 @@ TagManager:
   - 
   - 
   - 
-  - testPlayer
+  - 
   - 
   - 
   - 

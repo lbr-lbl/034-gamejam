@@ -6,12 +6,11 @@ public class Block : Entity
 {
     public BlockDeadState  deadState;
 
-    public int blockHP;
+    public ShapeType Shape => (ShapeType)spriteCount;
 
     protected override void Awake()
     {
         base.Awake();
-
         deadState = new BlockDeadState(this, stateMachine, "Dead");
     }
 
@@ -24,7 +23,7 @@ public class Block : Entity
 
     protected override void Update()
     {
-
+        base.Update();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -45,7 +44,7 @@ public class Block : Entity
 
                 ps.gameObject.SetActive(true);
 
-                BlockManager.instance.blockPool.Release(this.gameObject);
+                BlockManager.instance.ReturnBlock(gameObject, Shape);
             }
         }
     }

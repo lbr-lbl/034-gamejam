@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
     // 缩短方向枚举
     public enum ShrinkDirection
     {
-        Inward,  // 从两侧向中间缩短（适用于左条锚点左中、右条锚点右中）
-        Outward  // 从中间向两侧缩短（适用于左条锚点右中、右条锚点左中，或需要反向时）
+        Inward,  // 从两侧向中间缩短（默认）
+        Outward  // 从中间向两侧缩短（备用）
     }
 
     [Header("摄像机")]
@@ -29,8 +29,10 @@ public class GameManager : MonoBehaviour
     public RectTransform leftTimerBar;       // 左侧计时条
     public RectTransform rightTimerBar;      // 右侧计时条
     public RectTransform timerBarBackground; // 计时条背景
+    public RectTransform timerBarContainer;  // 计时条容器（用于自动计算最大宽度）
+    [Tooltip("如果指定了容器，此值将被自动覆盖。否则请手动设置。")]
     public float timerBarMaxWidth = 150f;    // 每个条的最大宽度（容器宽度的一半）
-    public ShrinkDirection shrinkMode = ShrinkDirection.Inward; // 缩短方向选择
+    public ShrinkDirection shrinkMode = ShrinkDirection.Inward;
 
     [Header("布置阶段时间控制")]
     public float phase1Duration = 5f;        // 第一阶段：从0增长到最大宽度
@@ -61,10 +63,10 @@ public class GameManager : MonoBehaviour
     public Transform rightFixPoint;
 
     [Header("摄像机视野大小")]
-    public float preparationCamSize = 5f;
-    public float pvpCamSize = 6f;
+    public float preparationCamSize = 5f;     // 布置阶段左右摄像机的 Size
+    public float pvpCamSize = 6f;             // PvP阶段左右摄像机的 Size
 
-    [Header("地图边界")]
+    [Header("地图边界（世界坐标）")]
     public float mapLeft = -20f;
     public float mapRight = 20f;
     public float mapBottom = -10f;
@@ -78,6 +80,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        // 初始化UI
         ShowPauseMenu(false);
         if (fadeImage != null)
         {
@@ -89,6 +92,13 @@ public class GameManager : MonoBehaviour
         if (rightTimerBar != null) rightTimerBar.gameObject.SetActive(false);
         if (timerBarBackground != null) timerBarBackground.gameObject.SetActive(false);
 
+        // 如果指定了容器，自动计算最大宽度
+        if (timerBarContainer != null)
+        {
+            timerBarMaxWidth = timerBarContainer.rect.width / 2f;
+        }
+
+        // 获取或添加跟随脚本
         leftFollower = leftCam.GetComponent<CameraFollower>();
         rightFollower = rightCam.GetComponent<CameraFollower>();
         if (leftFollower == null) leftFollower = leftCam.gameObject.AddComponent<CameraFollower>();
@@ -102,11 +112,13 @@ public class GameManager : MonoBehaviour
         SetPlayerControl(false);
         HideGameContent();
 
+        // 绑定暂停菜单按钮事件
         if (continueButton != null)
             continueButton.onClick.AddListener(ContinueGame);
         if (backToMainMenuButton != null)
             backToMainMenuButton.onClick.AddListener(BackToMainMenu);
 
+        // 直接开始游戏流程（从主菜单加载后自动运行）
         gameCoroutine = StartCoroutine(StateMachine());
     }
 
@@ -137,7 +149,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator StateMachine()
     {
-        // 淡入
+        // 淡入（从黑屏到游戏画面）
         yield return StartCoroutine(FadeIn(mainMenuFadeInDuration));
 
         isGameActive = true;
@@ -200,18 +212,10 @@ public class GameManager : MonoBehaviour
                 float t = Mathf.Clamp01(elapsedPhase2 / phase2Duration);
                 float width;
                 if (shrinkMode == ShrinkDirection.Inward)
-                {
-                    // 向中间缩短：宽度从最大减小到0
-                    width = timerBarMaxWidth * (1f - t);
-                }
-                else // Outward
-                {
-                    // 向两侧缩短：宽度从最大减小到0，但视觉方向相反（取决于UI设置）
-                    // 为了保持一致，这里仍然使用相同的公式，但用户可以通过UI设置改变方向
-                    // 或者如果你想真正反向，可以用 width = timerBarMaxWidth * t，但这会让缩短阶段变成增长
-                    // 所以保持公式不变，仅通过UI控制方向。如需代码控制方向，可交换左右条的引用，但这里不处理
-                    width = timerBarMaxWidth * (1f - t);
-                }
+                    width = timerBarMaxWidth * (1f - t); // 从两侧向中间缩短
+                else
+                    width = timerBarMaxWidth * t;        // 从中间向两侧缩短（反向）
+
                 leftSize.x = width;
                 rightSize.x = width;
                 leftTimerBar.sizeDelta = leftSize;
@@ -240,6 +244,15 @@ public class GameManager : MonoBehaviour
         leftCam.gameObject.SetActive(false);
         rightCam.gameObject.SetActive(false);
         fullCam.gameObject.SetActive(true);
+
+        // 自动计算全屏摄像机大小以适应地图
+        float aspect = (float)Screen.width / Screen.height;
+        float mapWidth = mapRight - mapLeft;
+        float mapHeight = mapTop - mapBottom;
+        float sizeByWidth = (mapWidth / 2) / aspect;
+        float sizeByHeight = mapHeight / 2;
+        fullCam.orthographicSize = Mathf.Max(sizeByWidth, sizeByHeight);
+
         fullCam.transform.position = new Vector3((mapLeft + mapRight) / 2, (mapBottom + mapTop) / 2, -10);
         fullCam.cullingMask = LayerMask.GetMask("Default", "Player1", "Player2");
 

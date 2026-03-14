@@ -22,6 +22,11 @@ public class PlayerPauseState : PlayerState
     {
         base.Update();
 
+        // 处理形状切换
+        if (player.changeShapePressed)
+        {
+            player.ChangeShape();
+        }
         SetVelocity(0, 0);
     }
 }

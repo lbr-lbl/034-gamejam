@@ -79,7 +79,8 @@ public class IslandGenerator : MonoBehaviour
                 GameObject prefabToSpawn = GetRandomPrefab(emptyProb);
                 if (prefabToSpawn != null)
                 {
-                    Instantiate(prefabToSpawn, worldPos, Quaternion.identity, generatedParent);
+                    GameObject obj = Instantiate(prefabToSpawn, worldPos, Quaternion.identity, generatedParent);
+                    obj.layer = LayerMask.NameToLayer("Ground");
                 }
                 // 否则（空）跳过
             }

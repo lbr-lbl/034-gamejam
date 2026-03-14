@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7213782042628949566}
   - component: {fileID: 1439520194408603659}
+  - component: {fileID: 9020469157627465555}
   m_Layer: 0
   m_Name: BaseBuildController
   m_TagString: Untagged
@@ -49,7 +50,37 @@ MonoBehaviour:
   validMaterial: {fileID: 2100000, guid: 579722707854f254290015221d3cc1c8, type: 2}
   selectedMaterial: {fileID: 2100000, guid: 88acd367e84a37d41b3cd9a05afd0db0, type: 2}
   occupiedMaterial: {fileID: 2100000, guid: 8612fe25ee738254fbaac02639d68e76, type: 2}
-  coreCandidateMaterial: {fileID: 2100000, guid: 492e3faa0b2578c4fae6a779b8ee9588, type: 2}
-  coreSelectedMaterial: {fileID: 2100000, guid: 8d5ec0fa0c6669044bc92ff875051afe, type: 2}
+  coreMaterial: {fileID: 2100000, guid: ac8318d1fdb3c60408376b61255d80b0, type: 2}
   startXOffset: -2
   startYOffset: 1
+  defaultCoreShape: 0
+--- !u!114 &9020469157627465555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726774374750878562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 910b065334c427840819c137d935c154, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: 
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}

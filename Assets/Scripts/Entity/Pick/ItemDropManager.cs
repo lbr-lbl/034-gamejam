@@ -15,56 +15,49 @@ public class ItemDropManager : MonoBehaviour
     [Header("掉落参数")]
     [SerializeField] private float startInterval = 3f; // 初始掉落间隔（秒）
     [SerializeField] private float minInterval = 1f;   // 最短掉落间隔
-    [SerializeField] private float intervalDecreaseRate = 0.1f; // 每波间隔减少量（或使用曲线）
+    [SerializeField] private float intervalDecreaseRate = 0.1f; // 每波间隔减少量
 
     [SerializeField] private int startCount = 1;        // 初始每波掉落数量
     [SerializeField] private int maxCount = 10;         // 最大每波掉落数量
-    [SerializeField] private float countIncreaseRate = 0.5f; // 每波数量增加量（每波+0.5，取整）
+    [SerializeField] private float countIncreaseRate = 0.5f; // 每波数量增加量
 
     [Header("可选：使用曲线控制")]
     [SerializeField] private bool useCurve = false;
-    [SerializeField] private AnimationCurve countOverTime = AnimationCurve.Linear(0, 1, 300, 10); // 时间(秒) -> 数量
+    [SerializeField] private AnimationCurve countOverTime = AnimationCurve.Linear(0, 1, 300, 10);
     [SerializeField] private AnimationCurve intervalOverTime = AnimationCurve.Linear(0, 3, 300, 1);
 
     private float gameTime;          // 累计游戏时间（秒）
     private Coroutine dropCoroutine;
 
-    private void Start()
+    // 由 GameManager 调用，开始掉落
+    public void StartDropping()
     {
-        // 开始掉落循环
-        dropCoroutine = StartCoroutine(DropRoutine());
+        if (dropCoroutine == null)
+            dropCoroutine = StartCoroutine(DropRoutine());
     }
-
     private IEnumerator DropRoutine()
     {
         while (true)
         {
-            // 根据当前游戏时间计算本次掉落的参数
             int count = GetCurrentCount();
             float interval = GetCurrentInterval();
 
-            // 生成 count 个物品
             for (int i = 0; i < count; i++)
             {
                 SpawnRandomItem();
-                // 可以加一点小延迟，避免所有物品完全同时生成（可选）
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.05f); // 避免同时生成过多物体
             }
 
-            // 等待下一次掉落
             yield return new WaitForSeconds(interval);
-            gameTime += interval; // 累计时间（如果使用曲线，需要累计实际流逝时间）
+            gameTime += interval;
         }
     }
 
-    /// <summary>
-    /// 生成一个随机物品
-    /// </summary>
     private void SpawnRandomItem()
     {
         if (dropItems == null || dropItems.Count == 0) return;
 
-        // 根据权重随机选择一个物品
+        // 根据权重随机选择形状
         float totalWeight = 0f;
         foreach (var item in dropItems) totalWeight += item.weight;
 
@@ -83,16 +76,31 @@ public class ItemDropManager : MonoBehaviour
 
         if (selected == null) return;
 
-        // 随机生成位置
+        // 从对象池获取对应形状的物体
+        GameObject blockObj = BlockManager.instance.GetBlock(selected.shape, BlockType.Pickup);
+        if (blockObj == null) return;
+
+        // 随机位置
         float x = Random.Range(minX, maxX);
         Vector3 spawnPos = new Vector3(x, spawnY, 0);
+        blockObj.transform.position = spawnPos;
 
-        Instantiate(selected.prefab, spawnPos, Quaternion.identity);
+        // 设置为可拾取层
+        blockObj.layer = LayerMask.NameToLayer("Pickable");
+
+        // 可选：添加一点随机下落速度
+        Rigidbody2D rb = blockObj.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.velocity = new Vector2(Random.Range(-1f, 1f), 0);
+        }
+
+        Block block = blockObj.GetComponent<Block>();
+        if (block != null) block.blockType = BlockType.Pickup;
+
+        // 物体已在 GetBlock 时自动激活，无需额外操作
     }
 
-    /// <summary>
-    /// 获取当前应该掉落的物品数量
-    /// </summary>
     private int GetCurrentCount()
     {
         if (useCurve)
@@ -101,17 +109,11 @@ public class ItemDropManager : MonoBehaviour
         }
         else
         {
-            // 线性增长：初始 + (时间/间隔 * 增长率) 但简单处理为每波增加固定量
-            // 这里用更简单的方式：每经过一个间隔，数量增加 countIncreaseRate（累加，取整）
-            // 但为了连续，我们基于游戏时间计算
             float rawCount = startCount + (gameTime / startInterval) * countIncreaseRate;
             return Mathf.Clamp(Mathf.RoundToInt(rawCount), 1, maxCount);
         }
     }
 
-    /// <summary>
-    /// 获取当前掉落间隔
-    /// </summary>
     private float GetCurrentInterval()
     {
         if (useCurve)
@@ -125,7 +127,6 @@ public class ItemDropManager : MonoBehaviour
         }
     }
 
-    // 可选：在编辑器中显示掉落区域
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;

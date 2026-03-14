@@ -1,17 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class Block : Entity
 {
     public BlockDeadState  deadState;
+    public BlockType blockType; // 新增：由放置者设置
 
-    public int blockHP;
+    public bool IsCore { get; set; }
+    public PlayerType coreOwner;
+
+    public ShapeType Shape => (ShapeType)spriteCount;
 
     protected override void Awake()
     {
         base.Awake();
-
         deadState = new BlockDeadState(this, stateMachine, "Dead");
     }
 
@@ -24,28 +28,31 @@ public class Block : Entity
 
     protected override void Update()
     {
-
+        base.Update();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Entity entity = collision.gameObject.GetComponent<Entity>();
 
-        if (entity.gameObject.layer == LayerMask.NameToLayer("Ground") && entity != null)
+        if (entity != null && entity.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
 
             bool shouldEliminateOther = (this.spriteCount == 2 && entity.spriteCount == 0) || (this.spriteCount == 1 && entity.spriteCount == 2) || (this.spriteCount == 0 && entity.spriteCount == 1);
 
             if (shouldEliminateOther)
             {
+                if (IsCore)
+                {
+                    AudioManager.instance.Play(AudioManager.instance.blockSource, AudioManager.instance.clips[7]);
 
-                gameObject.layer = LayerMask.NameToLayer("Background");
-
-                sr.enabled = false;
-
-                ps.gameObject.SetActive(true);
-
-                BlockManager.instance.blockPool.Release(this.gameObject);
+                    GameManager.instance?.OnCoreDestroyed(coreOwner);
+                    Destroy(gameObject); // 直接销毁，不回收
+                }
+                else
+                {
+                    BlockManager.instance.ReturnBlock(gameObject, Shape, blockType);
+                }
             }
         }
     }

@@ -9,6 +9,7 @@ using static Unity.Collections.AllocatorManager;
 public class Entity : MonoBehaviour
 {
     public int spriteCount;
+    public int playerIndex;
     public bool isDead; 
 
     [Header("Move Info")]
@@ -34,7 +35,7 @@ public class Entity : MonoBehaviour
     protected virtual void Awake()
     {
 
-        stateMachine = new PlayerStateMachine();
+        stateMachine = new EntityStateMachine();
     }
 
     protected virtual void Start()
@@ -54,7 +55,8 @@ public class Entity : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
-        stateMachine.currentState.FixedUpdate();
+        if (stateMachine != null && stateMachine.currentState != null)
+            stateMachine.currentState.FixedUpdate();
     }
 
     public void UsingEnumerator(IEnumerator enumerator)

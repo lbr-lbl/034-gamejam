@@ -944,7 +944,8 @@ PrefabInstance:
       propertyPath: backToMainMenuButton
       value: 
       objectReference: {fileID: 526428165}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6115020418244229589, guid: 5e4f9eb448aa3c94a9517d1994021b58, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

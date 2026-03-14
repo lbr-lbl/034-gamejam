@@ -19,6 +19,8 @@ TagManager:
   - Ground
   - Player
   - Item
+  - Pickable
+  - Bullet
   - 
   - 
   - 
@@ -28,7 +30,7 @@ TagManager:
   - 
   - 
   - 
-  - testPlayer
+  - 
   - 
   - 
   - 
@@ -43,4 +45,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: grid
+    uniqueID: 3495376827
     locked: 0

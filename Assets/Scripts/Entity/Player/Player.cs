@@ -1,31 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+// Player.cs
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
 public class Player : Entity
 {
     [HideInInspector] public BoxCollider2D boxCd;
     [HideInInspector] public CircleCollider2D circleCd;
     [HideInInspector] public PolygonCollider2D traingleCd; 
-    [HideInInspector] public InputDevice boundDevice;      // °ó¶¨µÄÊäÈëÉè±¸
-    [HideInInspector] public string controlScheme;         // Ê¹ÓÃµÄ¿ØÖÆ·½°¸
+    [HideInInspector] public InputDevice boundDevice;      // ï¿½ó¶¨µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è±¸
+    [HideInInspector] public string controlScheme;         // Ê¹ï¿½ÃµÄ¿ï¿½ï¿½Æ·ï¿½ï¿½ï¿½
+    [HideInInspector] public PolygonCollider2D traingleCd;
+    [Header("æ­»äº¡è®¾ç½®")]
+    public float deathZoneY = -5f;     // ä½äºæ­¤ Y åæ ‡è§¦å‘æ­»äº¡
 
-    public PlayerControl control;
     public PlayerInput playerInput;
-    // Íâ²¿×¢ÈëµÄÒÆ¶¯ÊäÈë£¨ÓÃÓÚÔÚÍ¬Ò»ÎïÀí¼üÅÌÉÏÊÖ¶¯Â·ÓÉ¼ıÍ·¸ø player2£©
+    // ï¿½â²¿×¢ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ë£¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½Â·ï¿½É¼ï¿½Í·ï¿½ï¿½ player2ï¿½ï¿½
     public Vector2 externalMoveInput;
     public Stack<Block> blockStack = new Stack<Block>();
 
     public bool isGrounded;
     public float resetCd;
-    public Vector2 dropVelocity;
+    public Transform respawnPoint; // é‡ç”Ÿç‚¹ï¼ˆç”±GameManagerè®¾ç½®ï¼‰
 
-    public int traingleCount;
-    public int squareCount; 
+    // ç‰©å“è®¡æ•°
+    public int triangleCount;
+    public int squareCount;
     public int circleCount;
+
+    public PlayerType playerType;
+
+    // è¾“å…¥å€¼ï¼ˆç”±UpdateInputæ›´æ–°ï¼‰
+    public Vector2 moveInput { get; private set; }
+    public bool jumpPressed { get; private set; }
+    public bool throwPressed { get; private set; }
+    public bool buildModePressed { get; private set; }
+    public bool placePressed { get; private set; }
+    public bool changeShapePressed { get; private set; }
+    public bool suicidePressed { get; private set; }
 
     #region State
     public PlayerMoveState moveState;
@@ -36,17 +47,19 @@ public class Player : Entity
     [Header("Collision Info")]
     public Transform groundCheckL;
     public Transform groundCheckR;
-    //public Transform wallCheck;
-    public LayerMask enemy;
-    public LayerMask ground;
+    public LayerMask groundLayer;   // Ground (6)
+    public LayerMask playerLayer;   // Player (7)
+    public LayerMask itemLayer;     // Item (8)
+    public LayerMask pickupLayer;   // Pickable (9)
 
     protected override void Awake()
     {
         base.Awake();
 
-        Debug.Log($"Player Awake, ¶ÔÏóÃû: {gameObject.name}");
+        Debug.Log($"Player Awake, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: {gameObject.name}");
 
         moveState = new PlayerMoveState(this, stateMachine, "Move");    
+        moveState = new PlayerMoveState(this, stateMachine, "Move");
         deadState = new PlayerDeadState(this, stateMachine, "Dead");
         pauseState = new PlayerPauseState(this, stateMachine, "Pause");
     }
@@ -58,21 +71,21 @@ public class Player : Entity
         base.Start(); 
         playerInput = GetComponent<PlayerInput>();
 
-        Debug.Log($"Player Start, ¶ÔÏóÃû: {gameObject.name}, PlayerInput = {playerInput != null}");
+        Debug.Log($"Player Start, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: {gameObject.name}, PlayerInput = {playerInput != null}");
 
-        // Èç¹ûÎ´ÔÚ Inspector ÖĞÉèÖÃÒÆ¶¯ËÙ¶È»òÌøÔ¾Á¦£¬Ìá¹©ºÏÀíµÄÄ¬ÈÏÖµ£¬±ÜÃâËÙ¶ÈÎª 0 µ¼ÖÂÎŞ·¨ÒÆ¶¯
+        // ï¿½ï¿½ï¿½Î´ï¿½ï¿½ Inspector ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½Ù¶È»ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½á¹©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½Îª 0 ï¿½ï¿½ï¿½ï¿½ï¿½Ş·ï¿½ï¿½Æ¶ï¿½
         if (walkSpeed <= 0f)
         {
             walkSpeed = 5f;
-            Debug.LogWarning($"Player {gameObject.name} Î´ÉèÖÃ walkSpeed£¬Ê¹ÓÃÄ¬ÈÏÖµ {walkSpeed}");
+            Debug.LogWarning($"Player {gameObject.name} Î´ï¿½ï¿½ï¿½ï¿½ walkSpeedï¿½ï¿½Ê¹ï¿½ï¿½Ä¬ï¿½ï¿½Öµ {walkSpeed}");
         }
         if (jumpForce <= 0f)
         {
             jumpForce = 7f;
-            Debug.LogWarning($"Player {gameObject.name} Î´ÉèÖÃ jumpForce£¬Ê¹ÓÃÄ¬ÈÏÖµ {jumpForce}");
+            Debug.LogWarning($"Player {gameObject.name} Î´ï¿½ï¿½ï¿½ï¿½ jumpForceï¿½ï¿½Ê¹ï¿½ï¿½Ä¬ï¿½ï¿½Öµ {jumpForce}");
         }
 
-        // Èç¹û InputManager ÔÚ´´½¨Íæ¼ÒÊ±ÒÑÉèÖÃÁË boundDevice/controlScheme£¬È·±£ PlayerInput ÆôÓÃ¶ÔÓ¦µØÍ¼²¢°ó¶¨Éè±¸
+        // ï¿½ï¿½ï¿½ InputManager ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ boundDevice/controlSchemeï¿½ï¿½È·ï¿½ï¿½ PlayerInput ï¿½ï¿½ï¿½Ã¶ï¿½Ó¦ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½è±¸
         try
         {
             if (playerInput != null && !string.IsNullOrEmpty(controlScheme) && playerInput.actions != null)
@@ -86,7 +99,7 @@ public class Player : Entity
                     try { playerInput.SwitchCurrentActionMap(controlScheme); } catch { }
                 }
 
-                // ½« actions ÏŞ¶¨Îª°ó¶¨µÄÉè±¸£¨Èô boundDevice ·Ç¿Õ£©
+                // ï¿½ï¿½ actions ï¿½Ş¶ï¿½Îªï¿½ó¶¨µï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ boundDevice ï¿½Ç¿Õ£ï¿½
                 if (boundDevice != null)
                 {
                     try { UnityEngine.InputSystem.Users.InputUser.PerformPairingWithDevice(boundDevice, playerInput.user); } catch { }
@@ -97,7 +110,7 @@ public class Player : Entity
         }
         catch (System.Exception ex)
         {
-            Debug.LogWarning($"Player Start: °ó¶¨¶¯×÷/Éè±¸Ê±·¢ÉúÒì³£: {ex.Message}");
+            Debug.LogWarning($"Player Start: ï¿½ó¶¨¶ï¿½ï¿½ï¿½/ï¿½è±¸Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ì³£: {ex.Message}");
         }
 
         traingleCount = 0;
@@ -109,7 +122,13 @@ public class Player : Entity
         traingleCd = GetComponent<PolygonCollider2D>();
 
 
-        Debug.Log($"×´Ì¬»ú³õÊ¼»¯£¬³õÊ¼×´Ì¬: {moveState}");
+        Debug.Log($"×´Ì¬ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼×´Ì¬: {moveState}");
+        base.Start();
+        playerInput = GetComponent<PlayerInput>();
+        triangleCount = squareCount = circleCount = 0;
+        boxCd = GetComponent<BoxCollider2D>();
+        circleCd = GetComponent<CircleCollider2D>();
+        traingleCd = GetComponent<PolygonCollider2D>();
         stateMachine.Initialize(moveState);
     }
 
@@ -118,95 +137,138 @@ public class Player : Entity
         base.Update();
 
         
+        UpdateInput();
+        CheckFall();
     }
 
-    public void PausePlayer()
+    private void CheckFall()
     {
-        stateMachine.ChangeState(pauseState);
+        if (transform.position.y < deathZoneY && !(stateMachine.currentState is PlayerDeadState)) 
+        {
+            stateMachine.ChangeState(deadState);
+        }
     }
 
-    public void StartPlayer()
+    private void UpdateInput()
     {
-        stateMachine.ChangeState(moveState);
+        if (playerInput == null) return;
+        var actionMap = playerInput.currentActionMap;
+        moveInput = actionMap["Move"].ReadValue<Vector2>();
+        jumpPressed = actionMap["Jump"].WasPressedThisFrame();
+        throwPressed = actionMap["Throw"].WasPressedThisFrame();
+        buildModePressed = actionMap["BuildMode"].WasPressedThisFrame();
+        placePressed = actionMap["Set"].WasPressedThisFrame();
+        changeShapePressed = actionMap["ChangeShape"].WasPressedThisFrame();
+        suicidePressed = actionMap["Suicide"].WasPressedThisFrame();
     }
 
-    public void CollectBlock(Block block)
+    public void PausePlayer() => stateMachine.ChangeState(pauseState);
+    public void StartPlayer() => stateMachine.ChangeState(moveState);
+
+    // æ‹¾å–å¯æ‹¾å–ç‰©ï¼ˆå›¾å±‚ä¸ºPickableï¼‰
+    public void CollectPickup(GameObject pickup)
     {
-        blockStack.Push(block);
-
-        if (block.CompareTag("Traingle"))
+        Block block = pickup.GetComponent<Block>();
+        if (block != null)
         {
-            traingleCount++;
+            int shape = block.spriteCount;
+            if (shape == 0) triangleCount++;
+            else if (shape == 1) squareCount++;
+            else if (shape == 2) circleCount++;
         }
-        else if (block.CompareTag("Square"))
-        {
-            squareCount++;
-        }
-        else if (block.CompareTag("Circle"))
-        {
-            circleCount++;
-        }
-
-        block.gameObject.SetActive(false);
+        // å°†ç‰©ä½“æ”¾å›æ± ä¸­
+        BlockManager.instance.ReturnBlock(pickup, (ShapeType)block.spriteCount, BlockType.Pickup);
     }
 
-    public Block DropBlock()
+    // æ­»äº¡æ—¶æ‰è½æ‰€æœ‰ç‰©å“
+    public void DropAllItemsOnDeath()
     {
+        for (int i = 0; i < triangleCount; i++)
+            SpawnDropItem(ShapeType.Triangle);
+        for (int i = 0; i < squareCount; i++)
+            SpawnDropItem(ShapeType.Square);
+        for (int i = 0; i < circleCount; i++)
+            SpawnDropItem(ShapeType.Circle);
+        triangleCount = squareCount = circleCount = 0;
+    }
 
-        if (blockStack.Count > 0)
-        {
-            Block block = blockStack.Pop();
-
-            block.gameObject.layer = LayerMask.NameToLayer("Item");
-
-            if (block.CompareTag("Traingle"))
-            {
-                traingleCount--;
-                block.tag = "Traingle";
-            }
-            else if (block.CompareTag("Square"))
-            {
-                squareCount--;
-                block.tag = "Square";
-            }
-            else if (block.CompareTag("Circle"))
-            {
-                circleCount--;
-                block.tag = "Circle";
-            }
-
-            block.gameObject.SetActive(true);
-
-            block.transform.position = transform.position;
-
-            block.rb.velocity = rb.velocity;
-
-            return block;
-        }
-        return null;
+    private void SpawnDropItem(ShapeType shape)
+    {
+        GameObject blockObj = BlockManager.instance.GetBlock(shape, BlockType.Pickup);
+        blockObj.transform.position = transform.position + (Vector3)Random.insideUnitCircle * 1f;
+        blockObj.layer = LayerMask.NameToLayer("Pickable"); // è®¾ç½®ä¸ºå¯æ‹¾å–å±‚
+        blockObj.SetActive(true);
+        Rigidbody2D rb = blockObj.GetComponent<Rigidbody2D>();
+        if (rb != null)
+            rb.velocity = Random.insideUnitCircle * 2f;
+        Block block = blockObj.GetComponent<Block>();
+        if (block != null) block.blockType = BlockType.Pickup;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Entity entity = collision.gameObject.GetComponent<Entity>();
+        // æ‹¾å–å¯æ‹¾å–ç‰©
+        //if (collision.gameObject.layer == LayerMask.NameToLayer("Pickable"))
+        //{
+        //    CollectPickup(collision.gameObject);
+        //    return;
+        //}
 
-        if (entity.gameObject.layer == LayerMask.NameToLayer("Item") && entity != null)
+        // ç©å®¶é—´å…‹åˆ¶
+        Player otherPlayer = collision.gameObject.GetComponent<Player>();
+        if (otherPlayer != null)
         {
-            Block block = entity as Block;
-
-            CollectBlock(block);
-        }
-
-        if (entity.gameObject.layer == LayerMask.NameToLayer("Player") && entity != null)
-        {
-            bool shouldEliminateOther = (this.spriteCount == 2 && entity.spriteCount == 0) || (this.spriteCount == 1 && entity.spriteCount == 2) || (this.spriteCount == 0 && entity.spriteCount == 1);
-
+            bool shouldEliminateOther = (this.spriteCount == 0 && otherPlayer.spriteCount == 2) ||
+                                         (this.spriteCount == 2 && otherPlayer.spriteCount == 1) ||
+                                         (this.spriteCount == 1 && otherPlayer.spriteCount == 0);
             if (shouldEliminateOther)
             {
-                
-                stateMachine.ChangeState(deadState);
-
+                otherPlayer.stateMachine.ChangeState(deadState);
             }
+            // ç›¸åŒå½¢çŠ¶ï¼šå¼¹å¼€ï¼ˆç”±ç‰©ç†æè´¨å¤„ç†ï¼‰
+        }
+    }
+
+    /// <summary>
+    /// åˆ‡æ¢å½¢çŠ¶ï¼ˆç”±çŠ¶æ€æœºè°ƒç”¨ï¼‰
+    /// </summary>
+    public void ChangeShape()
+    {
+        spriteCount = (spriteCount + 1) % 3; // 0->1->2->0
+        UpdateShapeVisual();
+    }
+
+    /// <summary>
+    /// æ›´æ–°å½¢çŠ¶çš„åŠ¨ç”»å’Œç¢°æ’å™¨
+    /// </summary>
+    public void UpdateShapeVisual()
+    {
+        // ç¦ç”¨æ‰€æœ‰å½¢çŠ¶ç¢°æ’å™¨
+        boxCd.enabled = false;
+        circleCd.enabled = false;
+        traingleCd.enabled = false;
+
+        // æ ¹æ® spriteCount å¯ç”¨å¯¹åº”ç¢°æ’å™¨å’ŒåŠ¨ç”»
+        switch (spriteCount)
+        {
+            case 0: // ä¸‰è§’å½¢
+                traingleCd.enabled = true;
+                anim.SetBool("Triangle", true);
+                anim.SetBool("Square", false);
+                anim.SetBool("Circle", false);
+                break;
+            case 1: // æ­£æ–¹å½¢
+                boxCd.enabled = true;
+                anim.SetBool("Triangle", false);
+                anim.SetBool("Square", true);
+                anim.SetBool("Circle", false);
+                break;
+            case 2: // åœ†å½¢
+                circleCd.enabled = true;
+                anim.SetBool("Triangle", false);
+                anim.SetBool("Square", false);
+                anim.SetBool("Circle", true);
+                break;
         }
     }
 
@@ -222,21 +284,16 @@ public class Player : Entity
     public void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(groundCheckL.transform.position, new Vector2(groundCheckL.transform.position.x, groundCheckL.transform.position.y - groundCheckDistance));
-        Gizmos.DrawLine(groundCheckR.transform.position, new Vector2(groundCheckR.transform.position.x, groundCheckR.transform.position.y - groundCheckDistance));
-        //Gizmos.color = Color.white;
-        //Gizmos.DrawLine(wallCheck.transform.position, new Vector2(wallCheck.transform.position.x + wallCheckDistance * facingDir, wallCheck.transform.position.y));
+        Gizmos.DrawLine(groundCheckL.position, groundCheckL.position + Vector3.down * groundCheckDistance);
+        Gizmos.DrawLine(groundCheckR.position, groundCheckR.position + Vector3.down * groundCheckDistance);
     }
 
-    public virtual bool IsGroundDetected()
+    public bool IsGroundDetected()
     {
-        return Physics2D.Raycast(groundCheckL.transform.position, Vector2.down, groundCheckDistance, ground) || Physics2D.Raycast(groundCheckR.transform.position, Vector2.down, groundCheckDistance, ground);
+        return Physics2D.Raycast(groundCheckL.position, Vector2.down, groundCheckDistance, groundLayer) ||
+               Physics2D.Raycast(groundCheckR.position, Vector2.down, groundCheckDistance, groundLayer);
     }
-
-    //public bool IsWallDetected()
-    //{
-
-    //    return Physics2D.Raycast(wallCheck.transform.position, Vector2.right * facingDir, wallCheckDistance, ground);
-    //}
     #endregion
+
+
 }

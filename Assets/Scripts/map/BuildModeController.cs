@@ -1,106 +1,183 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class BuildModeController : MonoBehaviour
 {
-    [Header("角色引用")]
-    [SerializeField] private Transform playerTransform;
+    [Header("网格设置")] // 保留原有网格相关字段
+    [SerializeField] private int gridSize = 5;
+    [SerializeField] private float cellSize = 1f;
+    [SerializeField] private GameObject highlightPrefab;
+    [SerializeField] private Material validMaterial;
+    [SerializeField] private Material invalidMaterial;
+    [SerializeField] private Material selectedMaterial;
+    [SerializeField] private LayerMask obstacleLayer;
 
-    [Header("可放置物品")]
-    [SerializeField] private List<PlaceableItem> availableItems;
+    private Player player;
+    private GameObject[,] highlightGrid;
+    private bool[,] occupied;
+    private int currentX, currentY;
+    private int centerIndex;
+    private Vector3 gridCenter;
+    private Transform gridParent;
+    private bool isActive = false;
 
-    [Header("基地建造控制器")]
-    [SerializeField] private BaseBuildController baseBuildController;
-
-    [Header("操作")]
-    [SerializeField] private KeyCode confirmKey = KeyCode.Space;
-    [SerializeField] private KeyCode nextItemKey = KeyCode.E;
-    [SerializeField] private KeyCode prevItemKey = KeyCode.Q;
-
-    [Header("测试按键")]
-    [SerializeField] private KeyCode enterBaseBuildKey = KeyCode.L;
-    [SerializeField] private KeyCode startCoreSelectionKey = KeyCode.K;
-
-    private int currentItemIndex = 0;
-    private bool isBaseBuilding = false;
-
-    public PlaceableItem CurrentItem => availableItems.Count > 0 ? availableItems[currentItemIndex] : null;
+    public void SetPlayer(Player p) { player = p; }
 
     private void Update()
     {
-        // 测试：按 L 进入/退出基地建造模式
-        if (Input.GetKeyDown(enterBaseBuildKey))
+        if (player == null) return;
+
+        if (player.buildModePressed)
         {
-            if (isBaseBuilding)
-                ExitBaseBuildMode();
-            else
-                EnterBaseBuildMode();
+            if (!isActive) EnterBuildMode();
+            else ExitBuildMode();
         }
 
-        // 测试：按 K 进入核心选择（仅在基地建造模式下有效）
-        if (Input.GetKeyDown(startCoreSelectionKey) && isBaseBuilding)
+        if (!isActive) return;
+
+        HandleInput();
+        UpdateHighlights();
+
+        if (player.placePressed) TryPlaceCurrentItem();
+    }
+
+
+    public void EnterBuildMode()
+    {
+        if (isActive) return;
+        player.PausePlayer();
+        // 以玩家位置为中心对齐网格
+        Vector3 center = player.transform.position;
+        float centerX = Mathf.Round(center.x / cellSize) * cellSize;
+        float centerY = Mathf.Round(center.y / cellSize) * cellSize;
+        gridCenter = new Vector3(centerX, centerY, 0);
+        centerIndex = gridSize / 2;
+
+        gridParent = new GameObject("BuildGrid").transform;
+        highlightGrid = new GameObject[gridSize, gridSize];
+        occupied = new bool[gridSize, gridSize];
+        GenerateGrid();
+
+        // 初始光标在玩家面前（假设朝右）
+        currentX = centerIndex;
+        currentY = centerIndex + 1;
+
+        isActive = true;
+    }
+
+    public void ExitBuildMode()
+    {
+        player.StartPlayer();
+        if (gridParent != null) Destroy(gridParent.gameObject);
+        highlightGrid = null;
+        occupied = null;
+        isActive = false;
+    }
+
+    private void GenerateGrid()
+    {
+        int half = gridSize / 2;
+        for (int x = 0; x < gridSize; x++)
         {
-            baseBuildController.StartCoreSelection();
+            for (int y = 0; y < gridSize; y++)
+            {
+                Vector3 pos = gridCenter + new Vector3((x - half) * cellSize, (y - half) * cellSize, 0);
+                GameObject hl = Instantiate(highlightPrefab, pos, Quaternion.identity, gridParent);
+                highlightGrid[x, y] = hl;
+            }
         }
+    }
 
-        if (!isBaseBuilding) return;
-
-        // 处理方向输入
+    private void HandleInput()
+    {
+        Vector2 currentMove = player.moveInput;
         int dx = 0, dy = 0;
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) dy = 1;
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) dy = -1;
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) dx = -1;
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) dx = 1;
+        if (currentMove.x > 0.5f) dx = 1;
+        else if (currentMove.x < -0.5f) dx = -1;
+        if (currentMove.y > 0.5f) dy = 1;
+        else if (currentMove.y < -0.5f) dy = -1;
+
         if (dx != 0 || dy != 0)
-            baseBuildController.HandleInput(dx, dy);
-
-        // 物品切换（无限，不检查背包）
-        if (Input.GetKeyDown(nextItemKey))
-            currentItemIndex = (currentItemIndex + 1) % availableItems.Count;
-        if (Input.GetKeyDown(prevItemKey))
-            currentItemIndex = (currentItemIndex - 1 + availableItems.Count) % availableItems.Count;
-
-        // 更新高亮显示
-        baseBuildController.UpdateHighlights();
-
-        // 放置/确认
-        if (Input.GetKeyDown(confirmKey))
         {
-            if (baseBuildController.CoreSelected)
+            int newX = currentX + dx;
+            int newY = currentY + dy;
+            if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize)
             {
-                Debug.Log($"核心已确认：位置 {baseBuildController.CorePosition}，形状 {baseBuildController.CoreShape}");
-                ExitBaseBuildMode(); // 测试中直接退出
-            }
-            else if (baseBuildController.IsActive)
-            {
-                PlaceCurrentItem();
+                currentX = newX;
+                currentY = newY;
             }
         }
     }
 
-    private void EnterBaseBuildMode()
+    private void UpdateHighlights()
     {
-        if (baseBuildController == null)
+        for (int x = 0; x < gridSize; x++)
         {
-            Debug.LogError("未指定 BaseBuildController！");
-            return;
+            for (int y = 0; y < gridSize; y++)
+            {
+                GameObject hl = highlightGrid[x, y];
+                if (hl == null) continue;
+
+                bool canPlace = IsPositionValid(x, y, hl.transform.position);
+                SpriteRenderer sr = hl.GetComponent<SpriteRenderer>();
+                if (x == currentX && y == currentY)
+                    sr.material = selectedMaterial ?? sr.material;
+                else
+                    sr.material = canPlace ? (validMaterial ?? sr.material) : (invalidMaterial ?? sr.material);
+            }
         }
-        baseBuildController.Initialize();
-        isBaseBuilding = true;
-        Debug.Log("进入基地建造模式");
     }
 
-    private void ExitBaseBuildMode()
+    private bool IsPositionValid(int x, int y, Vector3 worldPos)
     {
-        baseBuildController.Cleanup();
-        isBaseBuilding = false;
-        Debug.Log("退出基地建造模式");
+        if (x == centerIndex && y == centerIndex) return false;
+        if (occupied[x, y]) return false;
+        Collider2D[] hits = Physics2D.OverlapBoxAll(worldPos, Vector2.one * cellSize * 0.8f, 0f, obstacleLayer);
+        return hits.Length == 0;
     }
 
-    private void PlaceCurrentItem()
+    private bool TryPlaceCurrentItem()
     {
-        if (availableItems.Count == 0) return;
-        PlaceableItem item = availableItems[currentItemIndex];
-        baseBuildController.TryPlaceItem(item.prefab); // 只传预制体，无限放置
+        // 检查玩家是否有该形状的方块
+        int count = GetItemCount((ShapeType)player.spriteCount);
+        if (count <= 0) return false;
+
+        Vector3 worldPos = highlightGrid[currentX, currentY].transform.position;
+        if (!IsPositionValid(currentX, currentY, worldPos)) return false;
+
+        // 扣除计数
+        DecreaseItemCount((ShapeType)player.spriteCount);
+
+        // 从 GameManager 获取对应形状的建筑预制体
+        GameObject prefab = GameManager.instance.buildingPrefabs[player.spriteCount];
+        GameObject blockObj = Instantiate(prefab, worldPos, Quaternion.identity);
+        blockObj.layer = LayerMask.NameToLayer("Ground");
+
+        // 设置玩家材质
+        SpriteRenderer sr = blockObj.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+        {
+            Material mat = (player.playerType == PlayerType.Player1) ? GameManager.instance.player1Material : GameManager.instance.player2Material;
+            if (mat != null) sr.material = mat;
+        }
+
+        occupied[currentX, currentY] = true;
+        return true;
     }
+
+
+    private int GetItemCount(ShapeType shape)
+    {
+        if (shape == ShapeType.Triangle) return player.triangleCount;
+        if (shape == ShapeType.Square) return player.squareCount;
+        return player.circleCount;
+    }
+
+    private void DecreaseItemCount(ShapeType shape)
+    {
+        if (shape == ShapeType.Triangle) player.triangleCount--;
+        else if (shape == ShapeType.Square) player.squareCount--;
+        else player.circleCount--;
+    }
+
 }

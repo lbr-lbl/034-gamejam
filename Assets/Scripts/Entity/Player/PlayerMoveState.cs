@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using static UnityEngine.InputSystem.InputAction;
 
 public class PlayerMoveState : PlayerState
 {
@@ -20,21 +17,21 @@ public class PlayerMoveState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        Debug.Log($"¡¾Enter ¿ªÊ¼¡¿Íæ¼ÒË÷Òý {player?.playerIndex}");
+        Debug.Log($"ï¿½ï¿½Enter ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {player?.playerIndex}");
 
         if (player == null)
         {
-            Debug.LogError("player Îª null£¡");
+            Debug.LogError("player Îª nullï¿½ï¿½");
             return;
         }
 
-        // Èç¹û playerIndex ÉÐÎ´·ÖÅä£¨Îª 0£©£¬ÔÚ´Ë´¦¸ù¾ÝÒÑÖªÐÅÏ¢ÍÆ¶Ï²¢ÉèÖÃ£¬±£Ö¤ºóÐøÊäÈëÂ·ÓÉ¿ÉÓÃ
+        // ï¿½ï¿½ï¿½ playerIndex ï¿½ï¿½Î´ï¿½ï¿½ï¿½ä£¨Îª 0ï¿½ï¿½ï¿½ï¿½ï¿½Ú´Ë´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öªï¿½ï¿½Ï¢ï¿½Æ¶Ï²ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½É¿ï¿½ï¿½ï¿½
         try
         {
             if (player != null && player.externalMoveInput != Vector2.zero)
             {
-                // Èç¹ûÒÑÓÐÀ´×Ô InputManager µÄÍâ²¿ÊäÈë£¬ÏÈÐ´Èë moveInput µ«²»ÒªÌáÇ°·µ»Ø£¬
-                // ÒÔ±ã¼ÌÐø¶©ÔÄ action map£¨·ñÔò action »Øµ÷ºÍ Jump °ó¶¨¿ÉÄÜÎÞ·¨½¨Á¢£©¡£
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ InputManager ï¿½ï¿½ï¿½â²¿ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½Ð´ï¿½ï¿½ moveInput ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ç°ï¿½ï¿½ï¿½Ø£ï¿½
+                // ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ action mapï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ action ï¿½Øµï¿½ï¿½ï¿½ Jump ï¿½ó¶¨¿ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 moveInput = player.externalMoveInput;
             }
 
@@ -47,7 +44,7 @@ public class PlayerMoveState : PlayerState
                 }
                 else if (player.playerInput != null)
                 {
-                    // Èç¹û¸Ã PlayerInput ÓÐÒÑÅä¶ÔµÄÉè±¸£¬ÓÅÏÈÓÃµÚÒ»¸ö
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ PlayerInput ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôµï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½Ò»ï¿½ï¿½
                     var devs = player.playerInput.user.valid ? player.playerInput.user.pairedDevices : player.playerInput.devices;
                     if (devs.Count > 0)
                     {
@@ -60,7 +57,7 @@ public class PlayerMoveState : PlayerState
                         }
                         else
                         {
-                            // ¼üÅÌ£ºÈç¹ûÒÑÓÐÆäËü player Îª 1£¬ÔòÉèÎª 2
+                            // ï¿½ï¿½ï¿½Ì£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ player Îª 1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª 2
                             bool hasP1 = PlayerInput.all.Select(pi => pi == null ? null : pi.GetComponent<Player>()).Any(p => p != null && p.playerIndex == 1 && p != player);
                             player.playerIndex = hasP1 ? 2 : 1;
                             player.controlScheme = player.playerIndex == 1 ? "KeyboardWASD" : "KeyboardArrows";
@@ -68,7 +65,7 @@ public class PlayerMoveState : PlayerState
                     }
                     else
                     {
-                        // Ã»ÓÐ¿ÉÓÃÉè±¸ÐÅÏ¢£¬Ôò¸ù¾Ý³¡¾°ÖÐÊÇ·ñÒÑÓÐ player1 ¾ö¶¨
+                        // Ã»ï¿½Ð¿ï¿½ï¿½ï¿½ï¿½è±¸ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ player1 ï¿½ï¿½ï¿½ï¿½
                         bool hasP1 = PlayerInput.all.Select(pi => pi == null ? null : pi.GetComponent<Player>()).Any(p => p != null && p.playerIndex == 1 && p != player);
                         player.playerIndex = hasP1 ? 2 : 1;
                         player.controlScheme = player.playerIndex == 1 ? "KeyboardWASD" : "KeyboardArrows";
@@ -76,30 +73,30 @@ public class PlayerMoveState : PlayerState
                 }
                 else
                 {
-                    // ¶µµ×£ºÉèÎª player1
+                    // ï¿½ï¿½ï¿½×£ï¿½ï¿½ï¿½Îª player1
                     player.playerIndex = 1;
                     player.controlScheme = "KeyboardWASD";
                 }
 
-                Debug.Log($"PlayerMoveState ÍÆ¶Ï²¢ÉèÖÃ playerIndex={player.playerIndex}, controlScheme={player.controlScheme}, boundDevice={(player.boundDevice!=null?player.boundDevice.displayName:"null")}");
+                Debug.Log($"PlayerMoveState ï¿½Æ¶Ï²ï¿½ï¿½ï¿½ï¿½ï¿½ playerIndex={player.playerIndex}, controlScheme={player.controlScheme}, boundDevice={(player.boundDevice!=null?player.boundDevice.displayName:"null")}");
             }
         }
         catch { }
 
         if (player.playerInput == null)
         {
-            Debug.LogError("player.playerInput Îª null£¡");
+            Debug.LogError("player.playerInput Îª nullï¿½ï¿½");
             return;
         }
 
         Debug.Log($"player.controlScheme = '{player.controlScheme}'");
         Debug.Log($"player.playerInput.currentActionMap = {player.playerInput.currentActionMap?.name}");
-        Debug.Log($"¡¾Enter ¿ªÊ¼¡¿Íæ¼ÒË÷Òý {player.playerIndex}");
+        Debug.Log($"ï¿½ï¿½Enter ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {player.playerIndex}");
 
-        // Ê¹ÓÃ action map µÄ Move/Jump ¶¯×÷À´½ÓÊÕÊäÈë
+        // Ê¹ï¿½ï¿½ action map ï¿½ï¿½ Move/Jump ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         try
         {
-            // ÓÅÏÈÊ¹ÓÃ currentActionMap
+            // ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ currentActionMap
             InputActionMap actionMap = null;
             try { actionMap = player.playerInput.currentActionMap; } catch { actionMap = null; }
             if (actionMap == null && player.playerInput.actions != null && !string.IsNullOrEmpty(player.controlScheme))
@@ -113,15 +110,15 @@ public class PlayerMoveState : PlayerState
 
             if (actionMap == null)
             {
-                Debug.LogWarning("Î´ÕÒµ½ºÏÊÊµÄ ActionMap£¬»ØÍËµ½ÂÖÑ¯ÊäÈë");
+                Debug.LogWarning("Î´ï¿½Òµï¿½ï¿½ï¿½ï¿½Êµï¿½ ActionMapï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½");
             }
             else
             {
                 try { actionMap.Enable(); } catch { }
                 moveAction = actionMap.FindAction("Move");
                 jumpAction = actionMap.FindAction("Jump");
-                Debug.Log($"moveAction ÊÇ·ñÎª null: {moveAction == null}");
-                // µ÷ÊÔ£º´òÓ¡°ó¶¨Â·¾¶£¬±ÜÃâÖ±½Ó·ÃÎÊ¿ÉÄÜÎª¿É¿ÕµÄ ReadOnlyArray Òý·¢´íÎó
+                Debug.Log($"moveAction ï¿½Ç·ï¿½Îª null: {moveAction == null}");
+                // ï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½Ó¡ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó·ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½Îªï¿½É¿Õµï¿½ ReadOnlyArray ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 if (moveAction != null)
                 {
                     Debug.Log($"moveAction.bindings: {string.Join(",", moveAction.bindings.Select(b => b.path))}");
@@ -141,10 +138,10 @@ public class PlayerMoveState : PlayerState
         }
         catch (System.Exception ex)
         {
-            Debug.LogWarning($"¶©ÔÄ actionMap Ê§°Ü: {ex.Message}");
+            Debug.LogWarning($"ï¿½ï¿½ï¿½ï¿½ actionMap Ê§ï¿½ï¿½: {ex.Message}");
         }
 
-        // Ô­ÓÐµÄÐÎ×´ÉèÖÃ´úÂë...
+        // Ô­ï¿½Ðµï¿½ï¿½ï¿½×´ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½...
         player.spriteCount = 1;
         player.anim.SetBool("Traingle", false);
         player.anim.SetBool("Square", true);
@@ -153,13 +150,13 @@ public class PlayerMoveState : PlayerState
         player.circleCd.enabled = false;
         player.traingleCd.enabled = false;
 
-        // ²»Ê¹ÓÃ action °ó¶¨¼ì²é£¨²ÉÓÃÂÖÑ¯ÊµÏÖ£©
+        // ï¿½ï¿½Ê¹ï¿½ï¿½ action ï¿½ó¶¨¼ï¿½é£¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯Êµï¿½Ö£ï¿½
     }
 
     public override void Exit()
     {
         base.Exit();
-        // ÍË³öÊ±ÎÞÐè´¦Àí action »Øµ÷£¨Ê¹ÓÃÂÖÑ¯ÎªÖ÷£©
+        // ï¿½Ë³ï¿½Ê±ï¿½ï¿½ï¿½è´¦ï¿½ï¿½ action ï¿½Øµï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½Ñ¯Îªï¿½ï¿½ï¿½ï¿½
         try
         {
             if (moveAction != null)
@@ -176,9 +173,9 @@ public class PlayerMoveState : PlayerState
     public override void Update()
     {
         base.Update();
-        // ÏÖÔÚÓÅÏÈÍ¨¹ýÒÑ¶©ÔÄµÄ action »Øµ÷£¨OnMove£©ÉèÖÃ moveInput£»ÈçÎÞ»Øµ÷ÔÙ»ØÍËµ½ externalMoveInput
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½Ñ¶ï¿½ï¿½Äµï¿½ action ï¿½Øµï¿½ï¿½ï¿½OnMoveï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ moveInputï¿½ï¿½ï¿½ï¿½ï¿½Þ»Øµï¿½ï¿½Ù»ï¿½ï¿½Ëµï¿½ externalMoveInput
         //Debug.Log($"[PlayerMoveState.Update] player={player?.name} index={player?.playerIndex} externalMoveInput={player?.externalMoveInput} moveInput={moveInput}");
-        // Ã¿Ö¡ÓÅÏÈ¶ÁÈ¡ action µÄµ±Ç°Öµ£¨Èô´æÔÚ²¢·ÇÁã£©£¬·ñÔòÊ¹ÓÃ externalMoveInput ×÷Îª»ØÍË
+        // Ã¿Ö¡ï¿½ï¿½ï¿½È¶ï¿½È¡ action ï¿½Äµï¿½Ç°Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ã£©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ externalMoveInput ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½
         try
         {
             Vector2 actionV = Vector2.zero;
@@ -198,31 +195,31 @@ public class PlayerMoveState : PlayerState
                     if (player != null && player.externalMoveInput != Vector2.zero)
                         moveInput = player.externalMoveInput;
                     else
-                        moveInput = Vector2.zero; // ÏÔÊ½ÇåÁã£¬±ÜÃâÊÍ·Å°´¼üºó±£ÁôÉÏÒ»´ÎËÙ¶È
+                        moveInput = Vector2.zero; // ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½Í·Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ù¶ï¿½
                 }
                 catch { moveInput = Vector2.zero; }
             }
         }
         catch { }
 
-        // ´¦ÀíÌøÔ¾£º¼æÈÝ action map ¿ÉÄÜÎ´°ó¶¨µ½ÆÚÍû°´¼üµÄÇé¿ö£¬°´¼ü¼ì²â×öÎª»ØÍË
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ action map ï¿½ï¿½ï¿½ï¿½Î´ï¿½ó¶¨µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½
         try
         {
             var kb = Keyboard.current;
             if (player != null)
             {
                 bool jumpPressed = false;
-                // ½ö¶Ô¼üÅÌÍæ¼Ò¼ì²â¶ÔÓ¦µÄ¼ü£¬±ÜÃâÒ»¸ö¼ü´¥·¢¶à¸öÍæ¼Ò
+                // ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Ò¼ï¿½ï¿½ï¿½Ó¦ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 if (kb != null)
                 {
-                    // ¸üÖ±½ÓµÄ°´¼üµ½Íæ¼ÒÓ³Éä£ºj/space -> playerIndex 1£¬numpad1/up/space -> playerIndex 2
+                    // ï¿½ï¿½Ö±ï¿½ÓµÄ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ä£ºj/space -> playerIndex 1ï¿½ï¿½numpad1/up/space -> playerIndex 2
                     if ((kb.jKey.wasPressedThisFrame || kb.spaceKey.wasPressedThisFrame) && player.playerIndex == 1)
                         jumpPressed = true;
                     if ((kb.numpad1Key.wasPressedThisFrame || kb.upArrowKey.wasPressedThisFrame || kb.spaceKey.wasPressedThisFrame) && player.playerIndex == 2)
                         jumpPressed = true;
                 }
 
-                // ÊÖ±úÌøÔ¾¼ì²â£º½öµ±Íæ¼Ò°ó¶¨ÊÖ±úÊ±
+                // ï¿½Ö±ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½â£ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò°ï¿½ï¿½Ö±ï¿½Ê±
                 try
                 {
                     if (player.boundDevice is Gamepad gp)
@@ -249,62 +246,31 @@ public class PlayerMoveState : PlayerState
         }
         catch { }
 
-        // ²»ÔÙÊ¹ÓÃ action »ØÍË¶ÁÈ¡£¬È«²¿ÒÔÂÖÑ¯ÎªÖ÷
+        // ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ action ï¿½ï¿½ï¿½Ë¶ï¿½È¡ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¯Îªï¿½ï¿½
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            player.spriteCount++;
-
-            if (player.spriteCount > 2) player.spriteCount = 0;
-
-            if (player.spriteCount == 0)
-            {
-                ShapeChange("Traingle", player.traingleCd, true);
-            }
-            else if (player.spriteCount == 1)
-            {
-                ShapeChange("Square", player.boxCd, true);
-            }
-            else if (player.spriteCount == 2)
-            {
-                ShapeChange("Circle", player.circleCd, true);
-            }
+            player.stateMachine.ChangeState(player.deadState);
         }
 
-        if (player.gameObject.transform.position.y < PlayerManager.instance.playerDeadZoneY)
-        {
-            stateMachine.ChangeState(player.deadState);
-        }
-    }
-
-    private void ShapeChange(string shapeName, Collider2D cd, bool setTrue)
-    {
-        player.anim.SetBool("Traingle", false);
-        player.anim.SetBool("Square", false);
-        player.anim.SetBool("Circle", false);
-        player.boxCd.enabled = false;
-        player.circleCd.enabled = false;
-        player.traingleCd.enabled = false;
-
-        cd.enabled = true;
-        player.anim.SetBool(shapeName, setTrue);
+        // æ³¨æ„ï¼šæ­»äº¡æ£€æµ‹å·²ç§»è‡³ Player.Update ä¸­ï¼Œæ­¤å¤„ä¸å†é‡å¤
     }
 
     public override void FixedUpdate()
     {
-        // Ó¦ÓÃ moveInput µ½Íæ¼Ò¸ÕÌåËÙ¶È
+        // Ó¦ï¿½ï¿½ moveInput ï¿½ï¿½ï¿½ï¿½Ò¸ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
         float vx = moveInput.x * (player != null ? player.walkSpeed : 5f);
         SetVelocity(vx, player != null ? player.rb.velocity.y : 0f);
         //Debug.Log($"[PlayerMoveState.FixedUpdate] moveInput={moveInput} vx={vx} rb.velocity={player?.rb.velocity}");
-        //Debug.Log($"OnMove triggered: {moveInput}");  // Ìí¼Ó´ËÐÐ
+        //Debug.Log($"OnMove triggered: {moveInput}");  // ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½
     }
 
     #region InputSystem
 
-    // ÊäÈë»Øµ÷
+    // ï¿½ï¿½ï¿½ï¿½Øµï¿½
     private void OnMove(InputAction.CallbackContext context)
     {
-        // ½öÏìÓ¦À´×ÔÓÚ¸ÃÍæ¼ÒÔ¤ÆÚµÄ action map µÄ»Øµ÷£¬±ÜÃâÍ¬Ò»ÎïÀíÉè±¸ÉÏ²»Í¬Íæ¼ÒÍ¬Ê±ÏìÓ¦Í¬Ò»¼ü
+        // ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½Úµï¿½ action map ï¿½Ä»Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½ï¿½ï¿½è±¸ï¿½Ï²ï¿½Í¬ï¿½ï¿½ï¿½Í¬Ê±ï¿½ï¿½Ó¦Í¬Ò»ï¿½ï¿½
         try
         {
             var mapName = context.action?.actionMap?.name;
@@ -312,7 +278,7 @@ public class PlayerMoveState : PlayerState
             {
                 if (player.controlScheme != null && player.controlScheme != "" && mapName != player.controlScheme)
                 {
-                    // Èç¹û²»ÊÇÀ´×Ôµ±Ç°Íæ¼ÒµÄ¿ØÖÆ·½°¸£¬ÔòºöÂÔ
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôµï¿½Ç°ï¿½ï¿½ÒµÄ¿ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     Debug.Log($"OnMove ignored for player {player.playerIndex}: action map {mapName} != controlScheme {player.controlScheme}");
                     return;
                 }
@@ -343,7 +309,4 @@ public class PlayerMoveState : PlayerState
             Debug.Log($"OnJump triggered for player {player.playerIndex}");
         }
     }
-
-
-    #endregion
 }

@@ -51,13 +51,13 @@ MonoBehaviour:
   dropFromSky: 0
   skyY: 8
   dropItems:
-  - itemName: Circle
+  - shape: 2
     prefab: {fileID: 6271669860551197047, guid: f49389fe70ec3e346a9bb7a17fe6d846, type: 3}
     weight: 1
-  - itemName: Square
+  - shape: 1
     prefab: {fileID: 7537652862361982669, guid: 674db57cc0e64d941a9fb7ce2b04f8b2, type: 3}
     weight: 1
-  - itemName: Triangle
+  - shape: 0
     prefab: {fileID: 2328867941291942477, guid: f20e06c8375667f4ab7aacfe568c1cea, type: 3}
     weight: 1
   minCount: 5

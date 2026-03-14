@@ -10,12 +10,12 @@ public class InputManager : MonoBehaviour
     public static InputManager instance { get; private set; }
 
     [Header("Settings")]
-    public GameObject playerPrefab;          // Íæ¼ÒÔ¤ÖÆÌå£¨Ðè°üº¬ PlayerInput ºÍ Player ½Å±¾£©
-    public int maxPlayers = 2;                // ×î´óÍæ¼ÒÊý
+    public GameObject playerPrefab;          // ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½å£¨ï¿½ï¿½ï¿½ï¿½ï¿½ PlayerInput ï¿½ï¿½ Player ï¿½Å±ï¿½ï¿½ï¿½
+    public int maxPlayers = 2;                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-    private PlayerControl playerControl;      // Éú³ÉµÄÊäÈë°ü×°Àà
-    private Dictionary<InputDevice, HashSet<string>> deviceActiveMaps = new(); // Éè±¸ -> ÒÑ¼¤»îµÄµØÍ¼Ãû¼¯ºÏ
-    private Dictionary<InputDevice, List<GameObject>> devicePlayersMap = new(); // Éè±¸ -> ¸ÃÉè±¸¿ØÖÆµÄÍæ¼ÒÁÐ±í
+    private PlayerControl playerControl;      // ï¿½ï¿½ï¿½Éµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½
+    private Dictionary<InputDevice, HashSet<string>> deviceActiveMaps = new(); // ï¿½è±¸ -> ï¿½Ñ¼ï¿½ï¿½ï¿½Äµï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    private Dictionary<InputDevice, List<GameObject>> devicePlayersMap = new(); // ï¿½è±¸ -> ï¿½ï¿½ï¿½è±¸ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
 
     private void Awake()
     {
@@ -24,7 +24,7 @@ public class InputManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        // Íê³Éµ¥Àý³õÊ¼»¯
+        // ï¿½ï¿½Éµï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
         instance = this;
         DontDestroyOnLoad(gameObject.transform.root.gameObject);
         playerControl = new PlayerControl();
@@ -32,14 +32,14 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        // ÊÖ¶¯ÂÖÑ¯ÊäÈë²¢Â·ÓÉµ½ player1/player2 µÄ externalMoveInput£¬±ÜÃâ InputAction Ó³Éä³åÍ»
+        // ï¿½Ö¶ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ë²¢Â·ï¿½Éµï¿½ player1/player2 ï¿½ï¿½ externalMoveInputï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ InputAction Ó³ï¿½ï¿½ï¿½Í»
         try
         {
             var players = PlayerInput.all.Select(pi => pi == null ? null : pi.GetComponent<Player>()).Where(p => p != null).ToList();
             var p1 = players.FirstOrDefault(p => p.playerIndex == 1);
             var p2 = players.FirstOrDefault(p => p.playerIndex == 2);
 
-            // »ØÍË²éÕÒ£ºÈôË÷ÒýÎ´ÕýÈ·ÉèÖÃ£¬³¢ÊÔ¸ù¾Ý controlScheme »ò°ó¶¨Éè±¸ÍÆ¶Ï
+            // ï¿½ï¿½ï¿½Ë²ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½È·ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½Ô¸ï¿½ï¿½ï¿½ controlScheme ï¿½ï¿½ï¿½ï¿½è±¸ï¿½Æ¶ï¿½
             if (p1 == null)
             {
                 p1 = players.FirstOrDefault(p => p.controlScheme == "KeyboardWASD" || (p.boundDevice is Keyboard && p.controlScheme == "KeyboardWASD"));
@@ -49,7 +49,7 @@ public class InputManager : MonoBehaviour
                 p2 = players.FirstOrDefault(p => p.controlScheme == "KeyboardArrows" || p.controlScheme == "Gamepad" || (p.boundDevice is Gamepad) || (p.boundDevice is Keyboard && p.controlScheme == "KeyboardArrows"));
             }
 
-            // ×îºó»ØÍË£ºÈç¹ûÈÔÎ´ÕÒµ½ p1/p2£¬°´´´½¨Ë³Ðò·ÖÅä£¨µÚÒ»¸öÎª p1£¬µÚ¶þ¸öÎª p2£©
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½Òµï¿½ p1/p2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ä£¨ï¿½ï¿½Ò»ï¿½ï¿½Îª p1ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½Îª p2ï¿½ï¿½
             if (p1 == null && players.Count > 0)
                 p1 = players[0];
             if (p2 == null && players.Count > 1)
@@ -68,7 +68,7 @@ public class InputManager : MonoBehaviour
 
             if (p2 != null)
             {
-                // Í¬Ê±¶ÁÈ¡ÊÖ±úÓë¼ýÍ·ÊäÈë£º¼ýÍ·ÓÅÏÈ£¨Èô°´ÏÂ£©£¬·ñÔòÊ¹ÓÃÊÖ±ú
+                // Í¬Ê±ï¿½ï¿½È¡ï¿½Ö±ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½ë£ºï¿½ï¿½Í·ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½Ö±ï¿½
                 Vector2 gpV = Vector2.zero;
                 try
                 {
@@ -80,7 +80,7 @@ public class InputManager : MonoBehaviour
                     }
                     else if (Gamepad.all.Count > 0)
                     {
-                        // Èç¹û boundDevice ²»ÊÇ Gamepad£¬µ«ÓÐÊÖ±úÁ¬½Ó£¬Ò²¶ÁÈ¡µÚÒ»¸öÊÖ±ú×÷Îª±¸Ñ¡
+                        // ï¿½ï¿½ï¿½ boundDevice ï¿½ï¿½ï¿½ï¿½ Gamepadï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½Ó£ï¿½Ò²ï¿½ï¿½È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½Îªï¿½ï¿½Ñ¡
                         gpV = Gamepad.all[0].leftStick.ReadValue();
                     }
                 }
@@ -98,14 +98,14 @@ public class InputManager : MonoBehaviour
                 }
                 catch { }
 
-                // ¼ýÍ·ÓÅÏÈ¸²¸ÇÊÖ±ú
+                // ï¿½ï¿½Í·ï¿½ï¿½ï¿½È¸ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
                 var finalV = arrowsV != Vector2.zero ? arrowsV : gpV;
                 p2.externalMoveInput = finalV;
                 if (finalV != Vector2.zero)
                     Debug.Log($"[InputManager] p2.externalMoveInput = {finalV} (arrows={arrowsV}, gamepad={gpV})");
 
-                // Îª KeyboardArrows Ìá¹©ÌøÔ¾Ö§³Ö£¨ÒòÎªÎÒÃÇÆµ·±¶Ô¼üÅÌ×öÊÖ¶¯Â·ÓÉ£©£¬
-                // µ±¼ì²âµ½ÉÏ¼ýÍ·ÔÚÕâÒ»Ö¡±»°´ÏÂÇÒÍæ¼ÒÔÚµØÃæÊ±£¬Ö±½ÓÉèÖÃÆä´¹Ö±ËÙ¶ÈÊµÏÖÌøÔ¾¡£
+                // Îª KeyboardArrows ï¿½á¹©ï¿½ï¿½Ô¾Ö§ï¿½Ö£ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½Â·ï¿½É£ï¿½ï¿½ï¿½
+                // ï¿½ï¿½ï¿½ï¿½âµ½ï¿½Ï¼ï¿½Í·ï¿½ï¿½ï¿½ï¿½Ò»Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä´¹Ö±ï¿½Ù¶ï¿½Êµï¿½ï¿½ï¿½ï¿½Ô¾ï¿½ï¿½
                 try
                 {
                     if (kb != null && kb.upArrowKey.wasPressedThisFrame && p2 != null)
@@ -130,13 +130,13 @@ public class InputManager : MonoBehaviour
 
     private void Start()
     {
-        // ´´½¨Ä¬ÈÏÍæ¼Ò£ºplayer1 Ê¹ÓÃ WASD
+        // ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½ï¿½Ò£ï¿½player1 Ê¹ï¿½ï¿½ WASD
         if (Keyboard.current != null)
         {
             TryCreatePlayer(Keyboard.current, "KeyboardWASD");
         }
 
-        // player2 ÓÅÏÈÊ¹ÓÃµÚÒ»¸öÊÖ±ú£¬·ñÔòÊ¹ÓÃ·½Ïò¼ü
+        // player2 ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ãµï¿½Ò»ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã·ï¿½ï¿½ï¿½ï¿½
         if (maxPlayers >= 2)
         {
             if (Gamepad.all.Count > 0)
@@ -145,8 +145,8 @@ public class InputManager : MonoBehaviour
             }
             else if (Keyboard.current != null)
             {
-                // ²»Ö±½Ó´´½¨ KeyboardArrows µÄ PlayerInput£¬ÒÔ±ÜÃâÓë WASD Ö±½Ó³åÍ»¡£
-                // ¸ÄÎªÑÓ³Ùµ½Íæ¼Ò°´ÏÂ¼ýÍ·¼üÊ±´´½¨£¨Í¨¹ý OnArrowsJoin ´¦Àí£©¡£
+                // ï¿½ï¿½Ö±ï¿½Ó´ï¿½ï¿½ï¿½ KeyboardArrows ï¿½ï¿½ PlayerInputï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ WASD Ö±ï¿½Ó³ï¿½Í»ï¿½ï¿½
+                // ï¿½ï¿½Îªï¿½Ó³Ùµï¿½ï¿½ï¿½Ò°ï¿½ï¿½Â¼ï¿½Í·ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ OnArrowsJoin ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 // TryCreatePlayer(Keyboard.current, "KeyboardArrows");
             }
         }
@@ -156,10 +156,10 @@ public class InputManager : MonoBehaviour
     {
         playerControl.Enable();
 
-        // ×¢²á¼ÓÈëÊÂ¼þ
-        playerControl.Gamepad.Set.performed += OnGamepadJoin;          // ÊÖ±ú Y °´Å¥
-        playerControl.KeyboardWASD.Move.performed += OnWASDJoin;      // WASD ÈÎÒâ¼ü
-        playerControl.KeyboardArrows.Move.performed += OnArrowsJoin;  // ·½Ïò¼üÈÎÒâ¼ü
+        // ×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+        playerControl.Gamepad.Set.performed += OnGamepadJoin;          // ï¿½Ö±ï¿½ Y ï¿½ï¿½Å¥
+        playerControl.KeyboardWASD.Move.performed += OnWASDJoin;      // WASD ï¿½ï¿½ï¿½ï¿½ï¿½
+        playerControl.KeyboardArrows.Move.performed += OnArrowsJoin;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
         InputSystem.onDeviceChange += OnDeviceChanged;
     }
@@ -191,7 +191,7 @@ public class InputManager : MonoBehaviour
     {
         if (context.control.device is Keyboard keyboard)
         {
-            // Èç¹ûÒÑÓÐÊÖ±ú±»·ÖÅä¸ø player2£¬Ôò¼ýÍ·¼ü²»Ó¦´´½¨ player2£¨ÊÖ±úÓÅÏÈ£©
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ player2ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ player2ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½È£ï¿½
             bool gamepadAssignedToPlayer2 = PlayerInput.all.Any(pi =>
             {
                 if (pi == null) return false;
@@ -201,22 +201,22 @@ public class InputManager : MonoBehaviour
 
             if (gamepadAssignedToPlayer2)
             {
-                Debug.Log("ºöÂÔ¼ýÍ·¼ü£ºÒÑÓÐÊÖ±ú¿ØÖÆ player2£¨ÊÖ±úÓÅÏÈ£©");
+                Debug.Log("ï¿½ï¿½ï¿½Ô¼ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ player2ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½È£ï¿½");
                 return;
             }
 
-            // ´´½¨ player2£¨¼ýÍ·£©£¬µ«Ö»ÔÚÉÐÎ´ÓÐ player2 µÄÇé¿öÏÂ
+            // ï¿½ï¿½ï¿½ï¿½ player2ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½ player2 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if (!IsPlayerIndexTaken(2))
             {
                 TryCreatePlayer(keyboard, "KeyboardArrows");
             }
             else
             {
-                // Èç¹û player2 ÒÑ´æÔÚ£¬µ«ÊÇÓÉÊÖ±ú´´½¨µÄ£¬ÎÒÃÇÐèÒª°Ñ¼ýÍ·ÊäÈëÂ·ÓÉ¸ø¸Ã player2 µÄ externalMoveInput
+                // ï¿½ï¿½ï¿½ player2 ï¿½Ñ´ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ñ¼ï¿½Í·ï¿½ï¿½ï¿½ï¿½Â·ï¿½É¸ï¿½ï¿½ï¿½ player2 ï¿½ï¿½ externalMoveInput
                 var player2 = PlayerInput.all.Select(pi => pi.GetComponent<Player>()).FirstOrDefault(p => p != null && p.playerIndex == 2);
                 if (player2 != null)
                 {
-                    // ¶ÁÈ¡µ±Ç°¼ýÍ··½Ïò²¢Ð´Èë externalMoveInput
+                    // ï¿½ï¿½È¡ï¿½ï¿½Ç°ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ externalMoveInput
                     Vector2 arrows = Vector2.zero;
                     try
                     {
@@ -238,19 +238,19 @@ public class InputManager : MonoBehaviour
 
     private void TryCreatePlayer(InputDevice device, string actionMapName)
     {
-        // Íæ¼ÒÊýÒÑ´ïÉÏÏÞ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½ï¿½ï¿½
         if (PlayerInput.all.Count >= maxPlayers)
         {
-            Debug.Log($"ÒÑ´ï×î´óÍæ¼ÒÊý ({maxPlayers})£¬ÎÞ·¨´´½¨ÐÂÍæ¼Ò");
+            Debug.Log($"ï¿½Ñ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ({maxPlayers})ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
             return;
         }
 
-        // ¼ì²é¸ÃÉè±¸ÊÇ·ñÒÑ¼¤»î¸ÃµØÍ¼£¨·ÀÖ¹ÖØ¸´´´½¨£©
+        // ï¿½ï¿½ï¿½ï¿½ï¿½è±¸ï¿½Ç·ï¿½ï¿½Ñ¼ï¿½ï¿½ï¿½Ãµï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (deviceActiveMaps.TryGetValue(device, out var maps))
         {
             if (maps.Contains(actionMapName))
             {
-                Debug.Log($"Éè±¸ {device.displayName} ÒÑ¼¤»îµØÍ¼ {actionMapName}£¬ºöÂÔ");
+                Debug.Log($"ï¿½è±¸ {device.displayName} ï¿½Ñ¼ï¿½ï¿½ï¿½ï¿½Í¼ {actionMapName}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 return;
             }
         }
@@ -259,21 +259,21 @@ public class InputManager : MonoBehaviour
             deviceActiveMaps[device] = new HashSet<string>();
         }
 
-        // ¼ì²éÍæ¼ÒË÷ÒýÊÇ·ñ±»Õ¼ÓÃ£¨Íæ¼Ò1 = WASD£¬Íæ¼Ò2 = ·½Ïò¼ü/ÊÖ±ú£©
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½Õ¼ï¿½Ã£ï¿½ï¿½ï¿½ï¿½1 = WASDï¿½ï¿½ï¿½ï¿½ï¿½2 = ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½Ö±ï¿½ï¿½ï¿½
         if (actionMapName == "KeyboardWASD" && IsPlayerIndexTaken(1))
         {
-            Debug.Log("Íæ¼Ò1 (WASD) ÒÑ´æÔÚ£¬ÎÞ·¨´´½¨");
+            Debug.Log("ï¿½ï¿½ï¿½1 (WASD) ï¿½Ñ´ï¿½ï¿½Ú£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½");
             return;
         }
         if ((actionMapName == "KeyboardArrows" || actionMapName == "Gamepad") && IsPlayerIndexTaken(2))
         {
-            Debug.Log("Íæ¼Ò2 (·½Ïò¼ü/ÊÖ±ú) ÒÑ´æÔÚ£¬ÎÞ·¨´´½¨");
+            Debug.Log("ï¿½ï¿½ï¿½2 (ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½Ö±ï¿½) ï¿½Ñ´ï¿½ï¿½Ú£ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½");
             return;
         }
 
-        // ÔÊÐíÔÚÍ¬Ò»ÎïÀí¼üÅÌÉÏ´´½¨¶à¸öÍæ¼Ò£¨WASD Óë ¼ýÍ· Ê¹ÓÃ²»Í¬µÄ°ó¶¨£©£¬µ«»áÎªÃ¿¸öÍæ¼Ò¿ËÂ¡ actions ÒÔ±ÜÃâ¹²Ïí×´Ì¬³åÍ»
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò£ï¿½WASD ï¿½ï¿½ ï¿½ï¿½Í· Ê¹ï¿½Ã²ï¿½Í¬ï¿½Ä°ó¶¨£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªÃ¿ï¿½ï¿½ï¿½ï¿½Ò¿ï¿½Â¡ actions ï¿½Ô±ï¿½ï¿½â¹²ï¿½ï¿½×´Ì¬ï¿½ï¿½Í»
 
-        // ÊÖ±úÉè±¸£ºÏÈ½â³ýÓëÆäËûÍæ¼ÒµÄ°ó¶¨£¬È·±£Éè±¸¶ÀÕ¼
+        // ï¿½Ö±ï¿½ï¿½è±¸ï¿½ï¿½ï¿½È½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÒµÄ°ó¶¨£ï¿½È·ï¿½ï¿½ï¿½è±¸ï¿½ï¿½Õ¼
         if (device is Gamepad)
         {
             foreach (var pi in PlayerInput.all.Where(p => p != null))
@@ -283,15 +283,15 @@ public class InputManager : MonoBehaviour
             }
         }
 
-        // ÊµÀý»¯Íæ¼Ò£¬²¢Åä¶ÔÉè±¸
+        // Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è±¸
         PlayerInput newPlayerInput = PlayerInput.Instantiate(playerPrefab, pairWithDevice: device);
         if (newPlayerInput == null)
         {
-            Debug.LogError("PlayerInput.Instantiate Ê§°Ü£¡");
+            Debug.LogError("PlayerInput.Instantiate Ê§ï¿½Ü£ï¿½");
             return;
         }
 
-        // Á¢¼´ÉèÖÃ Player ½Å±¾µÄ»ù´¡ÐÅÏ¢£¬±ÜÃâ Player.Start ÔÚÎ´ÉèÖÃË÷ÒýÇ°ÔËÐÐµ¼ÖÂ index Îª 0
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Player ï¿½Å±ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Player.Start ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ index Îª 0
         try
         {
             var earlyPlayer = newPlayerInput.GetComponent<Player>();
@@ -305,18 +305,18 @@ public class InputManager : MonoBehaviour
         }
         catch { }
 
-        // ¿ËÂ¡ actions asset È·±£ WASD/Arrows ÔÚÍ¬Ò»¼üÅÌÉÏ²»»á»¥ÏàÓ°Ïì
+        // ï¿½ï¿½Â¡ actions asset È·ï¿½ï¿½ WASD/Arrows ï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ï²ï¿½ï¿½á»¥ï¿½ï¿½Ó°ï¿½ï¿½
         try
         {
             if (newPlayerInput.actions != null)
             {
                 var cloned = UnityEngine.Object.Instantiate(newPlayerInput.actions);
                 newPlayerInput.actions = cloned;
-                // ¶ÔÓÚ KeyboardArrows£¨Í¬Ò»¼üÅÌÉÏµÄµÚ¶þÍæ¼Ò£©£¬²»ÒªÈÃ PlayerInput Ö±½Ó¼àÌý¼üÅÌ£¬
-                // ÎÒÃÇ½«ÔÚ InputManager.Update ÖÐÊÖ¶¯¶ÁÈ¡¼ýÍ·°´¼ü²¢Ð´Èë player2 µÄ moveInput£¬±ÜÃâÓë WASD ³åÍ»
+                // ï¿½ï¿½ï¿½ï¿½ KeyboardArrowsï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÄµÚ¶ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ PlayerInput Ö±ï¿½Ó¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì£ï¿½
+                // ï¿½ï¿½ï¿½Ç½ï¿½ï¿½ï¿½ InputManager.Update ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½È¡ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ player2 ï¿½ï¿½ moveInputï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ WASD ï¿½ï¿½Í»
                 try
                 {
-                    // ½«´Ë PlayerInput µÄ actions ÏÞ¶¨ÎªÅä¶ÔµÄÉè±¸£¬È·±£ action map ÄÜ½ÓÊÕ¸ÃÉè±¸ÊÂ¼þ
+                    // ï¿½ï¿½ï¿½ï¿½ PlayerInput ï¿½ï¿½ actions ï¿½Þ¶ï¿½Îªï¿½ï¿½Ôµï¿½ï¿½è±¸ï¿½ï¿½È·ï¿½ï¿½ action map ï¿½Ü½ï¿½ï¿½Õ¸ï¿½ï¿½è±¸ï¿½Â¼ï¿½
                     try { newPlayerInput.actions.devices = new ReadOnlyArray<InputDevice>(new[] { device }); } catch { }
                 }
                 catch { }
@@ -324,13 +324,13 @@ public class InputManager : MonoBehaviour
         }
         catch { }
 
-        // ÊÖ¶¯¼¤»î¶ÔÓ¦µÄ Action Map
+        // ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ Action Map
         if (!string.IsNullOrEmpty(actionMapName) && newPlayerInput.actions != null)
         {
             var map = newPlayerInput.actions.FindActionMap(actionMapName);
             if (map != null)
             {
-                // ÏÈ½ûÓÃËùÓÐµØÍ¼£¬ÔÙÏÔÊ½ÆôÓÃÄ¿±êµØÍ¼£¬È·±£¶¯×÷±»ÆôÓÃ
+                // ï¿½È½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½Í¼ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 try
                 {
                     foreach (var m in newPlayerInput.actions.actionMaps)
@@ -339,14 +339,14 @@ public class InputManager : MonoBehaviour
                 catch { }
 
                 map.Enable();
-                // È·±£ map ÄÚµÄËùÓÐ¶¯×÷Ò²±»ÆôÓÃ
+                // È·ï¿½ï¿½ map ï¿½Úµï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 try
                 {
                     foreach (var a in map.actions)
                         a.Enable();
                 }
                 catch { }
-                // Èç¹ûÊÇ¼üÅÌÓ³Éä£¬È·±£ÔÚÍ¬Ò» keyboard µÄÆäËü PlayerInput ÉÏ½ûÓÃÏà·´µÄ¼üÅÌÓ³Éä£¬±ÜÃâ»¥ÏàÇÀÕ¼
+                // ï¿½ï¿½ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½Ó³ï¿½ä£¬È·ï¿½ï¿½ï¿½ï¿½Í¬Ò» keyboard ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ PlayerInput ï¿½Ï½ï¿½ï¿½ï¿½ï¿½à·´ï¿½Ä¼ï¿½ï¿½ï¿½Ó³ï¿½ä£¬ï¿½ï¿½ï¿½â»¥ï¿½ï¿½ï¿½ï¿½Õ¼
                 try
                 {
                     if (device is Keyboard)
@@ -357,7 +357,7 @@ public class InputManager : MonoBehaviour
 
                         if (!string.IsNullOrEmpty(otherMapName))
                         {
-                            // ÔÚÐÂ´´½¨µÄ PlayerInput ÉÏ½ûÓÃÁíÒ»¸ö¼üÅÌµØÍ¼£¨Èç¹û´æÔÚ£©
+                            // ï¿½ï¿½ï¿½Â´ï¿½ï¿½ï¿½ï¿½ï¿½ PlayerInput ï¿½Ï½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½
                             try
                             {
                                 var other = newPlayerInput.actions.FindActionMap(otherMapName);
@@ -365,8 +365,8 @@ public class InputManager : MonoBehaviour
                             }
                             catch { }
 
-                            // ÔÚÒÑÓÐµÄ PlayerInput ÊµÀýÉÏ£¬½ûÓÃ±¾´ÎÒªÆôÓÃµÄµØÍ¼£¨actionMapName£©£¬
-                            // È·±£ÒÑÓÐÍæ¼Ò²»»áÏìÓ¦ÐÂÍæ¼ÒµÄ°´¼üÓ³Éä
+                            // ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ PlayerInput Êµï¿½ï¿½ï¿½Ï£ï¿½ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ÃµÄµï¿½Í¼ï¿½ï¿½actionMapNameï¿½ï¿½ï¿½ï¿½
+                            // È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ÒµÄ°ï¿½ï¿½ï¿½Ó³ï¿½ï¿½
                             foreach (var pi in PlayerInput.all)
                             {
                                 if (pi == null || pi == newPlayerInput) continue;
@@ -385,10 +385,10 @@ public class InputManager : MonoBehaviour
                     }
                 }
                 catch { }
-                // ÇÐ»» PlayerInput µ±Ç°µØÍ¼£¨ÓÐÖúÓÚ PlayerInput.currentActionMap ·µ»ØÕýÈ·Öµ£©
+                // ï¿½Ð»ï¿½ PlayerInput ï¿½ï¿½Ç°ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ PlayerInput.currentActionMap ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·Öµï¿½ï¿½
                 try { newPlayerInput.SwitchCurrentActionMap(actionMapName); } catch { }
 
-                // ¶îÍâ³¢ÊÔ½«Éè±¸ÓëÐÂÍæ¼ÒµÄ InputUser Åä¶Ô
+                // ï¿½ï¿½ï¿½â³¢ï¿½Ô½ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½ InputUser ï¿½ï¿½ï¿½
                 try
                 {
                     var user = newPlayerInput.user;
@@ -399,10 +399,10 @@ public class InputManager : MonoBehaviour
                 }
                 catch { }
 
-                // ²»¶Ô actions.devices ½øÐÐÈ«¾ÖÐÞ¸Ä£¨»áÓ°ÏìÕû¸ö asset£©£¬½öÈ·±£¸ÃÍæ¼ÒµÄ action map ºÍ actions ÆôÓÃ
+                // ï¿½ï¿½ï¿½ï¿½ actions.devices ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Þ¸Ä£ï¿½ï¿½ï¿½Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ assetï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½ action map ï¿½ï¿½ actions ï¿½ï¿½ï¿½ï¿½
                 try { newPlayerInput.actions.Enable(); } catch { }
 
-                // Èç¹û actionMapName ÊÇ KeyboardArrows »ò Gamepad£¬°Ñ playerScript.playerIndex ÉèÎª 2 È·±£ PlayerMoveState ÕýÈ·Ê¶±ð
+                // ï¿½ï¿½ï¿½ actionMapName ï¿½ï¿½ KeyboardArrows ï¿½ï¿½ Gamepadï¿½ï¿½ï¿½ï¿½ playerScript.playerIndex ï¿½ï¿½Îª 2 È·ï¿½ï¿½ PlayerMoveState ï¿½ï¿½È·Ê¶ï¿½ï¿½
                 try
                 {
                     var ps = newPlayerInput.GetComponent<Player>();
@@ -416,17 +416,17 @@ public class InputManager : MonoBehaviour
                 }
                 catch { }
 
-                Debug.Log($"Íæ¼Ò {newPlayerInput.gameObject.name} ÇÐ»»µ½µØÍ¼ {actionMapName}");
+                Debug.Log($"ï¿½ï¿½ï¿½ {newPlayerInput.gameObject.name} ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ {actionMapName}");
             }
             else
             {
-                Debug.LogError($"Î´ÕÒµ½µØÍ¼ {actionMapName}£¬Ïú»ÙÎÞÐ§Íæ¼Ò");
+                Debug.LogError($"Î´ï¿½Òµï¿½ï¿½ï¿½Í¼ {actionMapName}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½");
                 Destroy(newPlayerInput.gameObject);
                 return;
             }
         }
 
-        // ÉèÖÃÍæ¼Ò½Å±¾ÖÐµÄÐÅÏ¢
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò½Å±ï¿½ï¿½Ðµï¿½ï¿½ï¿½Ï¢
         Player playerScript = newPlayerInput.GetComponent<Player>();
         if (playerScript != null)
         {
@@ -434,30 +434,30 @@ public class InputManager : MonoBehaviour
             playerScript.boundDevice = device;
             playerScript.controlScheme = actionMapName;
             playerScript.playerIndex = actionMapName == "KeyboardWASD" ? 1 : 2;
-            // PlayerInput.playerIndex ÊÇÖ»¶ÁµÄ£¬²»ÄÜ¸³Öµ
-            // ½« playerScript µÄ playerInput ÒýÓÃÉèÖÃÎª¸Õ´´½¨µÄÊµÀý
+            // PlayerInput.playerIndex ï¿½ï¿½Ö»ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Ü¸ï¿½Öµ
+            // ï¿½ï¿½ playerScript ï¿½ï¿½ playerInput ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Õ´ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½
             try { playerScript.playerInput = newPlayerInput; } catch { }
         }
         newPlayerInput.gameObject.name = $"Player_{device.displayName}_{actionMapName}";
 
-        // ¼ÇÂ¼Éè±¸ÓëÍæ¼ÒµÄ¹ØÏµ
+        // ï¿½ï¿½Â¼ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ÒµÄ¹ï¿½Ïµ
         if (!devicePlayersMap.ContainsKey(device))
             devicePlayersMap[device] = new List<GameObject>();
         devicePlayersMap[device].Add(newPlayerInput.gameObject);
         deviceActiveMaps[device].Add(actionMapName);
 
-        Debug.Log($"ÒÑÎªÉè±¸ {device.displayName} ´´½¨Íæ¼Ò£¬µØÍ¼ {actionMapName}£¬µ±Ç°Íæ¼ÒÊý {PlayerInput.all.Count}");
+        Debug.Log($"ï¿½ï¿½Îªï¿½è±¸ {device.displayName} ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½Í¼ {actionMapName}ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ {PlayerInput.all.Count}");
 
-        Debug.Log($"¡¾´´½¨³É¹¦¡¿Íæ¼Ò {newPlayerInput.gameObject.name}£¬Ë÷Òý {playerScript?.playerIndex}£¬µØÍ¼ {actionMapName}£¬Éè±¸ {device.displayName}");
+        Debug.Log($"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {newPlayerInput.gameObject.name}ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ {playerScript?.playerIndex}ï¿½ï¿½ï¿½ï¿½Í¼ {actionMapName}ï¿½ï¿½ï¿½è±¸ {device.displayName}");
 
-        // µ÷ÊÔÊä³öµ±Ç°ËùÓÐ PlayerInput µÄ°ó¶¨ÐÅÏ¢£¬°ïÖú¶¨Î»ÎªºÎ¶¯×÷Ã»ÓÐ´¥·¢
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ PlayerInput ï¿½Ä°ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»Îªï¿½Î¶ï¿½ï¿½ï¿½Ã»ï¿½Ð´ï¿½ï¿½ï¿½
         LogAllPlayerInputBindings(actionMapName);
 
-        // Ç¿ÖÆÍ¬²½Ã¿¸ö PlayerInput µÄ action map ×´Ì¬£¬È·±£ player1 ½öÏìÓ¦ WASD£¬player2 ½öÏìÓ¦ Gamepad »ò Arrows
+        // Ç¿ï¿½ï¿½Í¬ï¿½ï¿½Ã¿ï¿½ï¿½ PlayerInput ï¿½ï¿½ action map ×´Ì¬ï¿½ï¿½È·ï¿½ï¿½ player1 ï¿½ï¿½ï¿½ï¿½Ó¦ WASDï¿½ï¿½player2 ï¿½ï¿½ï¿½ï¿½Ó¦ Gamepad ï¿½ï¿½ Arrows
         try { EnforcePlayerInputMaps(); } catch { }
     }
 
-    // È·±£Ã¿¸ö PlayerInput ÉÏÆôÓÃ/½ûÓÃÕýÈ·µÄ ActionMap£¬±ÜÃâ²»Í¬Íæ¼ÒÏìÓ¦´íÎóµÄ¼ü
+    // È·ï¿½ï¿½Ã¿ï¿½ï¿½ PlayerInput ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ ActionMapï¿½ï¿½ï¿½ï¿½ï¿½â²»Í¬ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
     private void EnforcePlayerInputMaps()
     {
         foreach (var pi in PlayerInput.all)
@@ -469,7 +469,7 @@ public class InputManager : MonoBehaviour
             var actions = pi.actions;
             if (actions == null) continue;
 
-            // ½ûÓÃËùÓÐ¼üÅÌÏà¹ØµØÍ¼£¬ËæºóÆôÓÃÐèÒªµÄ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½
             var mapWASD = actions.FindActionMap("KeyboardWASD");
             var mapArrows = actions.FindActionMap("KeyboardArrows");
             var mapGamepad = actions.FindActionMap("Gamepad");
@@ -478,7 +478,7 @@ public class InputManager : MonoBehaviour
             try { if (mapArrows != null) mapArrows.Disable(); } catch { }
             try { if (mapGamepad != null) mapGamepad.Disable(); } catch { }
 
-            // ¸ù¾Ý player.playerIndex Óë boundDevice ¾ö¶¨ÆôÓÃÄÄ¸öµØÍ¼
+            // ï¿½ï¿½ï¿½ï¿½ player.playerIndex ï¿½ï¿½ boundDevice ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½Í¼
             if (p.playerIndex == 1)
             {
                 try { if (mapWASD != null) { mapWASD.Enable(); foreach (var a in mapWASD.actions) a.Enable(); } } catch { }
@@ -495,7 +495,7 @@ public class InputManager : MonoBehaviour
                 }
             }
 
-            // Èç¹ûÆôÓÃÁË¼üÅÌµØÍ¼£¬È·±£ actions.devices Ö¸¶¨Îª¸Ã¼üÅÌÉè±¸£¬·´Ö®Çå¿Õ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¼ï¿½ï¿½Ìµï¿½Í¼ï¿½ï¿½È·ï¿½ï¿½ actions.devices Ö¸ï¿½ï¿½Îªï¿½Ã¼ï¿½ï¿½ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½Ö®ï¿½ï¿½ï¿½
             try
             {
                 if (p.boundDevice is Keyboard)
@@ -527,7 +527,7 @@ public class InputManager : MonoBehaviour
     {
         if (change == InputDeviceChange.Removed)
         {
-            // Éè±¸ÒÆ³ýÊ±£¬Ïú»ÙËùÓÐ¹ØÁªµÄÍæ¼Ò
+            // ï¿½è±¸ï¿½Æ³ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if (devicePlayersMap.TryGetValue(device, out var players))
             {
                 foreach (var player in players)
@@ -541,11 +541,11 @@ public class InputManager : MonoBehaviour
         }
         else if (change == InputDeviceChange.Added)
         {
-            Debug.Log($"ÐÂÉè±¸¼ÓÈë: {device.displayName}£¬µÈ´ý°´¼ü´´½¨Íæ¼Ò...");
+            Debug.Log($"ï¿½ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½: {device.displayName}ï¿½ï¿½ï¿½È´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½...");
         }
     }
 
-    // ¹© Player ½Å±¾ÔÚ OnDestroy Ê±µ÷ÓÃ£¬ÇåÀí¼ÇÂ¼
+    // ï¿½ï¿½ Player ï¿½Å±ï¿½ï¿½ï¿½ OnDestroy Ê±ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼
     public void UnregisterPlayer(GameObject player, InputDevice device, string controlScheme)
     {
         if (devicePlayersMap.TryGetValue(device, out var players))
@@ -563,7 +563,7 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    // µ÷ÊÔ£º´òÓ¡µ±Ç°ËùÓÐ PlayerInput µÄ°ó¶¨Éè±¸ÐÅÏ¢
+    // ï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½Ó¡ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ PlayerInput ï¿½Ä°ï¿½ï¿½è±¸ï¿½ï¿½Ï¢
     private void LogAllPlayerInputBindings(string tag = null)
     {
         try

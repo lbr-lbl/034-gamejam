@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 public class AttackController : MonoBehaviour
@@ -66,6 +67,8 @@ public class AttackController : MonoBehaviour
 
     private void Fire()
     {
+        AudioManager.instance.Play(AudioManager.instance.itemSource, AudioManager.instance.clips[6]);
+
         int count = GetItemCount((ShapeType)player.spriteCount);
         if (count <= 0) return;
 

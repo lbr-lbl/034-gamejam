@@ -44,6 +44,8 @@ public class Block : Entity
             {
                 if (IsCore)
                 {
+                    AudioManager.instance.Play(AudioManager.instance.blockSource, AudioManager.instance.clips[7]);
+
                     GameManager.instance?.OnCoreDestroyed(coreOwner);
                     Destroy(gameObject); // 直接销毁，不回收
                 }

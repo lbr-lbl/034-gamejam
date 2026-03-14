@@ -168,6 +168,8 @@ public class Player : Entity
     // 拾取可拾取物（图层为Pickable）
     public void CollectPickup(GameObject pickup)
     {
+        AudioManager.instance.Play(AudioManager.instance.itemSource, AudioManager.instance.clips[5]);
+
         Block block = pickup.GetComponent<Block>();
         if (block != null)
         {
@@ -218,12 +220,22 @@ public class Player : Entity
         Player otherPlayer = collision.gameObject.GetComponent<Player>();
         if (otherPlayer != null)
         {
+            if (playerType == PlayerType.Player1)
+                AudioManager.instance.Play(AudioManager.instance.player1Source, AudioManager.instance.clips[1]);
+            else
+                AudioManager.instance.Play(AudioManager.instance.player2Source, AudioManager.instance.clips[1]);
+
             bool shouldEliminateOther = (this.spriteCount == 0 && otherPlayer.spriteCount == 2) ||
                                          (this.spriteCount == 2 && otherPlayer.spriteCount == 1) ||
                                          (this.spriteCount == 1 && otherPlayer.spriteCount == 0);
             if (shouldEliminateOther)
             {
                 otherPlayer.stateMachine.ChangeState(deadState);
+
+                if (playerType == PlayerType.Player1)
+                    AudioManager.instance.Play(AudioManager.instance.player1Source, AudioManager.instance.clips[7]);
+                else
+                    AudioManager.instance.Play(AudioManager.instance.player2Source, AudioManager.instance.clips[7]);
             }
             // 相同形状：弹开（由物理材质处理）
         }

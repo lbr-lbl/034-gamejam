@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMoveState : PlayerState
 {
-    public Vector2 moveInput;
     private InputAction moveAction;
     private InputAction jumpAction;
+    private Vector2 moveValue = Vector2.zero;
+    private bool jumpRequested = false;
 
-    public PlayerMoveState(Entity entity, EntityStateMachine stateMachine, string animBoolName) : base(entity, stateMachine, animBoolName)
+    public PlayerMoveState(Entity entity, EntityStateMachine stateMachine, string animBoolName)
+        : base(entity, stateMachine, animBoolName)
     {
     }
 
@@ -108,66 +111,59 @@ public class PlayerMoveState : PlayerState
                 try { actionMap = player.playerInput.actions.actionMaps.FirstOrDefault(m => m.FindAction("Move") != null); } catch { actionMap = null; }
             }
 
-            if (actionMap == null)
+        // 进入时确保形状正确（假设默认是正方形，但实际应由游戏逻辑决定）
+        // 如果 spriteCount 未设置，则初始化为 1（正方形）
+        if (player.spriteCount < 0 || player.spriteCount > 2)
+            player.spriteCount = 1;
+        player.UpdateShapeVisual(); // 更新动画和碰撞器
+
+        // 从 PlayerInput 的当前 ActionMap 获取 Move / Jump 并注册回调
+        if (player.playerInput != null)
+        {
+            var map = player.playerInput.currentActionMap;
+            if (map != null)
             {
-                Debug.LogWarning("δ�ҵ����ʵ� ActionMap�����˵���ѯ����");
-            }
-            else
-            {
-                try { actionMap.Enable(); } catch { }
-                moveAction = actionMap.FindAction("Move");
-                jumpAction = actionMap.FindAction("Jump");
-                Debug.Log($"moveAction �Ƿ�Ϊ null: {moveAction == null}");
-                // ���ԣ���ӡ��·��������ֱ�ӷ��ʿ���Ϊ�ɿյ� ReadOnlyArray ��������
+                // FindAction 会在找不到时抛异常（第二个参数 true），可根据需要改为 false
+                moveAction = map.FindAction("Move", throwIfNotFound: false);
+                jumpAction = map.FindAction("Jump", throwIfNotFound: false);
+
                 if (moveAction != null)
                 {
-                    Debug.Log($"moveAction.bindings: {string.Join(",", moveAction.bindings.Select(b => b.path))}");
-                }
-                if (moveAction != null)
-                {
-                    try { moveAction.Enable(); } catch { }
                     moveAction.performed += OnMove;
                     moveAction.canceled += OnMove;
+                    moveAction.Enable();
                 }
+
                 if (jumpAction != null)
                 {
-                    try { jumpAction.Enable(); } catch { }
                     jumpAction.performed += OnJump;
+                    jumpAction.Enable();
                 }
             }
         }
-        catch (System.Exception ex)
-        {
-            Debug.LogWarning($"���� actionMap ʧ��: {ex.Message}");
-        }
-
-        // ԭ�е���״���ô���...
-        player.spriteCount = 1;
-        player.anim.SetBool("Traingle", false);
-        player.anim.SetBool("Square", true);
-        player.anim.SetBool("Circle", false);
-        player.boxCd.enabled = true;
-        player.circleCd.enabled = false;
-        player.traingleCd.enabled = false;
-
-        // ��ʹ�� action �󶨼�飨������ѯʵ�֣�
     }
 
     public override void Exit()
     {
         base.Exit();
-        // �˳�ʱ���账�� action �ص���ʹ����ѯΪ����
-        try
+        // 注销输入回调并禁用 Action
+        if (moveAction != null)
         {
-            if (moveAction != null)
-            {
-                moveAction.performed -= OnMove;
-                moveAction.canceled -= OnMove;
-            }
-            if (jumpAction != null)
-                jumpAction.performed -= OnJump;
+            moveAction.performed -= OnMove;
+            moveAction.canceled -= OnMove;
+            moveAction.Disable();
+            moveAction = null;
         }
-        catch { }
+
+        if (jumpAction != null)
+        {
+            jumpAction.performed -= OnJump;
+            jumpAction.Disable();
+            jumpAction = null;
+        }
+        // 清理本地请求标志
+        jumpRequested = false;
+        moveValue = Vector2.zero;
     }
 
     public override void Update()
@@ -258,55 +254,29 @@ public class PlayerMoveState : PlayerState
 
     public override void FixedUpdate()
     {
-        // Ӧ�� moveInput ����Ҹ����ٶ�
-        float vx = moveInput.x * (player != null ? player.walkSpeed : 5f);
-        SetVelocity(vx, player != null ? player.rb.velocity.y : 0f);
-        //Debug.Log($"[PlayerMoveState.FixedUpdate] moveInput={moveInput} vx={vx} rb.velocity={player?.rb.velocity}");
-        //Debug.Log($"OnMove triggered: {moveInput}");  // ���Ӵ���
+        // 应用移动速度 —— 使用本地缓存的 moveValue（不再直接依赖 player.moveInput）
+        SetVelocity(moveValue.x * player.walkSpeed, player.rb.velocity.y);
+
+        // 处理跳跃（支持两种来源：player 的轮询字段 或 本地回调请求）
+        if ((jumpRequested || player.jumpPressed) && player.IsGroundDetected())
+        {
+            SetVelocity(player.rb.velocity.x, player.jumpForce);
+            // 本地请求处理后清除
+            jumpRequested = false;
+            // 注意：player.jumpPressed 由 Player.Update 的轮询设置并由 Player 自身控制清除（保持原有逻辑）
+        }
     }
 
-    #region InputSystem
-
-    // ����ص�
-    private void OnMove(InputAction.CallbackContext context)
+    // Move 回调（performed 和 canceled 都会调用，canceled 返回 0）
+    private void OnMove(InputAction.CallbackContext ctx)
     {
-        // ����Ӧ�����ڸ����Ԥ�ڵ� action map �Ļص�������ͬһ�����豸�ϲ�ͬ���ͬʱ��Ӧͬһ��
-        try
-        {
-            var mapName = context.action?.actionMap?.name;
-            if (player != null && !string.IsNullOrEmpty(mapName))
-            {
-                if (player.controlScheme != null && player.controlScheme != "" && mapName != player.controlScheme)
-                {
-                    // ����������Ե�ǰ��ҵĿ��Ʒ����������
-                    Debug.Log($"OnMove ignored for player {player.playerIndex}: action map {mapName} != controlScheme {player.controlScheme}");
-                    return;
-                }
-            }
-        }
-        catch { }
-
-        moveInput = context.ReadValue<Vector2>();
-        Debug.Log($"OnMove triggered for player {player.playerIndex}: {moveInput}");
+        moveValue = ctx.ReadValue<Vector2>();
     }
 
-    private void OnJump(InputAction.CallbackContext context)
+    // Jump 回调（performed）
+    private void OnJump(InputAction.CallbackContext ctx)
     {
-        try
-        {
-            var mapName = context.action?.actionMap?.name;
-            if (player != null && !string.IsNullOrEmpty(mapName) && player.controlScheme != null && player.controlScheme != "" && mapName != player.controlScheme)
-            {
-                Debug.Log($"OnJump ignored for player {player.playerIndex}: action map {mapName} != controlScheme {player.controlScheme}");
-                return;
-            }
-        }
-        catch { }
-
-        if (player.IsGroundDetected())
-        {
-            try { player.rb.velocity = new Vector2(player.rb.velocity.x, player.jumpForce); } catch { }
-            Debug.Log($"OnJump triggered for player {player.playerIndex}");
-        }
+        if (ctx.performed)
+            jumpRequested = true;
     }
 }

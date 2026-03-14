@@ -44,6 +44,8 @@ public class BaseBuildController : MonoBehaviour
 
     public void Initialize()
     {
+        AudioManager.instance.Play(AudioManager.instance.blockSource, AudioManager.instance.clips[2]);
+
         if (highlightParent != null) Destroy(highlightParent.gameObject);
         highlightParent = new GameObject("BaseBuildHighlights").transform;
 

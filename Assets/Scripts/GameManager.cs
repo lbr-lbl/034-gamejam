@@ -491,6 +491,8 @@ public class GameManager : MonoBehaviour
 
     public void PauseGame()
     {
+        AudioManager.instance.Play(AudioManager.instance.UISource, AudioManager.instance.clips[4]);
+
         if (!isGameActive || isPaused) return;
         isPaused = true;
         Time.timeScale = 0f;

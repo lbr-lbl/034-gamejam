@@ -434,7 +434,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""c4b13e79-862e-456d-be3b-31bf153bceca"",
+                    ""id"": ""183e9155-d112-404d-9137-dc39b3b89a66"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -445,8 +445,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""269ad730-7920-4be2-9121-60fdac11215f"",
-                    ""path"": ""<Keyboard>/s"",
+                    ""id"": ""8d5c39f5-3c09-496f-b16d-6faabf8ce6bb"",
+                    ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -456,8 +456,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""5bae26fc-d6fa-4ae7-9a6f-218a72c5e4b8"",
-                    ""path"": ""<Keyboard>/a"",
+                    ""id"": ""e73e6b0f-0ba5-4b10-b2c5-d7bf7da77ca0"",
+                    ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -473,7 +473,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""name"": ""right"",
                     ""id"": ""5fca69ab-9b7a-4125-817c-2cdacb4b0e44"",
-                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -498,18 +498,18 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Jump"",
+                    ""name"": ""Throw"",
                     ""type"": ""Button"",
-                    ""id"": ""39eb6076-1948-4479-901f-43af594b082e"",
+                    ""id"": ""baad2ec1-ff89-4bdd-9c2c-7fdceafa2b03"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Throw"",
+                    ""name"": ""Jump"",
                     ""type"": ""Button"",
-                    ""id"": ""baad2ec1-ff89-4bdd-9c2c-7fdceafa2b03"",
+                    ""id"": ""39eb6076-1948-4479-901f-43af594b082e"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -666,7 +666,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""id"": ""8c47a7e5-c775-4add-9a19-a31c0dc0b843"",
                     ""path"": ""<Keyboard>/numpad5"",
                     ""id"": ""18cbf919-1bc4-4207-bbbf-51aeb42ed78d"",
-                    ""path"": ""<Keyboard>/numpad2"",
+                    ""path"": ""<Keyboard>/numpad1"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -720,10 +720,30 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""5c6b3c8c-334c-412a-85b2-32e3c1f4dc7c"",
-                    ""path"": ""<Keyboard>/numpad6"",
+                    ""id"": ""b172780e-22a2-4006-adc7-8e75637182a0"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""d94c78f5-c7eb-430c-a1fc-d8a5ae4a4457"",
-                    ""path"": ""<Keyboard>/numpad1"",
+                    ""path"": ""<Keyboard>/numpad2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e7eff47f-7d73-42da-b2e4-46d06fd1594f"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -775,8 +795,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         // Player2
         m_Player2 = asset.FindActionMap("Player2", throwIfNotFound: true);
         m_Player2_Move = m_Player2.FindAction("Move", throwIfNotFound: true);
-        m_Player2_Jump = m_Player2.FindAction("Jump", throwIfNotFound: true);
         m_Player2_Throw = m_Player2.FindAction("Throw", throwIfNotFound: true);
+        m_Player2_Jump = m_Player2.FindAction("Jump", throwIfNotFound: true);
         m_Player2_BuildMode = m_Player2.FindAction("BuildMode", throwIfNotFound: true);
         m_Player2_Set = m_Player2.FindAction("Set", throwIfNotFound: true);
         m_Player2_ChangeShape = m_Player2.FindAction("ChangeShape", throwIfNotFound: true);
@@ -1279,8 +1299,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player2;
     private List<IPlayer2Actions> m_Player2ActionsCallbackInterfaces = new List<IPlayer2Actions>();
     private readonly InputAction m_Player2_Move;
-    private readonly InputAction m_Player2_Jump;
     private readonly InputAction m_Player2_Throw;
+    private readonly InputAction m_Player2_Jump;
     private readonly InputAction m_Player2_BuildMode;
     private readonly InputAction m_Player2_Set;
     private readonly InputAction m_Player2_ChangeShape;
@@ -1334,13 +1354,13 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Move => m_Wrapper.m_Player2_Move;
         /// <summary>
-        /// Provides access to the underlying input action "Player2/Jump".
-        /// </summary>
-        public InputAction @Jump => m_Wrapper.m_Player2_Jump;
-        /// <summary>
         /// Provides access to the underlying input action "Player2/Throw".
         /// </summary>
         public InputAction @Throw => m_Wrapper.m_Player2_Throw;
+        /// <summary>
+        /// Provides access to the underlying input action "Player2/Jump".
+        /// </summary>
+        public InputAction @Jump => m_Wrapper.m_Player2_Jump;
         /// <summary>
         /// Provides access to the underlying input action "Player2/BuildMode".
         /// </summary>
@@ -1394,12 +1414,12 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @Jump.started += instance.OnJump;
-            @Jump.performed += instance.OnJump;
-            @Jump.canceled += instance.OnJump;
             @Throw.started += instance.OnThrow;
             @Throw.performed += instance.OnThrow;
             @Throw.canceled += instance.OnThrow;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
             @BuildMode.started += instance.OnBuildMode;
             @BuildMode.performed += instance.OnBuildMode;
             @BuildMode.canceled += instance.OnBuildMode;
@@ -1428,12 +1448,12 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @Jump.started -= instance.OnJump;
-            @Jump.performed -= instance.OnJump;
-            @Jump.canceled -= instance.OnJump;
             @Throw.started -= instance.OnThrow;
             @Throw.performed -= instance.OnThrow;
             @Throw.canceled -= instance.OnThrow;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
             @BuildMode.started -= instance.OnBuildMode;
             @BuildMode.performed -= instance.OnBuildMode;
             @BuildMode.canceled -= instance.OnBuildMode;
@@ -1638,19 +1658,19 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMove(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Jump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnJump(InputAction.CallbackContext context);
-        /// <summary>
         /// Method invoked when associated input action "Throw" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnThrow(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Jump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnJump(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "BuildMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

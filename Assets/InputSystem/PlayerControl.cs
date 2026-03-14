@@ -89,20 +89,29 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
     ""name"": ""PlayerControl"",
     ""maps"": [
         {
-            ""name"": ""Player1"",
+            ""name"": ""Player"",
             ""id"": ""fa702311-9b89-44b8-b523-4e71858ec4b9"",
             ""actions"": [
                 {
-                    ""name"": ""Move"",
+                    ""name"": ""MoveP1"",
                     ""type"": ""Value"",
-                    ""id"": ""c882a9b7-546d-4b38-93f3-eb4c11f147c9"",
+                    ""id"": ""2f3d339d-b695-4422-b0aa-ccc38a792221"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Jump"",
+                    ""name"": ""MoveP2"",
+                    ""type"": ""Value"",
+                    ""id"": ""fb9eca40-38e3-4a11-9fa7-8beb35523f59"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""JumpP1"",
                     ""type"": ""Button"",
                     ""id"": ""aa085a06-00b6-4eb5-b366-fc269edd254f"",
                     ""expectedControlType"": """",
@@ -111,7 +120,16 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Throw"",
+                    ""name"": ""JumpP2"",
+                    ""type"": ""Button"",
+                    ""id"": ""5955d437-5103-4c1c-b73c-da4eae171dd0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ThrowP1"",
                     ""type"": ""Button"",
                     ""id"": ""238d91ce-4e37-4206-9887-697943f30c65"",
                     ""expectedControlType"": """",
@@ -120,7 +138,16 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""BuildMode"",
+                    ""name"": ""ThrowP2"",
+                    ""type"": ""Button"",
+                    ""id"": ""f3ee9277-76c3-417c-bc5d-479bbb3da552"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BuildModeP1"",
                     ""type"": ""Button"",
                     ""id"": ""ef4ff229-d0d2-4ca4-ac42-933a343de977"",
                     ""expectedControlType"": """",
@@ -129,7 +156,16 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Set"",
+                    ""name"": ""BuildModeP2"",
+                    ""type"": ""Button"",
+                    ""id"": ""1f5b36ba-2954-4f1e-ae1c-6539f84fcb0b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SetP1"",
                     ""type"": ""Button"",
                     ""id"": ""5ffd0e26-5833-4ceb-8db7-89d8a5be1cac"",
                     ""expectedControlType"": """",
@@ -138,7 +174,16 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ChangeShape"",
+                    ""name"": ""SetP2"",
+                    ""type"": ""Button"",
+                    ""id"": ""844c9b7d-019b-4c11-98f5-9c6a60f216f5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeShapeP1"",
                     ""type"": ""Button"",
                     ""id"": ""1d7d1bba-289f-4efb-b9e9-e0e8a67f26f8"",
                     ""expectedControlType"": """",
@@ -147,9 +192,27 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Suicide"",
+                    ""name"": ""ChangeShapeP2"",
+                    ""type"": ""Button"",
+                    ""id"": ""451772d4-50d4-4357-8b9d-07a7447a06af"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SuicideP1"",
                     ""type"": ""Button"",
                     ""id"": ""fd0bb467-7eec-4742-ab9e-2a8b906e3422"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SuicideP2"",
+                    ""type"": ""Button"",
+                    ""id"": ""cf24f133-6ad2-4498-9d49-753178c3934b"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -164,7 +227,18 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Jump"",
+                    ""action"": ""JumpP1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0abec61a-832f-40d9-bdb6-fc552f9e8f84"",
+                    ""path"": ""<Keyboard>/numpad2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""JumpP2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -175,7 +249,18 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Throw"",
+                    ""action"": ""ThrowP1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3ccd1568-f0ba-42bd-bc6c-224f88ffa437"",
+                    ""path"": ""<Keyboard>/numpad1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ThrowP2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -186,7 +271,18 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""BuildMode"",
+                    ""action"": ""BuildModeP1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fa702d5b-df63-4d56-a013-90c5c772dfbd"",
+                    ""path"": ""<Keyboard>/numpad3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildModeP2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -197,7 +293,18 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Set"",
+                    ""action"": ""SetP1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""13839ed8-9776-402f-8509-f7b3af6db2ed"",
+                    ""path"": ""<Keyboard>/numpad4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SetP2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -208,7 +315,18 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ChangeShape"",
+                    ""action"": ""ChangeShapeP1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2646f28f-936e-4ef3-a24c-99cc3b6be794"",
+                    ""path"": ""<Keyboard>/numpad5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeShapeP2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -219,286 +337,157 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Suicide"",
+                    ""action"": ""SuicideP1"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""b105de88-cef2-4a0b-9d2f-6667c04dc1b4"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""183e9155-d112-404d-9137-dc39b3b89a66"",
-                    ""path"": ""<Keyboard>/upArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""8d5c39f5-3c09-496f-b16d-6faabf8ce6bb"",
-                    ""path"": ""<Keyboard>/downArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""e73e6b0f-0ba5-4b10-b2c5-d7bf7da77ca0"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""5fca69ab-9b7a-4125-817c-2cdacb4b0e44"",
-                    ""path"": ""<Keyboard>/rightArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                }
-            ]
-        },
-        {
-            ""name"": ""Player2"",
-            ""id"": ""48932386-a373-4318-a91a-692af78b6232"",
-            ""actions"": [
-                {
-                    ""name"": ""Move"",
-                    ""type"": ""Value"",
-                    ""id"": ""907a5879-de7d-4361-bcb0-81c7935c5669"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Jump"",
-                    ""type"": ""Button"",
-                    ""id"": ""39eb6076-1948-4479-901f-43af594b082e"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Throw"",
-                    ""type"": ""Button"",
-                    ""id"": ""baad2ec1-ff89-4bdd-9c2c-7fdceafa2b03"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""BuildMode"",
-                    ""type"": ""Button"",
-                    ""id"": ""ebb90436-543c-4211-8a50-89f5bd638814"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Set"",
-                    ""type"": ""Button"",
-                    ""id"": ""86e7873e-edfd-4660-b85e-7245c69f07dd"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""ChangeShape"",
-                    ""type"": ""Button"",
-                    ""id"": ""85a4fd21-1658-4efc-b242-7e2362aff6f4"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Suicide"",
-                    ""type"": ""Button"",
-                    ""id"": ""ee2bd80c-9cf1-4b72-a797-2948b68f9a6c"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""8c400b2a-9d8d-4c0c-a332-3ba85ebb786b"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a5e53784-1328-4ea0-bc5f-1e5234f6951e"",
+                    ""id"": ""1ba0f49d-d9ce-4316-9574-c5ec37a852fa"",
                     ""path"": ""<Keyboard>/numpad6"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Suicide"",
+                    ""action"": ""SuicideP2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""3be6a6a2-33cd-435b-8b0e-603fa09e99d5"",
-                    ""path"": ""<Keyboard>/numpad5"",
+                    ""name"": ""WASD"",
+                    ""id"": ""4b9ca1fc-caf6-4806-be03-5cbf008c42bf"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""ChangeShape"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3836ce08-85b8-4d8c-ac51-13e4aa451832"",
-                    ""path"": ""<Keyboard>/numpad4"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Set"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""88e7e44a-a1f6-414c-af3a-02cbbeff3c60"",
-                    ""path"": ""<Keyboard>/numpad3"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""BuildMode"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""18cbf919-1bc4-4207-bbbf-51aeb42ed78d"",
-                    ""path"": ""<Keyboard>/numpad2"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Throw"",
-                    ""isComposite"": false,
+                    ""action"": ""MoveP1"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""4ed59f1c-fe19-489f-8a8d-843e36517401"",
-                    ""path"": ""<Keyboard>/upArrow"",
+                    ""id"": ""73063d23-9dee-4ddb-a5b9-8eba490f13b2"",
+                    ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveP1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""5f22e6c0-596b-418c-8d9e-0cbfdda4836a"",
-                    ""path"": ""<Keyboard>/downArrow"",
+                    ""id"": ""bc270936-c5bb-423f-89da-c4ae9dc1fb99"",
+                    ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveP1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""a123b156-7ec5-49a7-a8df-1e77deeb8c68"",
-                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""id"": ""b342c6ff-98e9-44fd-99ce-288116dec444"",
+                    ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveP1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""right"",
-                    ""id"": ""749acf52-e8a2-4955-9065-e6c05f591965"",
-                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""id"": ""b30fec5b-245a-4583-a3bb-52bb072b9be5"",
+                    ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveP1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""d94c78f5-c7eb-430c-a1fc-d8a5ae4a4457"",
-                    ""path"": ""<Keyboard>/numpad1"",
+                    ""name"": ""Arrow"",
+                    ""id"": ""0a49796c-02d9-442b-95db-7460e373e43a"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Jump"",
-                    ""isComposite"": false,
+                    ""action"": ""MoveP2"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""aa5603b2-5009-4cbc-a1b4-aff19eed15dc"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveP2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""88a99872-1bd5-458e-95e6-77058e9c9061"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveP2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""d4a1a879-7a91-4af4-bd00-2d6e1e6e789b"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveP2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""73576a5d-7240-4551-872e-d935d536cf9e"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveP2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
     ],
     ""controlSchemes"": []
 }");
-        // Player1
-        m_Player1 = asset.FindActionMap("Player1", throwIfNotFound: true);
-        m_Player1_Move = m_Player1.FindAction("Move", throwIfNotFound: true);
-        m_Player1_Jump = m_Player1.FindAction("Jump", throwIfNotFound: true);
-        m_Player1_Throw = m_Player1.FindAction("Throw", throwIfNotFound: true);
-        m_Player1_BuildMode = m_Player1.FindAction("BuildMode", throwIfNotFound: true);
-        m_Player1_Set = m_Player1.FindAction("Set", throwIfNotFound: true);
-        m_Player1_ChangeShape = m_Player1.FindAction("ChangeShape", throwIfNotFound: true);
-        m_Player1_Suicide = m_Player1.FindAction("Suicide", throwIfNotFound: true);
-        // Player2
-        m_Player2 = asset.FindActionMap("Player2", throwIfNotFound: true);
-        m_Player2_Move = m_Player2.FindAction("Move", throwIfNotFound: true);
-        m_Player2_Jump = m_Player2.FindAction("Jump", throwIfNotFound: true);
-        m_Player2_Throw = m_Player2.FindAction("Throw", throwIfNotFound: true);
-        m_Player2_BuildMode = m_Player2.FindAction("BuildMode", throwIfNotFound: true);
-        m_Player2_Set = m_Player2.FindAction("Set", throwIfNotFound: true);
-        m_Player2_ChangeShape = m_Player2.FindAction("ChangeShape", throwIfNotFound: true);
-        m_Player2_Suicide = m_Player2.FindAction("Suicide", throwIfNotFound: true);
+        // Player
+        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
+        m_Player_MoveP1 = m_Player.FindAction("MoveP1", throwIfNotFound: true);
+        m_Player_MoveP2 = m_Player.FindAction("MoveP2", throwIfNotFound: true);
+        m_Player_JumpP1 = m_Player.FindAction("JumpP1", throwIfNotFound: true);
+        m_Player_JumpP2 = m_Player.FindAction("JumpP2", throwIfNotFound: true);
+        m_Player_ThrowP1 = m_Player.FindAction("ThrowP1", throwIfNotFound: true);
+        m_Player_ThrowP2 = m_Player.FindAction("ThrowP2", throwIfNotFound: true);
+        m_Player_BuildModeP1 = m_Player.FindAction("BuildModeP1", throwIfNotFound: true);
+        m_Player_BuildModeP2 = m_Player.FindAction("BuildModeP2", throwIfNotFound: true);
+        m_Player_SetP1 = m_Player.FindAction("SetP1", throwIfNotFound: true);
+        m_Player_SetP2 = m_Player.FindAction("SetP2", throwIfNotFound: true);
+        m_Player_ChangeShapeP1 = m_Player.FindAction("ChangeShapeP1", throwIfNotFound: true);
+        m_Player_ChangeShapeP2 = m_Player.FindAction("ChangeShapeP2", throwIfNotFound: true);
+        m_Player_SuicideP1 = m_Player.FindAction("SuicideP1", throwIfNotFound: true);
+        m_Player_SuicideP2 = m_Player.FindAction("SuicideP2", throwIfNotFound: true);
     }
 
     ~@PlayerControl()
     {
-        UnityEngine.Debug.Assert(!m_Player1.enabled, "This will cause a leak and performance issues, PlayerControl.Player1.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_Player2.enabled, "This will cause a leak and performance issues, PlayerControl.Player2.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, PlayerControl.Player.Disable() has not been called.");
     }
 
     /// <summary>
@@ -571,59 +560,94 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Player1
-    private readonly InputActionMap m_Player1;
-    private List<IPlayer1Actions> m_Player1ActionsCallbackInterfaces = new List<IPlayer1Actions>();
-    private readonly InputAction m_Player1_Move;
-    private readonly InputAction m_Player1_Jump;
-    private readonly InputAction m_Player1_Throw;
-    private readonly InputAction m_Player1_BuildMode;
-    private readonly InputAction m_Player1_Set;
-    private readonly InputAction m_Player1_ChangeShape;
-    private readonly InputAction m_Player1_Suicide;
+    // Player
+    private readonly InputActionMap m_Player;
+    private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
+    private readonly InputAction m_Player_MoveP1;
+    private readonly InputAction m_Player_MoveP2;
+    private readonly InputAction m_Player_JumpP1;
+    private readonly InputAction m_Player_JumpP2;
+    private readonly InputAction m_Player_ThrowP1;
+    private readonly InputAction m_Player_ThrowP2;
+    private readonly InputAction m_Player_BuildModeP1;
+    private readonly InputAction m_Player_BuildModeP2;
+    private readonly InputAction m_Player_SetP1;
+    private readonly InputAction m_Player_SetP2;
+    private readonly InputAction m_Player_ChangeShapeP1;
+    private readonly InputAction m_Player_ChangeShapeP2;
+    private readonly InputAction m_Player_SuicideP1;
+    private readonly InputAction m_Player_SuicideP2;
     /// <summary>
-    /// Provides access to input actions defined in input action map "Player1".
+    /// Provides access to input actions defined in input action map "Player".
     /// </summary>
-    public struct Player1Actions
+    public struct PlayerActions
     {
         private @PlayerControl m_Wrapper;
 
         /// <summary>
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
-        public Player1Actions(@PlayerControl wrapper) { m_Wrapper = wrapper; }
+        public PlayerActions(@PlayerControl wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Player1/Move".
+        /// Provides access to the underlying input action "Player/MoveP1".
         /// </summary>
-        public InputAction @Move => m_Wrapper.m_Player1_Move;
+        public InputAction @MoveP1 => m_Wrapper.m_Player_MoveP1;
         /// <summary>
-        /// Provides access to the underlying input action "Player1/Jump".
+        /// Provides access to the underlying input action "Player/MoveP2".
         /// </summary>
-        public InputAction @Jump => m_Wrapper.m_Player1_Jump;
+        public InputAction @MoveP2 => m_Wrapper.m_Player_MoveP2;
         /// <summary>
-        /// Provides access to the underlying input action "Player1/Throw".
+        /// Provides access to the underlying input action "Player/JumpP1".
         /// </summary>
-        public InputAction @Throw => m_Wrapper.m_Player1_Throw;
+        public InputAction @JumpP1 => m_Wrapper.m_Player_JumpP1;
         /// <summary>
-        /// Provides access to the underlying input action "Player1/BuildMode".
+        /// Provides access to the underlying input action "Player/JumpP2".
         /// </summary>
-        public InputAction @BuildMode => m_Wrapper.m_Player1_BuildMode;
+        public InputAction @JumpP2 => m_Wrapper.m_Player_JumpP2;
         /// <summary>
-        /// Provides access to the underlying input action "Player1/Set".
+        /// Provides access to the underlying input action "Player/ThrowP1".
         /// </summary>
-        public InputAction @Set => m_Wrapper.m_Player1_Set;
+        public InputAction @ThrowP1 => m_Wrapper.m_Player_ThrowP1;
         /// <summary>
-        /// Provides access to the underlying input action "Player1/ChangeShape".
+        /// Provides access to the underlying input action "Player/ThrowP2".
         /// </summary>
-        public InputAction @ChangeShape => m_Wrapper.m_Player1_ChangeShape;
+        public InputAction @ThrowP2 => m_Wrapper.m_Player_ThrowP2;
         /// <summary>
-        /// Provides access to the underlying input action "Player1/Suicide".
+        /// Provides access to the underlying input action "Player/BuildModeP1".
         /// </summary>
-        public InputAction @Suicide => m_Wrapper.m_Player1_Suicide;
+        public InputAction @BuildModeP1 => m_Wrapper.m_Player_BuildModeP1;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/BuildModeP2".
+        /// </summary>
+        public InputAction @BuildModeP2 => m_Wrapper.m_Player_BuildModeP2;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SetP1".
+        /// </summary>
+        public InputAction @SetP1 => m_Wrapper.m_Player_SetP1;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SetP2".
+        /// </summary>
+        public InputAction @SetP2 => m_Wrapper.m_Player_SetP2;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ChangeShapeP1".
+        /// </summary>
+        public InputAction @ChangeShapeP1 => m_Wrapper.m_Player_ChangeShapeP1;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ChangeShapeP2".
+        /// </summary>
+        public InputAction @ChangeShapeP2 => m_Wrapper.m_Player_ChangeShapeP2;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SuicideP1".
+        /// </summary>
+        public InputAction @SuicideP1 => m_Wrapper.m_Player_SuicideP1;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SuicideP2".
+        /// </summary>
+        public InputAction @SuicideP2 => m_Wrapper.m_Player_SuicideP2;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
-        public InputActionMap Get() { return m_Wrapper.m_Player1; }
+        public InputActionMap Get() { return m_Wrapper.m_Player; }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
         public void Enable() { Get().Enable(); }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
@@ -631,9 +655,9 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
         public bool enabled => Get().enabled;
         /// <summary>
-        /// Implicitly converts an <see ref="Player1Actions" /> to an <see ref="InputActionMap" /> instance.
+        /// Implicitly converts an <see ref="PlayerActions" /> to an <see ref="InputActionMap" /> instance.
         /// </summary>
-        public static implicit operator InputActionMap(Player1Actions set) { return set.Get(); }
+        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
         /// <summary>
         /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
         /// </summary>
@@ -641,32 +665,53 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
         /// </remarks>
-        /// <seealso cref="Player1Actions" />
-        public void AddCallbacks(IPlayer1Actions instance)
+        /// <seealso cref="PlayerActions" />
+        public void AddCallbacks(IPlayerActions instance)
         {
-            if (instance == null || m_Wrapper.m_Player1ActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_Player1ActionsCallbackInterfaces.Add(instance);
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
-            @Jump.started += instance.OnJump;
-            @Jump.performed += instance.OnJump;
-            @Jump.canceled += instance.OnJump;
-            @Throw.started += instance.OnThrow;
-            @Throw.performed += instance.OnThrow;
-            @Throw.canceled += instance.OnThrow;
-            @BuildMode.started += instance.OnBuildMode;
-            @BuildMode.performed += instance.OnBuildMode;
-            @BuildMode.canceled += instance.OnBuildMode;
-            @Set.started += instance.OnSet;
-            @Set.performed += instance.OnSet;
-            @Set.canceled += instance.OnSet;
-            @ChangeShape.started += instance.OnChangeShape;
-            @ChangeShape.performed += instance.OnChangeShape;
-            @ChangeShape.canceled += instance.OnChangeShape;
-            @Suicide.started += instance.OnSuicide;
-            @Suicide.performed += instance.OnSuicide;
-            @Suicide.canceled += instance.OnSuicide;
+            if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
+            @MoveP1.started += instance.OnMoveP1;
+            @MoveP1.performed += instance.OnMoveP1;
+            @MoveP1.canceled += instance.OnMoveP1;
+            @MoveP2.started += instance.OnMoveP2;
+            @MoveP2.performed += instance.OnMoveP2;
+            @MoveP2.canceled += instance.OnMoveP2;
+            @JumpP1.started += instance.OnJumpP1;
+            @JumpP1.performed += instance.OnJumpP1;
+            @JumpP1.canceled += instance.OnJumpP1;
+            @JumpP2.started += instance.OnJumpP2;
+            @JumpP2.performed += instance.OnJumpP2;
+            @JumpP2.canceled += instance.OnJumpP2;
+            @ThrowP1.started += instance.OnThrowP1;
+            @ThrowP1.performed += instance.OnThrowP1;
+            @ThrowP1.canceled += instance.OnThrowP1;
+            @ThrowP2.started += instance.OnThrowP2;
+            @ThrowP2.performed += instance.OnThrowP2;
+            @ThrowP2.canceled += instance.OnThrowP2;
+            @BuildModeP1.started += instance.OnBuildModeP1;
+            @BuildModeP1.performed += instance.OnBuildModeP1;
+            @BuildModeP1.canceled += instance.OnBuildModeP1;
+            @BuildModeP2.started += instance.OnBuildModeP2;
+            @BuildModeP2.performed += instance.OnBuildModeP2;
+            @BuildModeP2.canceled += instance.OnBuildModeP2;
+            @SetP1.started += instance.OnSetP1;
+            @SetP1.performed += instance.OnSetP1;
+            @SetP1.canceled += instance.OnSetP1;
+            @SetP2.started += instance.OnSetP2;
+            @SetP2.performed += instance.OnSetP2;
+            @SetP2.canceled += instance.OnSetP2;
+            @ChangeShapeP1.started += instance.OnChangeShapeP1;
+            @ChangeShapeP1.performed += instance.OnChangeShapeP1;
+            @ChangeShapeP1.canceled += instance.OnChangeShapeP1;
+            @ChangeShapeP2.started += instance.OnChangeShapeP2;
+            @ChangeShapeP2.performed += instance.OnChangeShapeP2;
+            @ChangeShapeP2.canceled += instance.OnChangeShapeP2;
+            @SuicideP1.started += instance.OnSuicideP1;
+            @SuicideP1.performed += instance.OnSuicideP1;
+            @SuicideP1.canceled += instance.OnSuicideP1;
+            @SuicideP2.started += instance.OnSuicideP2;
+            @SuicideP2.performed += instance.OnSuicideP2;
+            @SuicideP2.canceled += instance.OnSuicideP2;
         }
 
         /// <summary>
@@ -675,39 +720,60 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <remarks>
         /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
         /// </remarks>
-        /// <seealso cref="Player1Actions" />
-        private void UnregisterCallbacks(IPlayer1Actions instance)
+        /// <seealso cref="PlayerActions" />
+        private void UnregisterCallbacks(IPlayerActions instance)
         {
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
-            @Jump.started -= instance.OnJump;
-            @Jump.performed -= instance.OnJump;
-            @Jump.canceled -= instance.OnJump;
-            @Throw.started -= instance.OnThrow;
-            @Throw.performed -= instance.OnThrow;
-            @Throw.canceled -= instance.OnThrow;
-            @BuildMode.started -= instance.OnBuildMode;
-            @BuildMode.performed -= instance.OnBuildMode;
-            @BuildMode.canceled -= instance.OnBuildMode;
-            @Set.started -= instance.OnSet;
-            @Set.performed -= instance.OnSet;
-            @Set.canceled -= instance.OnSet;
-            @ChangeShape.started -= instance.OnChangeShape;
-            @ChangeShape.performed -= instance.OnChangeShape;
-            @ChangeShape.canceled -= instance.OnChangeShape;
-            @Suicide.started -= instance.OnSuicide;
-            @Suicide.performed -= instance.OnSuicide;
-            @Suicide.canceled -= instance.OnSuicide;
+            @MoveP1.started -= instance.OnMoveP1;
+            @MoveP1.performed -= instance.OnMoveP1;
+            @MoveP1.canceled -= instance.OnMoveP1;
+            @MoveP2.started -= instance.OnMoveP2;
+            @MoveP2.performed -= instance.OnMoveP2;
+            @MoveP2.canceled -= instance.OnMoveP2;
+            @JumpP1.started -= instance.OnJumpP1;
+            @JumpP1.performed -= instance.OnJumpP1;
+            @JumpP1.canceled -= instance.OnJumpP1;
+            @JumpP2.started -= instance.OnJumpP2;
+            @JumpP2.performed -= instance.OnJumpP2;
+            @JumpP2.canceled -= instance.OnJumpP2;
+            @ThrowP1.started -= instance.OnThrowP1;
+            @ThrowP1.performed -= instance.OnThrowP1;
+            @ThrowP1.canceled -= instance.OnThrowP1;
+            @ThrowP2.started -= instance.OnThrowP2;
+            @ThrowP2.performed -= instance.OnThrowP2;
+            @ThrowP2.canceled -= instance.OnThrowP2;
+            @BuildModeP1.started -= instance.OnBuildModeP1;
+            @BuildModeP1.performed -= instance.OnBuildModeP1;
+            @BuildModeP1.canceled -= instance.OnBuildModeP1;
+            @BuildModeP2.started -= instance.OnBuildModeP2;
+            @BuildModeP2.performed -= instance.OnBuildModeP2;
+            @BuildModeP2.canceled -= instance.OnBuildModeP2;
+            @SetP1.started -= instance.OnSetP1;
+            @SetP1.performed -= instance.OnSetP1;
+            @SetP1.canceled -= instance.OnSetP1;
+            @SetP2.started -= instance.OnSetP2;
+            @SetP2.performed -= instance.OnSetP2;
+            @SetP2.canceled -= instance.OnSetP2;
+            @ChangeShapeP1.started -= instance.OnChangeShapeP1;
+            @ChangeShapeP1.performed -= instance.OnChangeShapeP1;
+            @ChangeShapeP1.canceled -= instance.OnChangeShapeP1;
+            @ChangeShapeP2.started -= instance.OnChangeShapeP2;
+            @ChangeShapeP2.performed -= instance.OnChangeShapeP2;
+            @ChangeShapeP2.canceled -= instance.OnChangeShapeP2;
+            @SuicideP1.started -= instance.OnSuicideP1;
+            @SuicideP1.performed -= instance.OnSuicideP1;
+            @SuicideP1.canceled -= instance.OnSuicideP1;
+            @SuicideP2.started -= instance.OnSuicideP2;
+            @SuicideP2.performed -= instance.OnSuicideP2;
+            @SuicideP2.canceled -= instance.OnSuicideP2;
         }
 
         /// <summary>
-        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="Player1Actions.UnregisterCallbacks(IPlayer1Actions)" />.
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PlayerActions.UnregisterCallbacks(IPlayerActions)" />.
         /// </summary>
-        /// <seealso cref="Player1Actions.UnregisterCallbacks(IPlayer1Actions)" />
-        public void RemoveCallbacks(IPlayer1Actions instance)
+        /// <seealso cref="PlayerActions.UnregisterCallbacks(IPlayerActions)" />
+        public void RemoveCallbacks(IPlayerActions instance)
         {
-            if (m_Wrapper.m_Player1ActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_PlayerActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
@@ -717,295 +783,125 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
         /// </remarks>
-        /// <seealso cref="Player1Actions.AddCallbacks(IPlayer1Actions)" />
-        /// <seealso cref="Player1Actions.RemoveCallbacks(IPlayer1Actions)" />
-        /// <seealso cref="Player1Actions.UnregisterCallbacks(IPlayer1Actions)" />
-        public void SetCallbacks(IPlayer1Actions instance)
+        /// <seealso cref="PlayerActions.AddCallbacks(IPlayerActions)" />
+        /// <seealso cref="PlayerActions.RemoveCallbacks(IPlayerActions)" />
+        /// <seealso cref="PlayerActions.UnregisterCallbacks(IPlayerActions)" />
+        public void SetCallbacks(IPlayerActions instance)
         {
-            foreach (var item in m_Wrapper.m_Player1ActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_PlayerActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_Player1ActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_PlayerActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
     /// <summary>
-    /// Provides a new <see cref="Player1Actions" /> instance referencing this action map.
+    /// Provides a new <see cref="PlayerActions" /> instance referencing this action map.
     /// </summary>
-    public Player1Actions @Player1 => new Player1Actions(this);
-
-    // Player2
-    private readonly InputActionMap m_Player2;
-    private List<IPlayer2Actions> m_Player2ActionsCallbackInterfaces = new List<IPlayer2Actions>();
-    private readonly InputAction m_Player2_Move;
-    private readonly InputAction m_Player2_Jump;
-    private readonly InputAction m_Player2_Throw;
-    private readonly InputAction m_Player2_BuildMode;
-    private readonly InputAction m_Player2_Set;
-    private readonly InputAction m_Player2_ChangeShape;
-    private readonly InputAction m_Player2_Suicide;
+    public PlayerActions @Player => new PlayerActions(this);
     /// <summary>
-    /// Provides access to input actions defined in input action map "Player2".
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player" which allows adding and removing callbacks.
     /// </summary>
-    public struct Player2Actions
-    {
-        private @PlayerControl m_Wrapper;
-
-        /// <summary>
-        /// Construct a new instance of the input action map wrapper class.
-        /// </summary>
-        public Player2Actions(@PlayerControl wrapper) { m_Wrapper = wrapper; }
-        /// <summary>
-        /// Provides access to the underlying input action "Player2/Move".
-        /// </summary>
-        public InputAction @Move => m_Wrapper.m_Player2_Move;
-        /// <summary>
-        /// Provides access to the underlying input action "Player2/Jump".
-        /// </summary>
-        public InputAction @Jump => m_Wrapper.m_Player2_Jump;
-        /// <summary>
-        /// Provides access to the underlying input action "Player2/Throw".
-        /// </summary>
-        public InputAction @Throw => m_Wrapper.m_Player2_Throw;
-        /// <summary>
-        /// Provides access to the underlying input action "Player2/BuildMode".
-        /// </summary>
-        public InputAction @BuildMode => m_Wrapper.m_Player2_BuildMode;
-        /// <summary>
-        /// Provides access to the underlying input action "Player2/Set".
-        /// </summary>
-        public InputAction @Set => m_Wrapper.m_Player2_Set;
-        /// <summary>
-        /// Provides access to the underlying input action "Player2/ChangeShape".
-        /// </summary>
-        public InputAction @ChangeShape => m_Wrapper.m_Player2_ChangeShape;
-        /// <summary>
-        /// Provides access to the underlying input action "Player2/Suicide".
-        /// </summary>
-        public InputAction @Suicide => m_Wrapper.m_Player2_Suicide;
-        /// <summary>
-        /// Provides access to the underlying input action map instance.
-        /// </summary>
-        public InputActionMap Get() { return m_Wrapper.m_Player2; }
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
-        public void Enable() { Get().Enable(); }
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
-        public void Disable() { Get().Disable(); }
-        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
-        public bool enabled => Get().enabled;
-        /// <summary>
-        /// Implicitly converts an <see ref="Player2Actions" /> to an <see ref="InputActionMap" /> instance.
-        /// </summary>
-        public static implicit operator InputActionMap(Player2Actions set) { return set.Get(); }
-        /// <summary>
-        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
-        /// </summary>
-        /// <param name="instance">Callback instance.</param>
-        /// <remarks>
-        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
-        /// </remarks>
-        /// <seealso cref="Player2Actions" />
-        public void AddCallbacks(IPlayer2Actions instance)
-        {
-            if (instance == null || m_Wrapper.m_Player2ActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_Player2ActionsCallbackInterfaces.Add(instance);
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
-            @Jump.started += instance.OnJump;
-            @Jump.performed += instance.OnJump;
-            @Jump.canceled += instance.OnJump;
-            @Throw.started += instance.OnThrow;
-            @Throw.performed += instance.OnThrow;
-            @Throw.canceled += instance.OnThrow;
-            @BuildMode.started += instance.OnBuildMode;
-            @BuildMode.performed += instance.OnBuildMode;
-            @BuildMode.canceled += instance.OnBuildMode;
-            @Set.started += instance.OnSet;
-            @Set.performed += instance.OnSet;
-            @Set.canceled += instance.OnSet;
-            @ChangeShape.started += instance.OnChangeShape;
-            @ChangeShape.performed += instance.OnChangeShape;
-            @ChangeShape.canceled += instance.OnChangeShape;
-            @Suicide.started += instance.OnSuicide;
-            @Suicide.performed += instance.OnSuicide;
-            @Suicide.canceled += instance.OnSuicide;
-        }
-
-        /// <summary>
-        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
-        /// </summary>
-        /// <remarks>
-        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
-        /// </remarks>
-        /// <seealso cref="Player2Actions" />
-        private void UnregisterCallbacks(IPlayer2Actions instance)
-        {
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
-            @Jump.started -= instance.OnJump;
-            @Jump.performed -= instance.OnJump;
-            @Jump.canceled -= instance.OnJump;
-            @Throw.started -= instance.OnThrow;
-            @Throw.performed -= instance.OnThrow;
-            @Throw.canceled -= instance.OnThrow;
-            @BuildMode.started -= instance.OnBuildMode;
-            @BuildMode.performed -= instance.OnBuildMode;
-            @BuildMode.canceled -= instance.OnBuildMode;
-            @Set.started -= instance.OnSet;
-            @Set.performed -= instance.OnSet;
-            @Set.canceled -= instance.OnSet;
-            @ChangeShape.started -= instance.OnChangeShape;
-            @ChangeShape.performed -= instance.OnChangeShape;
-            @ChangeShape.canceled -= instance.OnChangeShape;
-            @Suicide.started -= instance.OnSuicide;
-            @Suicide.performed -= instance.OnSuicide;
-            @Suicide.canceled -= instance.OnSuicide;
-        }
-
-        /// <summary>
-        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="Player2Actions.UnregisterCallbacks(IPlayer2Actions)" />.
-        /// </summary>
-        /// <seealso cref="Player2Actions.UnregisterCallbacks(IPlayer2Actions)" />
-        public void RemoveCallbacks(IPlayer2Actions instance)
-        {
-            if (m_Wrapper.m_Player2ActionsCallbackInterfaces.Remove(instance))
-                UnregisterCallbacks(instance);
-        }
-
-        /// <summary>
-        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
-        /// </summary>
-        /// <remarks>
-        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
-        /// </remarks>
-        /// <seealso cref="Player2Actions.AddCallbacks(IPlayer2Actions)" />
-        /// <seealso cref="Player2Actions.RemoveCallbacks(IPlayer2Actions)" />
-        /// <seealso cref="Player2Actions.UnregisterCallbacks(IPlayer2Actions)" />
-        public void SetCallbacks(IPlayer2Actions instance)
-        {
-            foreach (var item in m_Wrapper.m_Player2ActionsCallbackInterfaces)
-                UnregisterCallbacks(item);
-            m_Wrapper.m_Player2ActionsCallbackInterfaces.Clear();
-            AddCallbacks(instance);
-        }
-    }
-    /// <summary>
-    /// Provides a new <see cref="Player2Actions" /> instance referencing this action map.
-    /// </summary>
-    public Player2Actions @Player2 => new Player2Actions(this);
-    /// <summary>
-    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player1" which allows adding and removing callbacks.
-    /// </summary>
-    /// <seealso cref="Player1Actions.AddCallbacks(IPlayer1Actions)" />
-    /// <seealso cref="Player1Actions.RemoveCallbacks(IPlayer1Actions)" />
-    public interface IPlayer1Actions
+    /// <seealso cref="PlayerActions.AddCallbacks(IPlayerActions)" />
+    /// <seealso cref="PlayerActions.RemoveCallbacks(IPlayerActions)" />
+    public interface IPlayerActions
     {
         /// <summary>
-        /// Method invoked when associated input action "Move" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "MoveP1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnMove(InputAction.CallbackContext context);
+        void OnMoveP1(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Jump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "MoveP2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnJump(InputAction.CallbackContext context);
+        void OnMoveP2(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Throw" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "JumpP1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnThrow(InputAction.CallbackContext context);
+        void OnJumpP1(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "BuildMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "JumpP2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnBuildMode(InputAction.CallbackContext context);
+        void OnJumpP2(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Set" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "ThrowP1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSet(InputAction.CallbackContext context);
+        void OnThrowP1(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "ChangeShape" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "ThrowP2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnChangeShape(InputAction.CallbackContext context);
+        void OnThrowP2(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Suicide" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "BuildModeP1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSuicide(InputAction.CallbackContext context);
-    }
-    /// <summary>
-    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player2" which allows adding and removing callbacks.
-    /// </summary>
-    /// <seealso cref="Player2Actions.AddCallbacks(IPlayer2Actions)" />
-    /// <seealso cref="Player2Actions.RemoveCallbacks(IPlayer2Actions)" />
-    public interface IPlayer2Actions
-    {
+        void OnBuildModeP1(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Move" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "BuildModeP2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnMove(InputAction.CallbackContext context);
+        void OnBuildModeP2(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Jump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "SetP1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnJump(InputAction.CallbackContext context);
+        void OnSetP1(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Throw" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "SetP2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnThrow(InputAction.CallbackContext context);
+        void OnSetP2(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "BuildMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "ChangeShapeP1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnBuildMode(InputAction.CallbackContext context);
+        void OnChangeShapeP1(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Set" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "ChangeShapeP2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSet(InputAction.CallbackContext context);
+        void OnChangeShapeP2(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "ChangeShape" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "SuicideP1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnChangeShape(InputAction.CallbackContext context);
+        void OnSuicideP1(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Suicide" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "SuicideP2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSuicide(InputAction.CallbackContext context);
+        void OnSuicideP2(InputAction.CallbackContext context);
     }
 }

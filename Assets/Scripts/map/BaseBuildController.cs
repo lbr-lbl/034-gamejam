@@ -16,8 +16,11 @@ public class BaseBuildController : MonoBehaviour
     [SerializeField] private int startXOffset = -2;
     [SerializeField] private int startYOffset = 0;
 
-    [Header("默认核心形状（当玩家未搭建时使用）")]
+    [Header("默认核心形状")]
     [SerializeField] private ShapeType defaultCoreShape = ShapeType.Triangle;
+
+    [Header("玩家类型")]
+    [SerializeField] private PlayerType playerType; // 可在 Inspector 设置或由 GameManager 赋值
 
     private int width;
     private int topLayerY;
@@ -30,7 +33,12 @@ public class BaseBuildController : MonoBehaviour
 
     private Transform highlightParent;
     private PlayerInput playerInput;
-    private ShapeType selectedShape = ShapeType.Triangle; // 当前建造的形状
+    private ShapeType selectedShape = ShapeType.Triangle;
+
+    // 缓存的输入 Action
+    private InputAction moveAction;
+    private InputAction setAction;
+    private InputAction changeShapeAction;
 
     public bool IsActive { get; private set; }
     public Vector3 CorePosition { get; private set; }
@@ -40,6 +48,33 @@ public class BaseBuildController : MonoBehaviour
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
+        if (playerInput == null)
+            Debug.LogError("BaseBuildController: PlayerInput 组件未找到！");
+    }
+
+    private void Start()
+    {
+        // 如果已在 Inspector 设置了 playerType，则缓存 Action
+        CacheActions();
+    }
+
+    public void SetPlayerType(PlayerType type)
+    {
+        playerType = type;
+        CacheActions();
+    }
+
+    private void CacheActions()
+    {
+        if (playerInput == null || playerInput.actions == null) return;
+        string suffix = playerType == PlayerType.Player1 ? "P1" : "P2";
+        moveAction = playerInput.actions.FindAction($"Move{suffix}");
+        setAction = playerInput.actions.FindAction($"Set{suffix}");
+        changeShapeAction = playerInput.actions.FindAction($"ChangeShape{suffix}");
+
+        if (moveAction == null) Debug.LogError($"Move{suffix} action not found!");
+        if (setAction == null) Debug.LogError($"Set{suffix} action not found!");
+        if (changeShapeAction == null) Debug.LogError($"ChangeShape{suffix} action not found!");
     }
 
     public void Initialize()
@@ -76,39 +111,37 @@ public class BaseBuildController : MonoBehaviour
 
         if (!isSelectingCore)
         {
-            // 建造阶段：读取输入
-            Vector2 move = playerInput.actions["Move"].ReadValue<Vector2>();
-            if (move.x > 0.5f) HandleInput(1, 0);
-            else if (move.x < -0.5f) HandleInput(-1, 0);
-            if (move.y > 0.5f) HandleInput(0, 1);
-            else if (move.y < -0.5f) HandleInput(0, -1);
-
-            // 放置
-            if (playerInput.actions["Set"].WasPressedThisFrame())
+            // 建造阶段
+            if (moveAction != null)
             {
+                Vector2 move = moveAction.ReadValue<Vector2>();
+                if (move.x > 0.5f) HandleInput(1, 0);
+                else if (move.x < -0.5f) HandleInput(-1, 0);
+                if (move.y > 0.5f) HandleInput(0, 1);
+                else if (move.y < -0.5f) HandleInput(0, -1);
+            }
+
+            if (setAction != null && setAction.WasPressedThisFrame())
                 TryPlaceItem(selectedShape);
-            }
 
-            // 切换形状（可选，用于建造不同形状）
-            if (playerInput.actions["ChangeShape"].WasPressedThisFrame())
-            {
+            if (changeShapeAction != null && changeShapeAction.WasPressedThisFrame())
                 selectedShape = (ShapeType)(((int)selectedShape + 1) % 3);
-            }
         }
         else
         {
-            // 核心选择阶段：光标移动
-            Vector2 move = playerInput.actions["Move"].ReadValue<Vector2>();
-            if (move.x > 0.5f) HandleInput(1, 0);
-            else if (move.x < -0.5f) HandleInput(-1, 0);
-            if (move.y > 0.5f) HandleInput(0, 1);
-            else if (move.y < -0.5f) HandleInput(0, -1);
+            // 核心选择阶段
+            if (moveAction != null)
+            {
+                Vector2 move = moveAction.ReadValue<Vector2>();
+                if (move.x > 0.5f) HandleInput(1, 0);
+                else if (move.x < -0.5f) HandleInput(-1, 0);
+                if (move.y > 0.5f) HandleInput(0, 1);
+                else if (move.y < -0.5f) HandleInput(0, -1);
+            }
 
-            // 确认核心
-            //if (playerInput.actions["Set"].WasPressedThisFrame())
-            //{
-            //    TryConfirmCore();
-            //}
+            // 如果需要通过 Set 键确认核心，可取消注释
+            // if (setAction != null && setAction.WasPressedThisFrame())
+            //     TryConfirmCore();
         }
 
         UpdateHighlights();
@@ -204,7 +237,8 @@ public class BaseBuildController : MonoBehaviour
         blockObj.transform.position = worldPos;
         blockObj.layer = LayerMask.NameToLayer("Ground");
         Block block = blockObj.GetComponent<Block>();
-        if (block != null) block.blockType = BlockType.Building; // 设置类型
+        if (block != null) block.blockType = BlockType.Building;
+        blockObj.GetComponentInChildren<SpriteRenderer>().material = (playerType == PlayerType.Player1) ? GameManager.instance.player1Material : GameManager.instance.player2Material;
         blockObj.SetActive(true);
 
         placedObjects[currentGrid] = blockObj;
@@ -239,11 +273,7 @@ public class BaseBuildController : MonoBehaviour
                 break;
             }
         }
-        else
-        {
-            // 无搭建，光标停留在当前可放置格子上（表面层）
-            // 保持 currentGrid 不变（已经是表面层某格）
-        }
+        // 否则光标留在当前位置（表面层）
     }
 
     public bool TryConfirmCore()
@@ -256,7 +286,9 @@ public class BaseBuildController : MonoBehaviour
         {
             Block block = obj.GetComponent<Block>();
             if (block != null) CoreShape = block.spriteCount;
-            obj.GetComponentInChildren<SpriteRenderer>().material = coreMaterial ?? obj.GetComponentInChildren<SpriteRenderer>().material;
+            var sr = obj.GetComponentInChildren<SpriteRenderer>();
+            if (sr != null && coreMaterial != null)
+                sr.material = coreMaterial;
         }
         CoreSelected = true;
         return true;
@@ -296,7 +328,9 @@ public class BaseBuildController : MonoBehaviour
 
             CorePosition = worldPos;
             CoreShape = (int)defaultCoreShape;
-            blockObj.GetComponentInChildren<SpriteRenderer>().material = coreMaterial ?? blockObj.GetComponentInChildren<SpriteRenderer>().material;
+            var sr = blockObj.GetComponentInChildren<SpriteRenderer>();
+            if (sr != null && coreMaterial != null)
+                sr.material = coreMaterial;
             CoreSelected = true;
             Debug.Log($"未搭建基地，自动在 {currentGrid} 生成默认核心");
             return;
@@ -316,7 +350,9 @@ public class BaseBuildController : MonoBehaviour
 
         CorePosition = centerPos;
         CoreShape = (int)defaultCoreShape;
-        centerBlock.GetComponentInChildren<SpriteRenderer>().material = coreMaterial ?? centerBlock.GetComponentInChildren<SpriteRenderer>().material;
+        var centerSr = centerBlock.GetComponentInChildren<SpriteRenderer>();
+        if (centerSr != null && coreMaterial != null)
+            centerSr.material = coreMaterial;
         CoreSelected = true;
         Debug.Log($"未搭建基地，自动在空岛中心 {centerGrid} 生成默认核心");
     }

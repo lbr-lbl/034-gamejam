@@ -138,6 +138,7 @@ public class BuildModeController : MonoBehaviour
 
     private bool TryPlaceCurrentItem()
     {
+        Debug.Log($"尝试放置: shape={player.spriteCount}, count={GetItemCount((ShapeType)player.spriteCount)}, 位置=({currentX},{currentY})");
         // 检查玩家是否有该形状的方块
         int count = GetItemCount((ShapeType)player.spriteCount);
         if (count <= 0) return false;

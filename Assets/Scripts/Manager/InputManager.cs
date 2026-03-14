@@ -37,7 +37,9 @@ public class InputManager : MonoBehaviour
     /// </summary>
     public void AssignActionMapToController(PlayerInput controllerInput, string actionMapName)
     {
-        if (controllerInput == null) return;
+        if (controllerInput == null) {
+            Debug.LogError("Controller Input is null! Cannot switch Action Map.");
+            return; }
         controllerInput.SwitchCurrentActionMap(actionMapName);
     }
 }

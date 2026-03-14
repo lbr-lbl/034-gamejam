@@ -10,7 +10,6 @@ public class CameraZoomByKey : MonoBehaviour
 {
     [Header("按键设置")]
     public KeyCode zoomInKey = KeyCode.G;      // 视角变大按键
-    public KeyCode resetKey = KeyCode.H;        // 视角复原按键
     public KeyCode zoomOutKey = KeyCode.J;      // 视角变小按键
 
     [Header("缩放倍率")]
@@ -24,6 +23,8 @@ public class CameraZoomByKey : MonoBehaviour
 
     private Camera cam;
     private float originalSize;                    // 初始大小
+
+    private bool  IsBuliding = false;
 
     void Start()
     {
@@ -41,28 +42,27 @@ public class CameraZoomByKey : MonoBehaviour
     {
         if (cam == null) return;
 
+        if(Input.GetKeyDown(zoomOutKey))
+            IsBuliding = !IsBuliding;
+
         // 放大
-        if (Input.GetKeyDown(zoomInKey))
+        if (Input.GetKey(zoomInKey))
         {
             if (useAbsoluteSize)
                 cam.orthographicSize = zoomInSize;
             else
                 cam.orthographicSize = originalSize * zoomInMultiplier;
         }
-
-        // 复原
-        if (Input.GetKeyDown(resetKey))
-        {
-            cam.orthographicSize = originalSize;
-        }
-
-        // 缩小
-        if (Input.GetKeyDown(zoomOutKey))
+        else if (IsBuliding)
         {
             if (useAbsoluteSize)
                 cam.orthographicSize = zoomOutSize;
             else
                 cam.orthographicSize = originalSize * zoomOutMultiplier;
+        }
+        else
+        {
+            cam.orthographicSize = originalSize;
         }
     }
 }

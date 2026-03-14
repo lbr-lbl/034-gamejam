@@ -44,6 +44,14 @@ public class Player : Entity
     public LayerMask itemLayer;     // Item (8)
     public LayerMask pickupLayer;   // Pickable (9)
 
+    private InputAction moveAction;
+    private InputAction jumpAction;
+    private InputAction throwAction;
+    private InputAction buildModeAction;
+    private InputAction placeAction;
+    private InputAction changeShapeAction;
+    private InputAction suicideAction;
+
     protected override void Awake()
     {
         base.Awake();
@@ -56,11 +64,30 @@ public class Player : Entity
     {
         base.Start();
         playerInput = GetComponent<PlayerInput>();
-        triangleCount = squareCount = circleCount = 0;
+        triangleCount = squareCount = circleCount = 3;
         boxCd = GetComponent<BoxCollider2D>();
         circleCd = GetComponent<CircleCollider2D>();
         traingleCd = GetComponent<PolygonCollider2D>();
         stateMachine.Initialize(moveState);
+        if (playerInput == null)
+        {
+            Debug.LogError("PlayerInput component missing!");
+            return;
+        }
+
+        var actions = playerInput.actions;
+        string suffix = (playerType == PlayerType.Player1) ? "P1" : "P2";
+
+        moveAction = actions.FindAction($"Move{suffix}");
+        jumpAction = actions.FindAction($"Jump{suffix}");
+        throwAction = actions.FindAction($"Throw{suffix}");
+        buildModeAction = actions.FindAction($"BuildMode{suffix}");
+        placeAction = actions.FindAction($"Set{suffix}");
+        changeShapeAction = actions.FindAction($"ChangeShape{suffix}");
+        suicideAction = actions.FindAction($"Suicide{suffix}");
+
+        // 可选：检查是否所有 Action 都存在
+        if (moveAction == null) Debug.LogError($"Move{suffix} action not found!");
     }
 
     protected override void Update()
@@ -80,15 +107,15 @@ public class Player : Entity
 
     private void UpdateInput()
     {
-        if (playerInput == null) return;
-        var actionMap = playerInput.currentActionMap;
-        moveInput = actionMap["Move"].ReadValue<Vector2>();
-        jumpPressed = actionMap["Jump"].WasPressedThisFrame();
-        throwPressed = actionMap["Throw"].WasPressedThisFrame();
-        buildModePressed = actionMap["BuildMode"].WasPressedThisFrame();
-        placePressed = actionMap["Set"].WasPressedThisFrame();
-        changeShapePressed = actionMap["ChangeShape"].WasPressedThisFrame();
-        suicidePressed = actionMap["Suicide"].WasPressedThisFrame();
+        if (moveAction != null)
+            moveInput = moveAction.ReadValue<Vector2>();
+
+        jumpPressed = jumpAction != null && jumpAction.WasPressedThisFrame();
+        throwPressed = throwAction != null && throwAction.WasPressedThisFrame();
+        buildModePressed = buildModeAction != null && buildModeAction.WasPressedThisFrame();
+        placePressed = placeAction != null && placeAction.WasPressedThisFrame();
+        changeShapePressed = changeShapeAction != null && changeShapeAction.WasPressedThisFrame();
+        suicidePressed = suicideAction != null && suicideAction.WasPressedThisFrame();
     }
 
     public void PausePlayer() => stateMachine.ChangeState(pauseState);

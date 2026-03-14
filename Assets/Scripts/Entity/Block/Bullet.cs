@@ -13,7 +13,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private int coreCost = 6;      // 核心层
     [SerializeField] private int islandCost = 3;    // 空岛层
     [SerializeField] private int buildingCost = 1;  // 建筑层
-    [SerializeField] private int playerCost = 2;    // 玩家层
+    [SerializeField] private int playerCost = 0;    // 玩家层
     [SerializeField] private int bulletCost = 1;    // 子弹层
 
     private Rigidbody2D rb;

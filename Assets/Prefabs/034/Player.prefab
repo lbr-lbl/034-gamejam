@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &521146041138875189
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 89036867525427948}
+  m_Layer: 7
+  m_Name: shot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &89036867525427948
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521146041138875189}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.8, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8004537648350687251}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2035001076234118825
 GameObject:
   m_ObjectHideFlags: 0
@@ -5096,6 +5127,7 @@ Transform:
   - {fileID: 5665783400692503497}
   - {fileID: 6952528912435412050}
   - {fileID: 7637418063669806274}
+  - {fileID: 89036867525427948}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &4734358221276283335
@@ -5267,7 +5299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteCount: 0
   isDead: 0
-  walkSpeed: 8
+  walkSpeed: 4
   jumpForce: 8
   groundCheckDistance: 0.52
   rb: {fileID: 0}
@@ -5277,12 +5309,13 @@ MonoBehaviour:
   boxCd: {fileID: 0}
   circleCd: {fileID: 0}
   traingleCd: {fileID: 0}
+  deathZoneY: -5
   playerInput: {fileID: 4257318233703656139}
   resetCd: 5
   respawnPoint: {fileID: 0}
-  triangleCount: 0
-  squareCount: 0
-  circleCount: 0
+  triangleCount: 3
+  squareCount: 3
+  circleCount: 3
   playerType: 0
   groundCheckL: {fileID: 6952528912435412050}
   groundCheckR: {fileID: 7637418063669806274}
@@ -5337,7 +5370,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 
+  m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &4455566802274916255
@@ -5353,9 +5386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 6373643125483652873}
-  firePoint: {fileID: 8004537648350687251}
+  firePoint: {fileID: 89036867525427948}
   projectileSpeed: 10
   aimLine: {fileID: 0}
   previewLength: 5
-  aimColor: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 0.54901963}
-  aimLineWidth: 0.1

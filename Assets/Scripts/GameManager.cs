@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public GameObject divider;               // 分界线UI
     public Image fadeImage;                  // 全屏黑色遮罩
     public GameObject pauseMenuPanel;        // 暂停菜单面板
+    public GameObject gameOverPanel;
     public Button continueButton;            // 继续游戏按钮
     public Button backToMainMenuButton;      // 回到主菜单按钮
 
@@ -123,6 +124,7 @@ public class GameManager : MonoBehaviour
     {
         // 初始化UI
         ShowPauseMenu(false);
+        gameOverPanel.SetActive(false);
         if (fadeImage != null)
         {
             Color c = fadeImage.color;
@@ -243,14 +245,16 @@ public class GameManager : MonoBehaviour
         if (baseBuildController1 != null)
         {
             baseBuildController1.Initialize();
-            var pi1 = baseBuildController1.GetComponent<PlayerInput>();
-            if (pi1 != null) InputManager.instance.AssignActionMapToController(pi1, "Player1");
+            //var pi1 = baseBuildController1.GetComponent<PlayerInput>();
+            //if (pi1 != null)
+            //    pi1.SwitchCurrentActionMap("Player1");
         }
         if (baseBuildController2 != null)
         {
             baseBuildController2.Initialize();
-            var pi2 = baseBuildController2.GetComponent<PlayerInput>();
-            if (pi2 != null) InputManager.instance.AssignActionMapToController(pi2, "Player2");
+            //var pi2 = baseBuildController2.GetComponent<PlayerInput>();
+            //if (pi2 != null)
+            //    pi2.SwitchCurrentActionMap("Player2");
         }
 
         // 布置阶段计时条（三段式）
@@ -396,11 +400,24 @@ public class GameManager : MonoBehaviour
         player1Instance = Instantiate(playerPrefab, player1Spawner.position + spawnerOffset, Quaternion.identity).GetComponent<Player>();
         player2Instance = Instantiate(playerPrefab, player2Spawner.position + spawnerOffset, Quaternion.identity).GetComponent<Player>();
 
+        // 分配输入设备
+        //if (player1Instance.playerInput != null)
+        //    player1Instance.playerInput.SwitchCurrentActionMap("Player1");
+        //if (player2Instance.playerInput != null)
+        //    player2Instance.playerInput.SwitchCurrentActionMap("Player2");
+
+        // 设置玩家类型
+        player1Instance.playerType = PlayerType.Player1;
+        player2Instance.playerType = PlayerType.Player2;
+        Debug.Log("1");
+
         // 设置玩家初始形状为核心形状
         player1Instance.spriteCount = baseBuildController1.CoreShape;
         player2Instance.spriteCount = baseBuildController2.CoreShape;
-        player1Instance.UpdateShapeVisual();
-        player2Instance.UpdateShapeVisual();
+        Debug.Log("1");
+        //player1Instance.UpdateShapeVisual();
+        //player2Instance.UpdateShapeVisual();
+        Debug.Log("1");
 
         // 生成建造控制器并关联玩家
         player1BuildController = Instantiate(buildModeControllerPrefab).GetComponent<BuildModeController>();
@@ -408,10 +425,6 @@ public class GameManager : MonoBehaviour
 
         player2BuildController = Instantiate(buildModeControllerPrefab).GetComponent<BuildModeController>();
         player2BuildController.SetPlayer(player2Instance);
-
-        // 分配输入设备
-        InputManager.instance.AssignActionMapToPlayer(player1Instance, "Player1");
-        InputManager.instance.AssignActionMapToPlayer(player2Instance, "Player2");
 
         // 设置重生点
         GameObject respawn1 = new GameObject("Respawn1");
@@ -422,10 +435,7 @@ public class GameManager : MonoBehaviour
         respawn2.transform.position = player2Spawner.position + spawnerOffset;
         player2Instance.respawnPoint = respawn2.transform;
 
-        // 设置玩家类型
-        player1Instance.playerType = PlayerType.Player1;
-        player2Instance.playerType = PlayerType.Player2;
-
+        Debug.Log("2");
         // 设置玩家角色sprite子物体材质
         SpriteRenderer p1Sprite = player1Instance.GetComponentInChildren<SpriteRenderer>();
         if (p1Sprite != null && player1Material != null)
@@ -481,11 +491,16 @@ public class GameManager : MonoBehaviour
 
     public void OnCoreDestroyed(PlayerType owner)
     {
-        if (owner == PlayerType.Player1)
+        if (owner == PlayerType.Player1){
             Debug.Log("Player2 胜利！");
-        else
-            Debug.Log("Player1 胜利！");
+            gameOverPanel.GetComponent<Image>().material = player2Material;
 
+        }
+        else{
+            Debug.Log("Player1 胜利！");
+            gameOverPanel.GetComponent<Image>().material = player1Material;
+        }
+        gameOverPanel.SetActive(true);
         SetPlayerControl(false);
     }
 

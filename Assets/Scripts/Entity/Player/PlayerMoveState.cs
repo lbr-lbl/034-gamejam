@@ -1,3 +1,7 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,6 +20,96 @@ public class PlayerMoveState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        Debug.Log($"��Enter ��ʼ��������� {player?.playerIndex}");
+
+        if (player == null)
+        {
+            Debug.LogError("player Ϊ null��");
+            return;
+        }
+
+        // ��� playerIndex ��δ���䣨Ϊ 0�����ڴ˴�������֪��Ϣ�ƶϲ����ã���֤��������·�ɿ���
+        try
+        {
+            if (player != null && player.externalMoveInput != Vector2.zero)
+            {
+                // ����������� InputManager ���ⲿ���룬��д�� moveInput ����Ҫ��ǰ���أ�
+                // �Ա�������� action map������ action �ص��� Jump �󶨿����޷���������
+                moveInput = player.externalMoveInput;
+            }
+
+            if (player.playerIndex == 0)
+            {
+                if (player.boundDevice is Gamepad)
+                {
+                    player.playerIndex = 2;
+                    player.controlScheme = "Gamepad";
+                }
+                else if (player.playerInput != null)
+                {
+                    // ����� PlayerInput ������Ե��豸�������õ�һ��
+                    var devs = player.playerInput.user.valid ? player.playerInput.user.pairedDevices : player.playerInput.devices;
+                    if (devs.Count > 0)
+                    {
+                        var dev = devs[0];
+                        player.boundDevice = dev;
+                        if (dev is Gamepad)
+                        {
+                            player.playerIndex = 2;
+                            player.controlScheme = "Gamepad";
+                        }
+                        else
+                        {
+                            // ���̣������������ player Ϊ 1������Ϊ 2
+                            bool hasP1 = PlayerInput.all.Select(pi => pi == null ? null : pi.GetComponent<Player>()).Any(p => p != null && p.playerIndex == 1 && p != player);
+                            player.playerIndex = hasP1 ? 2 : 1;
+                            player.controlScheme = player.playerIndex == 1 ? "KeyboardWASD" : "KeyboardArrows";
+                        }
+                    }
+                    else
+                    {
+                        // û�п����豸��Ϣ������ݳ������Ƿ����� player1 ����
+                        bool hasP1 = PlayerInput.all.Select(pi => pi == null ? null : pi.GetComponent<Player>()).Any(p => p != null && p.playerIndex == 1 && p != player);
+                        player.playerIndex = hasP1 ? 2 : 1;
+                        player.controlScheme = player.playerIndex == 1 ? "KeyboardWASD" : "KeyboardArrows";
+                    }
+                }
+                else
+                {
+                    // ���ף���Ϊ player1
+                    player.playerIndex = 1;
+                    player.controlScheme = "KeyboardWASD";
+                }
+
+                Debug.Log($"PlayerMoveState �ƶϲ����� playerIndex={player.playerIndex}, controlScheme={player.controlScheme}, boundDevice={(player.boundDevice!=null?player.boundDevice.displayName:"null")}");
+            }
+        }
+        catch { }
+
+        if (player.playerInput == null)
+        {
+            Debug.LogError("player.playerInput Ϊ null��");
+            return;
+        }
+
+        Debug.Log($"player.controlScheme = '{player.controlScheme}'");
+        Debug.Log($"player.playerInput.currentActionMap = {player.playerInput.currentActionMap?.name}");
+        Debug.Log($"��Enter ��ʼ��������� {player.playerIndex}");
+
+        // ʹ�� action map �� Move/Jump ��������������
+        try
+        {
+            // ����ʹ�� currentActionMap
+            InputActionMap actionMap = null;
+            try { actionMap = player.playerInput.currentActionMap; } catch { actionMap = null; }
+            if (actionMap == null && player.playerInput.actions != null && !string.IsNullOrEmpty(player.controlScheme))
+            {
+                try { actionMap = player.playerInput.actions.FindActionMap(player.controlScheme); } catch { actionMap = null; }
+            }
+            if (actionMap == null && player.playerInput.actions != null)
+            {
+                try { actionMap = player.playerInput.actions.actionMaps.FirstOrDefault(m => m.FindAction("Move") != null); } catch { actionMap = null; }
+            }
 
         // 进入时确保形状正确（假设默认是正方形，但实际应由游戏逻辑决定）
         // 如果 spriteCount 未设置，则初始化为 1（正方形）
@@ -75,9 +169,82 @@ public class PlayerMoveState : PlayerState
     public override void Update()
     {
         base.Update();
+        // ��������ͨ���Ѷ��ĵ� action �ص���OnMove������ moveInput�����޻ص��ٻ��˵� externalMoveInput
+        //Debug.Log($"[PlayerMoveState.Update] player={player?.name} index={player?.playerIndex} externalMoveInput={player?.externalMoveInput} moveInput={moveInput}");
+        // ÿ֡���ȶ�ȡ action �ĵ�ǰֵ�������ڲ����㣩������ʹ�� externalMoveInput ��Ϊ����
+        try
+        {
+            Vector2 actionV = Vector2.zero;
+            if (moveAction != null)
+            {
+                try { actionV = moveAction.ReadValue<Vector2>(); } catch { actionV = Vector2.zero; }
+            }
 
-        // 处理自杀
-        if (player.suicidePressed && !(player.stateMachine.currentState is PlayerDeadState))
+            if (actionV != Vector2.zero)
+            {
+                moveInput = actionV;
+            }
+            else
+            {
+                try
+                {
+                    if (player != null && player.externalMoveInput != Vector2.zero)
+                        moveInput = player.externalMoveInput;
+                    else
+                        moveInput = Vector2.zero; // ��ʽ���㣬�����ͷŰ���������һ���ٶ�
+                }
+                catch { moveInput = Vector2.zero; }
+            }
+        }
+        catch { }
+
+        // ������Ծ������ action map ����δ�󶨵�������������������������Ϊ����
+        try
+        {
+            var kb = Keyboard.current;
+            if (player != null)
+            {
+                bool jumpPressed = false;
+                // ���Լ�����Ҽ���Ӧ�ļ�������һ��������������
+                if (kb != null)
+                {
+                    // ��ֱ�ӵİ��������ӳ�䣺j/space -> playerIndex 1��numpad1/up/space -> playerIndex 2
+                    if ((kb.jKey.wasPressedThisFrame || kb.spaceKey.wasPressedThisFrame) && player.playerIndex == 1)
+                        jumpPressed = true;
+                    if ((kb.numpad1Key.wasPressedThisFrame || kb.upArrowKey.wasPressedThisFrame || kb.spaceKey.wasPressedThisFrame) && player.playerIndex == 2)
+                        jumpPressed = true;
+                }
+
+                // �ֱ���Ծ��⣺������Ұ��ֱ�ʱ
+                try
+                {
+                    if (player.boundDevice is Gamepad gp)
+                    {
+                        if (gp.buttonSouth.wasPressedThisFrame)
+                            jumpPressed = true;
+                    }
+                }
+                catch { }
+
+                if (jumpPressed)
+                {
+                    try
+                    {
+                        if (player.IsGroundDetected())
+                        {
+                            player.rb.velocity = new Vector2(player.rb.velocity.x, player.jumpForce);
+                            Debug.Log($"[PlayerMoveState] DoJump for player {player.playerIndex}, jumpForce={player.jumpForce}");
+                        }
+                    }
+                    catch { }
+                }
+            }
+        }
+        catch { }
+
+        // ����ʹ�� action ���˶�ȡ��ȫ������ѯΪ��
+
+        if (Input.GetKeyDown(KeyCode.O))
         {
             player.stateMachine.ChangeState(player.deadState);
         }

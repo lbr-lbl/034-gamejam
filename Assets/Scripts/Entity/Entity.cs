@@ -9,6 +9,7 @@ using static Unity.Collections.AllocatorManager;
 public class Entity : MonoBehaviour
 {
     public int spriteCount;
+    public int playerIndex;
     public bool isDead; 
 
     [Header("Move Info")]

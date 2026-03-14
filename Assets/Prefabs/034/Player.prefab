@@ -5267,6 +5267,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteCount: 0
+  playerIndex: 0
   isDead: 0
   walkSpeed: 8
   jumpForce: 8

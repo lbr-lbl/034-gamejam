@@ -6,11 +6,19 @@ public class Player : Entity
 {
     [HideInInspector] public BoxCollider2D boxCd;
     [HideInInspector] public CircleCollider2D circleCd;
+    [HideInInspector] public PolygonCollider2D traingleCd; 
+    [HideInInspector] public InputDevice boundDevice;      // �󶨵������豸
+    [HideInInspector] public string controlScheme;         // ʹ�õĿ��Ʒ���
     [HideInInspector] public PolygonCollider2D traingleCd;
     [Header("死亡设置")]
     public float deathZoneY = -5f;     // 低于此 Y 坐标触发死亡
 
     public PlayerInput playerInput;
+    // �ⲿע����ƶ����루������ͬһ�����������ֶ�·�ɼ�ͷ�� player2��
+    public Vector2 externalMoveInput;
+    public Stack<Block> blockStack = new Stack<Block>();
+
+    public bool isGrounded;
     public float resetCd;
     public Transform respawnPoint; // 重生点（由GameManager设置）
 
@@ -47,13 +55,74 @@ public class Player : Entity
     protected override void Awake()
     {
         base.Awake();
+
+        Debug.Log($"Player Awake, ������: {gameObject.name}");
+
+        moveState = new PlayerMoveState(this, stateMachine, "Move");    
         moveState = new PlayerMoveState(this, stateMachine, "Move");
         deadState = new PlayerDeadState(this, stateMachine, "Dead");
         pauseState = new PlayerPauseState(this, stateMachine, "Pause");
     }
 
+
+
     protected override void Start()
     {
+        base.Start(); 
+        playerInput = GetComponent<PlayerInput>();
+
+        Debug.Log($"Player Start, ������: {gameObject.name}, PlayerInput = {playerInput != null}");
+
+        // ���δ�� Inspector �������ƶ��ٶȻ���Ծ�����ṩ������Ĭ��ֵ�������ٶ�Ϊ 0 �����޷��ƶ�
+        if (walkSpeed <= 0f)
+        {
+            walkSpeed = 5f;
+            Debug.LogWarning($"Player {gameObject.name} δ���� walkSpeed��ʹ��Ĭ��ֵ {walkSpeed}");
+        }
+        if (jumpForce <= 0f)
+        {
+            jumpForce = 7f;
+            Debug.LogWarning($"Player {gameObject.name} δ���� jumpForce��ʹ��Ĭ��ֵ {jumpForce}");
+        }
+
+        // ��� InputManager �ڴ������ʱ�������� boundDevice/controlScheme��ȷ�� PlayerInput ���ö�Ӧ��ͼ�����豸
+        try
+        {
+            if (playerInput != null && !string.IsNullOrEmpty(controlScheme) && playerInput.actions != null)
+            {
+                var map = playerInput.actions.FindActionMap(controlScheme);
+                if (map != null)
+                {
+                    try { foreach (var m in playerInput.actions.actionMaps) m.Disable(); } catch { }
+                    try { map.Enable(); } catch { }
+                    try { foreach (var a in map.actions) a.Enable(); } catch { }
+                    try { playerInput.SwitchCurrentActionMap(controlScheme); } catch { }
+                }
+
+                // �� actions �޶�Ϊ�󶨵��豸���� boundDevice �ǿգ�
+                if (boundDevice != null)
+                {
+                    try { UnityEngine.InputSystem.Users.InputUser.PerformPairingWithDevice(boundDevice, playerInput.user); } catch { }
+                    try { playerInput.actions.devices = new UnityEngine.InputSystem.Utilities.ReadOnlyArray<UnityEngine.InputSystem.InputDevice>(new[] { boundDevice }); } catch { }
+                    try { playerInput.actions.Enable(); } catch { }
+                }
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"Player Start: �󶨶���/�豸ʱ�����쳣: {ex.Message}");
+        }
+
+        traingleCount = 0;
+        squareCount = 0;
+        circleCount = 0;
+
+        boxCd = GetComponent<BoxCollider2D>();
+        circleCd = GetComponent<CircleCollider2D>();
+        traingleCd = GetComponent<PolygonCollider2D>();
+
+
+        Debug.Log($"״̬����ʼ������ʼ״̬: {moveState}");
         base.Start();
         playerInput = GetComponent<PlayerInput>();
         triangleCount = squareCount = circleCount = 0;
@@ -66,6 +135,8 @@ public class Player : Entity
     protected override void Update()
     {
         base.Update();
+
+        
         UpdateInput();
         CheckFall();
     }
@@ -210,6 +281,14 @@ public class Player : Entity
                 anim.SetBool("Square", false);
                 anim.SetBool("Circle", true);
                 break;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (InputManager.instance != null)
+        {
+            InputManager.instance.UnregisterPlayer(gameObject, boundDevice, controlScheme);
         }
     }
 

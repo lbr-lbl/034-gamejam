@@ -921,6 +921,22 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 648c1163d3ca13e48b6bf07799373b9c, type: 3}
+--- !u!1 &8665661999864926834
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 937557960440849365}
+  m_Layer: 7
+  m_Name: RespawnPoint1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -932,7 +948,6 @@ SceneRoots:
   - {fileID: 5820612530916548572}
   - {fileID: 3900059646078697279}
   - {fileID: 150386392}
-  - {fileID: 518937663}
   - {fileID: 8387436849686534096}
   - {fileID: 1494524444634336659}
   - {fileID: 7638388792371967065}

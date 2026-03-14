@@ -89,13 +89,15 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
     ""name"": ""PlayerControl"",
     ""maps"": [
         {
+            ""name"": ""Gamepad"",
+            ""id"": ""9f93d4b1-3bef-456c-a5dd-61b39ba1842e"",
             ""name"": ""Player1"",
             ""id"": ""fa702311-9b89-44b8-b523-4e71858ec4b9"",
             ""actions"": [
                 {
                     ""name"": ""Move"",
                     ""type"": ""Value"",
-                    ""id"": ""c882a9b7-546d-4b38-93f3-eb4c11f147c9"",
+                    ""id"": ""30a08f2b-9aa6-42f5-ad47-54f7faa1a4bc"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -104,7 +106,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Jump"",
                     ""type"": ""Button"",
-                    ""id"": ""aa085a06-00b6-4eb5-b366-fc269edd254f"",
+                    ""id"": ""63245574-eb2b-49b6-b294-0ce19c0eb60b"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -113,7 +115,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Throw"",
                     ""type"": ""Button"",
-                    ""id"": ""238d91ce-4e37-4206-9887-697943f30c65"",
+                    ""id"": ""f62ea31f-6948-415f-8717-d570535f1450"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -122,7 +124,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""BuildMode"",
                     ""type"": ""Button"",
-                    ""id"": ""ef4ff229-d0d2-4ca4-ac42-933a343de977"",
+                    ""id"": ""7156e3fc-3c11-4337-a5d1-bd2526edd77c"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -131,7 +133,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Set"",
                     ""type"": ""Button"",
-                    ""id"": ""5ffd0e26-5833-4ceb-8db7-89d8a5be1cac"",
+                    ""id"": ""22c40bfd-4820-4f35-8925-6efb08b7cb85"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -140,7 +142,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""ChangeShape"",
                     ""type"": ""Button"",
-                    ""id"": ""1d7d1bba-289f-4efb-b9e9-e0e8a67f26f8"",
+                    ""id"": ""2929c740-0cd5-4bc7-a9d7-1fbac3a489ac"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -149,6 +151,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Suicide"",
                     ""type"": ""Button"",
+                    ""id"": ""7dcfaf7e-aa3d-4e6f-8593-daf61150b379"",
                     ""id"": ""fd0bb467-7eec-4742-ab9e-2a8b906e3422"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -159,17 +162,23 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""2defc746-ed71-4839-acb5-be109bf925ba"",
-                    ""path"": ""<Keyboard>/k"",
+                    ""id"": ""7f19dd0e-7462-4305-84a0-bf0ec398d89a"",
+                    ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Jump"",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
+                    ""id"": ""80f8e61e-e569-41d1-9771-c42e52897f91"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Jump"",
                     ""id"": ""d26b80b2-faac-4c7c-9d5b-e2ba374cab14"",
                     ""path"": ""<Keyboard>/j"",
                     ""interactions"": """",
@@ -181,6 +190,22 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""5cdbba2f-1cdb-4e05-b7ff-ac14780a7690"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Throw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""01e089f8-1281-4272-a908-6e17c3865ded"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
                     ""id"": ""158cb7ec-a8a7-401d-a7b4-97a63dd6ba9e"",
                     ""path"": ""<Keyboard>/l"",
                     ""interactions"": """",
@@ -192,6 +217,11 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""4a71b213-4483-4cba-801c-38ab138d74b4"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
                     ""id"": ""02621ab6-d9e1-481a-9dc5-001655bdd2d1"",
                     ""path"": ""<Keyboard>/u"",
                     ""interactions"": """",
@@ -203,6 +233,11 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""cdc8017a-9677-4b30-b65e-25f3ab26420c"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
                     ""id"": ""212e9a81-af3e-4fc8-84d2-0d405de88103"",
                     ""path"": ""<Keyboard>/i"",
                     ""interactions"": """",
@@ -214,6 +249,26 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""9c406f04-5a1a-4c23-8f68-40bbb1361713"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Suicide"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""KeyboardWASD"",
+            ""id"": ""259ad701-c7d8-4dc9-b8da-e263bc09e1c3"",
+            ""actions"": [
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""73b872be-22f0-4419-bb98-ba12dbe8597e"",
+                    ""expectedControlType"": ""Vector2"",
                     ""id"": ""dcdd795d-3ebe-468b-b6c2-2cb1308aaa75"",
                     ""path"": ""<Keyboard>/o"",
                     ""interactions"": """",
@@ -229,6 +284,149 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""c1434d37-c6e6-4125-a215-87a5a8118f2a"",
+                    ""expectedControlType"": """",
+                    ""name"": ""up"",
+                    ""id"": ""183e9155-d112-404d-9137-dc39b3b89a66"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Throw"",
+                    ""type"": ""Button"",
+                    ""id"": ""216cc394-6e7d-4df2-af96-e4f5aab41db1"",
+                    ""expectedControlType"": """",
+                    ""name"": ""down"",
+                    ""id"": ""8d5c39f5-3c09-496f-b16d-6faabf8ce6bb"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BuildMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""562cc037-fb4c-4bc1-9ed9-4b204d2e1bcf"",
+                    ""expectedControlType"": """",
+                    ""name"": ""left"",
+                    ""id"": ""e73e6b0f-0ba5-4b10-b2c5-d7bf7da77ca0"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Set"",
+                    ""type"": ""Button"",
+                    ""id"": ""718bb422-586d-4633-8f8a-2c53dc93e4ff"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeShape"",
+                    ""type"": ""Button"",
+                    ""id"": ""ccbfd75a-01ea-481a-afc6-1bea2bbc1277"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Suicide"",
+                    ""type"": ""Button"",
+                    ""id"": ""05ccc862-3f04-4009-91ce-538834200b7b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""01387f1c-8c33-4e35-9fab-cee89e33894b"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""191ce85b-6d25-4853-a343-b7a10f67476f"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c8f1a31f-d01f-43bd-805d-455ac2185d47"",
+                    ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e311c9a7-953c-4ac8-9893-a93d4f8544a5"",
+                    ""path"": ""<Keyboard>/u"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Set"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e8969891-b287-4960-ad32-0ed71cfe94be"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeShape"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8f725679-838e-44c0-99cd-efcb0711006e"",
+                    ""path"": ""<Keyboard>/o"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Suicide"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""79031896-a4ad-430e-9140-9e8aabff4499"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Move"",
                     ""isComposite"": true,
@@ -236,8 +434,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""183e9155-d112-404d-9137-dc39b3b89a66"",
-                    ""path"": ""<Keyboard>/upArrow"",
+                    ""id"": ""c4b13e79-862e-456d-be3b-31bf153bceca"",
+                    ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -247,8 +445,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""8d5c39f5-3c09-496f-b16d-6faabf8ce6bb"",
-                    ""path"": ""<Keyboard>/downArrow"",
+                    ""id"": ""269ad730-7920-4be2-9121-60fdac11215f"",
+                    ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -258,8 +456,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""e73e6b0f-0ba5-4b10-b2c5-d7bf7da77ca0"",
-                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""id"": ""5bae26fc-d6fa-4ae7-9a6f-218a72c5e4b8"",
+                    ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -268,6 +466,11 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
+                    ""name"": ""right"",
+                    ""id"": ""7327ad7e-8a36-4493-acd1-c9c03445553d"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
                     ""name"": ""right"",
                     ""id"": ""5fca69ab-9b7a-4125-817c-2cdacb4b0e44"",
                     ""path"": ""<Keyboard>/rightArrow"",
@@ -281,6 +484,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
             ]
         },
         {
+            ""name"": ""KeyboardArrows"",
             ""name"": ""Player2"",
             ""id"": ""48932386-a373-4318-a91a-692af78b6232"",
             ""actions"": [
@@ -351,6 +555,7 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": ""2D Vector"",
+                    ""id"": ""e688eed9-1267-4f6a-9ba3-e919d6303d49"",
                     ""id"": ""8c400b2a-9d8d-4c0c-a332-3ba85ebb786b"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
@@ -361,7 +566,53 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
+                    ""name"": ""up"",
+                    ""id"": ""9aa0eaa4-070a-4f4d-89b2-6bba3e98456b"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""23e331fa-4f85-4c4a-af44-f3e16e5e79ba"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""e93eb71f-72cd-47ca-9b60-0f307e734d4c"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""ac479f36-0e3b-4dfa-a731-0dbb25a173f9"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
                     ""name"": """",
+                    ""id"": ""5bf5714b-7c47-4929-bf7d-63da0ae003c4"",
+                    ""path"": ""<Keyboard>/numpad1"",
                     ""id"": ""a5e53784-1328-4ea0-bc5f-1e5234f6951e"",
                     ""path"": ""<Keyboard>/numpad6"",
                     ""interactions"": """",
@@ -373,6 +624,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""05960fa3-8a68-4bdd-adb3-62bce68f97e7"",
+                    ""path"": ""<Keyboard>/numpad2"",
                     ""id"": ""3be6a6a2-33cd-435b-8b0e-603fa09e99d5"",
                     ""path"": ""<Keyboard>/numpad5"",
                     ""interactions"": """",
@@ -384,6 +637,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""c71bac26-c16c-471c-ac62-85a7bae45f38"",
+                    ""path"": ""<Keyboard>/numpad3"",
                     ""id"": ""3836ce08-85b8-4d8c-ac51-13e4aa451832"",
                     ""path"": ""<Keyboard>/numpad4"",
                     ""interactions"": """",
@@ -395,6 +650,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""bda6ff0e-f4b4-45c5-9fb7-c86d7cb0fdff"",
+                    ""path"": ""<Keyboard>/numpad4"",
                     ""id"": ""88e7e44a-a1f6-414c-af3a-02cbbeff3c60"",
                     ""path"": ""<Keyboard>/numpad3"",
                     ""interactions"": """",
@@ -406,6 +663,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""8c47a7e5-c775-4add-9a19-a31c0dc0b843"",
+                    ""path"": ""<Keyboard>/numpad5"",
                     ""id"": ""18cbf919-1bc4-4207-bbbf-51aeb42ed78d"",
                     ""path"": ""<Keyboard>/numpad2"",
                     ""interactions"": """",
@@ -461,6 +720,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""5c6b3c8c-334c-412a-85b2-32e3c1f4dc7c"",
+                    ""path"": ""<Keyboard>/numpad6"",
                     ""id"": ""d94c78f5-c7eb-430c-a1fc-d8a5ae4a4457"",
                     ""path"": ""<Keyboard>/numpad1"",
                     ""interactions"": """",
@@ -475,6 +736,33 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
     ],
     ""controlSchemes"": []
 }");
+        // Gamepad
+        m_Gamepad = asset.FindActionMap("Gamepad", throwIfNotFound: true);
+        m_Gamepad_Move = m_Gamepad.FindAction("Move", throwIfNotFound: true);
+        m_Gamepad_Jump = m_Gamepad.FindAction("Jump", throwIfNotFound: true);
+        m_Gamepad_Throw = m_Gamepad.FindAction("Throw", throwIfNotFound: true);
+        m_Gamepad_BuildMode = m_Gamepad.FindAction("BuildMode", throwIfNotFound: true);
+        m_Gamepad_Set = m_Gamepad.FindAction("Set", throwIfNotFound: true);
+        m_Gamepad_ChangeShape = m_Gamepad.FindAction("ChangeShape", throwIfNotFound: true);
+        m_Gamepad_Suicide = m_Gamepad.FindAction("Suicide", throwIfNotFound: true);
+        // KeyboardWASD
+        m_KeyboardWASD = asset.FindActionMap("KeyboardWASD", throwIfNotFound: true);
+        m_KeyboardWASD_Move = m_KeyboardWASD.FindAction("Move", throwIfNotFound: true);
+        m_KeyboardWASD_Jump = m_KeyboardWASD.FindAction("Jump", throwIfNotFound: true);
+        m_KeyboardWASD_Throw = m_KeyboardWASD.FindAction("Throw", throwIfNotFound: true);
+        m_KeyboardWASD_BuildMode = m_KeyboardWASD.FindAction("BuildMode", throwIfNotFound: true);
+        m_KeyboardWASD_Set = m_KeyboardWASD.FindAction("Set", throwIfNotFound: true);
+        m_KeyboardWASD_ChangeShape = m_KeyboardWASD.FindAction("ChangeShape", throwIfNotFound: true);
+        m_KeyboardWASD_Suicide = m_KeyboardWASD.FindAction("Suicide", throwIfNotFound: true);
+        // KeyboardArrows
+        m_KeyboardArrows = asset.FindActionMap("KeyboardArrows", throwIfNotFound: true);
+        m_KeyboardArrows_Move = m_KeyboardArrows.FindAction("Move", throwIfNotFound: true);
+        m_KeyboardArrows_Jump = m_KeyboardArrows.FindAction("Jump", throwIfNotFound: true);
+        m_KeyboardArrows_Throw = m_KeyboardArrows.FindAction("Throw", throwIfNotFound: true);
+        m_KeyboardArrows_BuildMode = m_KeyboardArrows.FindAction("BuildMode", throwIfNotFound: true);
+        m_KeyboardArrows_Set = m_KeyboardArrows.FindAction("Set", throwIfNotFound: true);
+        m_KeyboardArrows_ChangeShape = m_KeyboardArrows.FindAction("ChangeShape", throwIfNotFound: true);
+        m_KeyboardArrows_Suicide = m_KeyboardArrows.FindAction("Suicide", throwIfNotFound: true);
         // Player1
         m_Player1 = asset.FindActionMap("Player1", throwIfNotFound: true);
         m_Player1_Move = m_Player1.FindAction("Move", throwIfNotFound: true);
@@ -497,6 +785,9 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
 
     ~@PlayerControl()
     {
+        UnityEngine.Debug.Assert(!m_Gamepad.enabled, "This will cause a leak and performance issues, PlayerControl.Gamepad.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_KeyboardWASD.enabled, "This will cause a leak and performance issues, PlayerControl.KeyboardWASD.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_KeyboardArrows.enabled, "This will cause a leak and performance issues, PlayerControl.KeyboardArrows.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Player1.enabled, "This will cause a leak and performance issues, PlayerControl.Player1.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_Player2.enabled, "This will cause a leak and performance issues, PlayerControl.Player2.Disable() has not been called.");
     }
@@ -571,6 +862,20 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
+    // Gamepad
+    private readonly InputActionMap m_Gamepad;
+    private List<IGamepadActions> m_GamepadActionsCallbackInterfaces = new List<IGamepadActions>();
+    private readonly InputAction m_Gamepad_Move;
+    private readonly InputAction m_Gamepad_Jump;
+    private readonly InputAction m_Gamepad_Throw;
+    private readonly InputAction m_Gamepad_BuildMode;
+    private readonly InputAction m_Gamepad_Set;
+    private readonly InputAction m_Gamepad_ChangeShape;
+    private readonly InputAction m_Gamepad_Suicide;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Gamepad".
+    /// </summary>
+    public struct GamepadActions
     // Player1
     private readonly InputActionMap m_Player1;
     private List<IPlayer1Actions> m_Player1ActionsCallbackInterfaces = new List<IPlayer1Actions>();
@@ -591,6 +896,201 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <summary>
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
+        public GamepadActions(@PlayerControl wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "Gamepad/Move".
+        /// </summary>
+        public InputAction @Move => m_Wrapper.m_Gamepad_Move;
+        /// <summary>
+        /// Provides access to the underlying input action "Gamepad/Jump".
+        /// </summary>
+        public InputAction @Jump => m_Wrapper.m_Gamepad_Jump;
+        /// <summary>
+        /// Provides access to the underlying input action "Gamepad/Throw".
+        /// </summary>
+        public InputAction @Throw => m_Wrapper.m_Gamepad_Throw;
+        /// <summary>
+        /// Provides access to the underlying input action "Gamepad/BuildMode".
+        /// </summary>
+        public InputAction @BuildMode => m_Wrapper.m_Gamepad_BuildMode;
+        /// <summary>
+        /// Provides access to the underlying input action "Gamepad/Set".
+        /// </summary>
+        public InputAction @Set => m_Wrapper.m_Gamepad_Set;
+        /// <summary>
+        /// Provides access to the underlying input action "Gamepad/ChangeShape".
+        /// </summary>
+        public InputAction @ChangeShape => m_Wrapper.m_Gamepad_ChangeShape;
+        /// <summary>
+        /// Provides access to the underlying input action "Gamepad/Suicide".
+        /// </summary>
+        public InputAction @Suicide => m_Wrapper.m_Gamepad_Suicide;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_Gamepad; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="GamepadActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(GamepadActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="GamepadActions" />
+        public void AddCallbacks(IGamepadActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GamepadActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GamepadActionsCallbackInterfaces.Add(instance);
+            @Move.started += instance.OnMove;
+            @Move.performed += instance.OnMove;
+            @Move.canceled += instance.OnMove;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
+            @Throw.started += instance.OnThrow;
+            @Throw.performed += instance.OnThrow;
+            @Throw.canceled += instance.OnThrow;
+            @BuildMode.started += instance.OnBuildMode;
+            @BuildMode.performed += instance.OnBuildMode;
+            @BuildMode.canceled += instance.OnBuildMode;
+            @Set.started += instance.OnSet;
+            @Set.performed += instance.OnSet;
+            @Set.canceled += instance.OnSet;
+            @ChangeShape.started += instance.OnChangeShape;
+            @ChangeShape.performed += instance.OnChangeShape;
+            @ChangeShape.canceled += instance.OnChangeShape;
+            @Suicide.started += instance.OnSuicide;
+            @Suicide.performed += instance.OnSuicide;
+            @Suicide.canceled += instance.OnSuicide;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="GamepadActions" />
+        private void UnregisterCallbacks(IGamepadActions instance)
+        {
+            @Move.started -= instance.OnMove;
+            @Move.performed -= instance.OnMove;
+            @Move.canceled -= instance.OnMove;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
+            @Throw.started -= instance.OnThrow;
+            @Throw.performed -= instance.OnThrow;
+            @Throw.canceled -= instance.OnThrow;
+            @BuildMode.started -= instance.OnBuildMode;
+            @BuildMode.performed -= instance.OnBuildMode;
+            @BuildMode.canceled -= instance.OnBuildMode;
+            @Set.started -= instance.OnSet;
+            @Set.performed -= instance.OnSet;
+            @Set.canceled -= instance.OnSet;
+            @ChangeShape.started -= instance.OnChangeShape;
+            @ChangeShape.performed -= instance.OnChangeShape;
+            @ChangeShape.canceled -= instance.OnChangeShape;
+            @Suicide.started -= instance.OnSuicide;
+            @Suicide.performed -= instance.OnSuicide;
+            @Suicide.canceled -= instance.OnSuicide;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="GamepadActions.UnregisterCallbacks(IGamepadActions)" />.
+        /// </summary>
+        /// <seealso cref="GamepadActions.UnregisterCallbacks(IGamepadActions)" />
+        public void RemoveCallbacks(IGamepadActions instance)
+        {
+            if (m_Wrapper.m_GamepadActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="GamepadActions.AddCallbacks(IGamepadActions)" />
+        /// <seealso cref="GamepadActions.RemoveCallbacks(IGamepadActions)" />
+        /// <seealso cref="GamepadActions.UnregisterCallbacks(IGamepadActions)" />
+        public void SetCallbacks(IGamepadActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GamepadActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GamepadActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="GamepadActions" /> instance referencing this action map.
+    /// </summary>
+    public GamepadActions @Gamepad => new GamepadActions(this);
+
+    // KeyboardWASD
+    private readonly InputActionMap m_KeyboardWASD;
+    private List<IKeyboardWASDActions> m_KeyboardWASDActionsCallbackInterfaces = new List<IKeyboardWASDActions>();
+    private readonly InputAction m_KeyboardWASD_Move;
+    private readonly InputAction m_KeyboardWASD_Jump;
+    private readonly InputAction m_KeyboardWASD_Throw;
+    private readonly InputAction m_KeyboardWASD_BuildMode;
+    private readonly InputAction m_KeyboardWASD_Set;
+    private readonly InputAction m_KeyboardWASD_ChangeShape;
+    private readonly InputAction m_KeyboardWASD_Suicide;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "KeyboardWASD".
+    /// </summary>
+    public struct KeyboardWASDActions
+    {
+        private @PlayerControl m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public KeyboardWASDActions(@PlayerControl wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardWASD/Move".
+        /// </summary>
+        public InputAction @Move => m_Wrapper.m_KeyboardWASD_Move;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardWASD/Jump".
+        /// </summary>
+        public InputAction @Jump => m_Wrapper.m_KeyboardWASD_Jump;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardWASD/Throw".
+        /// </summary>
+        public InputAction @Throw => m_Wrapper.m_KeyboardWASD_Throw;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardWASD/BuildMode".
+        /// </summary>
+        public InputAction @BuildMode => m_Wrapper.m_KeyboardWASD_BuildMode;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardWASD/Set".
+        /// </summary>
+        public InputAction @Set => m_Wrapper.m_KeyboardWASD_Set;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardWASD/ChangeShape".
+        /// </summary>
+        public InputAction @ChangeShape => m_Wrapper.m_KeyboardWASD_ChangeShape;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardWASD/Suicide".
+        /// </summary>
+        public InputAction @Suicide => m_Wrapper.m_KeyboardWASD_Suicide;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_KeyboardWASD; }
         public Player1Actions(@PlayerControl wrapper) { m_Wrapper = wrapper; }
         /// <summary>
         /// Provides access to the underlying input action "Player1/Move".
@@ -631,6 +1131,9 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
         public bool enabled => Get().enabled;
         /// <summary>
+        /// Implicitly converts an <see ref="KeyboardWASDActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(KeyboardWASDActions set) { return set.Get(); }
         /// Implicitly converts an <see ref="Player1Actions" /> to an <see ref="InputActionMap" /> instance.
         /// </summary>
         public static implicit operator InputActionMap(Player1Actions set) { return set.Get(); }
@@ -641,6 +1144,11 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
         /// </remarks>
+        /// <seealso cref="KeyboardWASDActions" />
+        public void AddCallbacks(IKeyboardWASDActions instance)
+        {
+            if (instance == null || m_Wrapper.m_KeyboardWASDActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_KeyboardWASDActionsCallbackInterfaces.Add(instance);
         /// <seealso cref="Player1Actions" />
         public void AddCallbacks(IPlayer1Actions instance)
         {
@@ -675,6 +1183,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <remarks>
         /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
         /// </remarks>
+        /// <seealso cref="KeyboardWASDActions" />
+        private void UnregisterCallbacks(IKeyboardWASDActions instance)
         /// <seealso cref="Player1Actions" />
         private void UnregisterCallbacks(IPlayer1Actions instance)
         {
@@ -702,6 +1212,12 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         }
 
         /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="KeyboardWASDActions.UnregisterCallbacks(IKeyboardWASDActions)" />.
+        /// </summary>
+        /// <seealso cref="KeyboardWASDActions.UnregisterCallbacks(IKeyboardWASDActions)" />
+        public void RemoveCallbacks(IKeyboardWASDActions instance)
+        {
+            if (m_Wrapper.m_KeyboardWASDActionsCallbackInterfaces.Remove(instance))
         /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="Player1Actions.UnregisterCallbacks(IPlayer1Actions)" />.
         /// </summary>
         /// <seealso cref="Player1Actions.UnregisterCallbacks(IPlayer1Actions)" />
@@ -717,6 +1233,14 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
         /// </remarks>
+        /// <seealso cref="KeyboardWASDActions.AddCallbacks(IKeyboardWASDActions)" />
+        /// <seealso cref="KeyboardWASDActions.RemoveCallbacks(IKeyboardWASDActions)" />
+        /// <seealso cref="KeyboardWASDActions.UnregisterCallbacks(IKeyboardWASDActions)" />
+        public void SetCallbacks(IKeyboardWASDActions instance)
+        {
+            foreach (var item in m_Wrapper.m_KeyboardWASDActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_KeyboardWASDActionsCallbackInterfaces.Clear();
         /// <seealso cref="Player1Actions.AddCallbacks(IPlayer1Actions)" />
         /// <seealso cref="Player1Actions.RemoveCallbacks(IPlayer1Actions)" />
         /// <seealso cref="Player1Actions.UnregisterCallbacks(IPlayer1Actions)" />
@@ -729,6 +1253,24 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         }
     }
     /// <summary>
+    /// Provides a new <see cref="KeyboardWASDActions" /> instance referencing this action map.
+    /// </summary>
+    public KeyboardWASDActions @KeyboardWASD => new KeyboardWASDActions(this);
+
+    // KeyboardArrows
+    private readonly InputActionMap m_KeyboardArrows;
+    private List<IKeyboardArrowsActions> m_KeyboardArrowsActionsCallbackInterfaces = new List<IKeyboardArrowsActions>();
+    private readonly InputAction m_KeyboardArrows_Move;
+    private readonly InputAction m_KeyboardArrows_Jump;
+    private readonly InputAction m_KeyboardArrows_Throw;
+    private readonly InputAction m_KeyboardArrows_BuildMode;
+    private readonly InputAction m_KeyboardArrows_Set;
+    private readonly InputAction m_KeyboardArrows_ChangeShape;
+    private readonly InputAction m_KeyboardArrows_Suicide;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "KeyboardArrows".
+    /// </summary>
+    public struct KeyboardArrowsActions
     /// Provides a new <see cref="Player1Actions" /> instance referencing this action map.
     /// </summary>
     public Player1Actions @Player1 => new Player1Actions(this);
@@ -753,6 +1295,39 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <summary>
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
+        public KeyboardArrowsActions(@PlayerControl wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardArrows/Move".
+        /// </summary>
+        public InputAction @Move => m_Wrapper.m_KeyboardArrows_Move;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardArrows/Jump".
+        /// </summary>
+        public InputAction @Jump => m_Wrapper.m_KeyboardArrows_Jump;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardArrows/Throw".
+        /// </summary>
+        public InputAction @Throw => m_Wrapper.m_KeyboardArrows_Throw;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardArrows/BuildMode".
+        /// </summary>
+        public InputAction @BuildMode => m_Wrapper.m_KeyboardArrows_BuildMode;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardArrows/Set".
+        /// </summary>
+        public InputAction @Set => m_Wrapper.m_KeyboardArrows_Set;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardArrows/ChangeShape".
+        /// </summary>
+        public InputAction @ChangeShape => m_Wrapper.m_KeyboardArrows_ChangeShape;
+        /// <summary>
+        /// Provides access to the underlying input action "KeyboardArrows/Suicide".
+        /// </summary>
+        public InputAction @Suicide => m_Wrapper.m_KeyboardArrows_Suicide;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_KeyboardArrows; }
         public Player2Actions(@PlayerControl wrapper) { m_Wrapper = wrapper; }
         /// <summary>
         /// Provides access to the underlying input action "Player2/Move".
@@ -793,6 +1368,9 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
         public bool enabled => Get().enabled;
         /// <summary>
+        /// Implicitly converts an <see ref="KeyboardArrowsActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(KeyboardArrowsActions set) { return set.Get(); }
         /// Implicitly converts an <see ref="Player2Actions" /> to an <see ref="InputActionMap" /> instance.
         /// </summary>
         public static implicit operator InputActionMap(Player2Actions set) { return set.Get(); }
@@ -803,6 +1381,11 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
         /// </remarks>
+        /// <seealso cref="KeyboardArrowsActions" />
+        public void AddCallbacks(IKeyboardArrowsActions instance)
+        {
+            if (instance == null || m_Wrapper.m_KeyboardArrowsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_KeyboardArrowsActionsCallbackInterfaces.Add(instance);
         /// <seealso cref="Player2Actions" />
         public void AddCallbacks(IPlayer2Actions instance)
         {
@@ -837,6 +1420,8 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <remarks>
         /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
         /// </remarks>
+        /// <seealso cref="KeyboardArrowsActions" />
+        private void UnregisterCallbacks(IKeyboardArrowsActions instance)
         /// <seealso cref="Player2Actions" />
         private void UnregisterCallbacks(IPlayer2Actions instance)
         {
@@ -864,6 +1449,12 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         }
 
         /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="KeyboardArrowsActions.UnregisterCallbacks(IKeyboardArrowsActions)" />.
+        /// </summary>
+        /// <seealso cref="KeyboardArrowsActions.UnregisterCallbacks(IKeyboardArrowsActions)" />
+        public void RemoveCallbacks(IKeyboardArrowsActions instance)
+        {
+            if (m_Wrapper.m_KeyboardArrowsActionsCallbackInterfaces.Remove(instance))
         /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="Player2Actions.UnregisterCallbacks(IPlayer2Actions)" />.
         /// </summary>
         /// <seealso cref="Player2Actions.UnregisterCallbacks(IPlayer2Actions)" />
@@ -879,6 +1470,14 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
         /// </remarks>
+        /// <seealso cref="KeyboardArrowsActions.AddCallbacks(IKeyboardArrowsActions)" />
+        /// <seealso cref="KeyboardArrowsActions.RemoveCallbacks(IKeyboardArrowsActions)" />
+        /// <seealso cref="KeyboardArrowsActions.UnregisterCallbacks(IKeyboardArrowsActions)" />
+        public void SetCallbacks(IKeyboardArrowsActions instance)
+        {
+            foreach (var item in m_Wrapper.m_KeyboardArrowsActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_KeyboardArrowsActionsCallbackInterfaces.Clear();
         /// <seealso cref="Player2Actions.AddCallbacks(IPlayer2Actions)" />
         /// <seealso cref="Player2Actions.RemoveCallbacks(IPlayer2Actions)" />
         /// <seealso cref="Player2Actions.UnregisterCallbacks(IPlayer2Actions)" />
@@ -891,6 +1490,15 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         }
     }
     /// <summary>
+    /// Provides a new <see cref="KeyboardArrowsActions" /> instance referencing this action map.
+    /// </summary>
+    public KeyboardArrowsActions @KeyboardArrows => new KeyboardArrowsActions(this);
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Gamepad" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="GamepadActions.AddCallbacks(IGamepadActions)" />
+    /// <seealso cref="GamepadActions.RemoveCallbacks(IGamepadActions)" />
+    public interface IGamepadActions
     /// Provides a new <see cref="Player2Actions" /> instance referencing this action map.
     /// </summary>
     public Player2Actions @Player2 => new Player2Actions(this);
@@ -950,6 +1558,70 @@ public partial class @PlayerControl: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSuicide(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "KeyboardWASD" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="KeyboardWASDActions.AddCallbacks(IKeyboardWASDActions)" />
+    /// <seealso cref="KeyboardWASDActions.RemoveCallbacks(IKeyboardWASDActions)" />
+    public interface IKeyboardWASDActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Move" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMove(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Jump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnJump(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Throw" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnThrow(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "BuildMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnBuildMode(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Set" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSet(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ChangeShape" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnChangeShape(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Suicide" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSuicide(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "KeyboardArrows" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="KeyboardArrowsActions.AddCallbacks(IKeyboardArrowsActions)" />
+    /// <seealso cref="KeyboardArrowsActions.RemoveCallbacks(IKeyboardArrowsActions)" />
+    public interface IKeyboardArrowsActions
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player2" which allows adding and removing callbacks.

@@ -5265,6 +5265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteCount: 0
+  playerIndex: 0
   isDead: 0
   walkSpeed: 8
   jumpForce: 8
@@ -5276,7 +5277,8 @@ MonoBehaviour:
   boxCd: {fileID: 0}
   circleCd: {fileID: 0}
   traingleCd: {fileID: 0}
-  playerInput: {fileID: 0}
+  controlScheme: 
+  playerInput: {fileID: 4257318233703656139}
   isGrounded: 0
   resetCd: 5
   dropVelocity: {x: 0, y: 0}
@@ -5330,6 +5332,6 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: PlayerController
+  m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}

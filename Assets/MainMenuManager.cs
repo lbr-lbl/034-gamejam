@@ -8,6 +8,7 @@ public class MainMenuManager : MonoBehaviour
 {
     public Button startButton;
     public Button quitButton;
+    public Button demoButton;
 
     void Start()
     {
@@ -15,11 +16,18 @@ public class MainMenuManager : MonoBehaviour
             startButton.onClick.AddListener(StartGame);
         if (quitButton != null)
             quitButton.onClick.AddListener(QuitGame);
+        if (demoButton != null)
+            demoButton.onClick.AddListener(OpenDemo);
     }
 
     void StartGame()
     {
         SceneManager.LoadScene("map"); // 确保场景名与 Build Settings 中的一致
+    }
+
+    void OpenDemo()
+    {
+        SceneManager.LoadScene("Demonstration"); // 确保场景名与 Build Settings 中的一致
     }
 
     void QuitGame()
